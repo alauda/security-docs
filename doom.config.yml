@@ -1,0 +1,13 @@
+title: Alauda Container Security 
+logoText: Alauda Container Security 
+lang: en
+api:
+  crds:
+    - security_doc/shared/crds/**/*.{yaml,yml}
+  openapis:
+    - security_doc/shared/openapis/**/*.{json,yaml,yml}
+permission:
+  functionresources:
+    - security_doc/shared/functionresources/*.{yaml,yml}
+  roletemplates:
+    - security_doc/shared/roletemplates/*.{yaml,yml}
