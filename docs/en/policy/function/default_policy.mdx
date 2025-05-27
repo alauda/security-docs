@@ -1,0 +1,162 @@
+---
+title: Default Policies in Alauda Container Security
+description: Overview of default and custom policies in Alauda Container Security.
+weight: 30
+---
+
+# Default Policies in Alauda Container Security
+
+Alauda Container Security offers a set of default policies to help you prevent high-risk deployments and respond to runtime incidents in your Kubernetes environment. These policies are designed to identify security issues and enforce best practices across your clusters.
+
+> **Note:**
+> Policy severity levels in Alauda Container Security: **Critical**, **High**, **Medium**, **Low**. These differ from Red Hat Product Security levels: **Critical**, **Important**, **Moderate**, **Low**. See [Severity Ratings](https://access.redhat.com/security/updates/classification) for details.
+
+## Overview
+
+Default policies cover the entire container lifecycle: build, deploy, and runtime. You can view, clone, and edit these policies in the Alauda Container Security portal. **Default policies cannot be deleted or directly modified.**
+
+### Viewing Policies
+
+1. Go to **Platform Configuration** > **Policy Management** in the portal.
+2. The **Policies** view lists all default and custom policies, including their status, severity, and lifecycle stage.
+
+## Policy Table Structure
+
+- **Policy**: Policy name
+- **Description**: What the policy detects or enforces
+- **Status**: **Enabled** or **Disabled**
+- **Severity**: Critical, High, Medium, or Low
+- **Lifecycle**: Build, Deploy, or Runtime
+
+---
+
+## Critical Severity Policies
+
+| Lifecycle Stage | Policy Name | Description | Status |
+|---|---|---|---|
+| Build/Deploy | Apache Struts: CVE-2017-5638 | Alerts on images with the CVE-2017-5638 Apache Struts vulnerability. | Enabled |
+| Build/Deploy | Log4Shell: log4j Remote Code Execution | Alerts on images with CVE-2021-44228 and CVE-2021-45046 vulnerabilities. | Enabled |
+| Build/Deploy | Spring4Shell & Spring Cloud Function | Alerts on images with CVE-2022-22965 (Spring MVC) or CVE-2022-22963 (Spring Cloud). | Enabled |
+| Runtime | Iptables Executed in Privileged Container | Alerts when privileged pods run iptables. | Enabled |
+
+---
+
+## High Severity Policies
+
+| Lifecycle Stage | Policy Name | Description | Status |
+|---|---|---|---|
+| Build/Deploy | Fixable CVSS >= 7 | Alerts on fixable vulnerabilities with CVSS ≥ 7. | Disabled |
+| Build/Deploy | Fixable Severity at least Important | Alerts on fixable vulnerabilities rated Important or higher. | Enabled |
+| Build/Deploy | Rapid Reset: HTTP/2 DoS Vulnerability | Alerts on images susceptible to HTTP/2 Rapid Reset DoS. | Disabled |
+| Build/Deploy | Secure Shell (ssh) Port Exposed in Image | Alerts when port 22 is exposed in images. | Enabled |
+| Deploy | Emergency Deployment Annotation | Alerts on deployments using emergency annotations to bypass admission checks. | Enabled |
+| Deploy | Environment Variable Contains Secret | Alerts when environment variables contain 'SECRET'. | Enabled |
+| Deploy | Fixable CVSS >= 6 and Privileged | Alerts on privileged deployments with fixable CVSS ≥ 6 vulnerabilities. | Disabled |
+| Deploy | Privileged Containers with Important and Critical Fixable CVEs | Alerts on privileged containers with important/critical fixable vulnerabilities. | Enabled |
+| Deploy | Secret Mounted as Environment Variable | Alerts when secrets are mounted as environment variables. | Disabled |
+| Deploy | Secure Shell (ssh) Port Exposed | Alerts when port 22 is exposed in deployments. | Enabled |
+| Runtime | Cryptocurrency Mining Process Execution | Detects crypto-currency mining processes. | Enabled |
+| Runtime | iptables Execution | Detects iptables usage in containers. | Enabled |
+| Runtime | Kubernetes Actions: Exec into Pod | Alerts on exec commands run in containers via Kubernetes API. | Enabled |
+| Runtime | Linux Group Add Execution | Detects groupadd/addgroup usage. | Enabled |
+| Runtime | Linux User Add Execution | Detects useradd/adduser usage. | Enabled |
+| Runtime | Login Binaries | Detects login attempts. | Disabled |
+| Runtime | Network Management Execution | Detects network configuration commands. | Enabled |
+| Runtime | nmap Execution | Alerts on nmap process execution. | Enabled |
+| Runtime | OpenShift: Kubeadmin Secret Accessed | Alerts on kubeadmin secret access. | Enabled |
+| Runtime | Password Binaries | Detects password change attempts. | Disabled |
+| Runtime | Process Targeting Cluster Kubelet Endpoint | Detects misuse of kubelet/heapster endpoints. | Enabled |
+| Runtime | Process Targeting Cluster Kubernetes Docker Stats Endpoint | Detects misuse of docker stats endpoint. | Enabled |
+| Runtime | Process Targeting Kubernetes Service Endpoint | Detects misuse of Kubernetes Service API endpoint. | Enabled |
+| Runtime | Process with UID 0 | Alerts on processes running as UID 0. | Disabled |
+| Runtime | Secure Shell Server (sshd) Execution | Detects SSH daemon execution in containers. | Enabled |
+| Runtime | SetUID Processes | Detects setuid binary usage. | Disabled |
+| Runtime | Shadow File Modification | Detects shadow file modifications. | Disabled |
+| Runtime | Shell Spawned by Java Application | Detects shell spawned as a subprocess of Java apps. | Enabled |
+| Runtime | Unauthorized Network Flow | Alerts on anomalous network flows. | Enabled |
+| Runtime | Unauthorized Processed Execution | Alerts on unauthorized process execution in locked baselines. | Enabled |
+
+---
+
+## Medium Severity Policies
+
+| Lifecycle Stage | Policy Name | Description | Status |
+|---|---|---|---|
+| Build | Docker CIS 4.4: Ensure images are scanned and rebuilt | Alerts if images are not scanned and rebuilt with security patches. | Disabled |
+| Deploy | 30-Day Scan Age | Alerts if a deployment hasn't been scanned in 30 days. | Enabled |
+| Deploy | CAP_SYS_ADMIN capability added | Alerts if containers escalate with CAP_SYS_ADMIN. | Enabled |
+| Deploy | Container using read-write root filesystem | Alerts if containers have read-write root filesystems. | Disabled |
+| Deploy | Container with privilege escalation allowed | Alerts if containers allow privilege escalation. | Enabled |
+| Deploy | Deployments should have at least one Ingress Network Policy | Alerts if deployments lack an Ingress Network Policy. | Disabled |
+| Deploy | Deployments with externally exposed endpoints | Alerts if deployments have externally exposed services. | Disabled |
+| Deploy | Docker CIS 5.1: AppArmor profile enabled | Alerts if AppArmor is not enabled. | Enabled |
+| Deploy | Docker CIS 5.15: Host's process namespace not shared | Alerts if host's process namespace is shared. | Enabled |
+| Deploy | Docker CIS 5.16: Host's IPC namespace not shared | Alerts if host's IPC namespace is shared. | Enabled |
+| Deploy | Docker CIS 5.19: Mount propagation mode not enabled | Alerts if mount propagation mode is enabled. | Enabled |
+| Deploy | Docker CIS 5.21: Default seccomp profile not disabled | Alerts if seccomp profile is disabled. | Disabled |
+| Deploy | Docker CIS 5.7: Privileged ports mapped within containers | Alerts if privileged ports (&lt;1024) are mapped. | Enabled |
+| Deploy | Docker CIS 5.9/5.20: Host's network namespace not shared | Alerts if host's network namespace is shared. | Enabled |
+| Deploy | Images with no scans | Alerts if images in deployments are not scanned. | Disabled |
+| Runtime | Kubernetes Actions: Port Forward to Pod | Alerts on port forward requests via Kubernetes API. | Enabled |
+| Deploy | Mount Container Runtime Socket | Alerts if container runtime socket is mounted. | Enabled |
+| Deploy | Mounting Sensitive Host Directories | Alerts if sensitive host directories are mounted. | Enabled |
+| Deploy | No resource requests or limits specified | Alerts if containers lack resource requests/limits. | Enabled |
+| Deploy | Pod Service Account Token Automatically Mounted | Alerts if default service account token is mounted unnecessarily. | Enabled |
+| Deploy | Privileged Container | Alerts if containers run in privileged mode. | Enabled |
+| Runtime | crontab Execution | Detects crontab usage. | Enabled |
+| Runtime | Netcat Execution Detected | Detects netcat usage. | Enabled |
+| Runtime | OpenShift: Central Admin Secret Accessed | Alerts on access to Central Admin secret. | Enabled |
+| Runtime | OpenShift: Secret Accessed by Impersonated User | Alerts on secret access by impersonated users. | Enabled |
+| Runtime | Remote File Copy Binary Execution | Alerts on remote file copy tool execution. | Enabled |
+
+---
+
+## Low Severity Policies
+
+| Lifecycle Stage | Policy Name | Description | Status |
+|---|---|---|---|
+| Build/Deploy | 90-Day Image Age | Alerts if a deployment hasn't been updated in 90 days. | Enabled |
+| Build/Deploy | ADD Command used instead of COPY | Alerts if ADD command is used in Dockerfile. | Disabled |
+| Build/Deploy | Alpine Linux Package Manager (apk) in Image | Alerts if apk is present in images. | Enabled |
+| Build/Deploy | Curl in Image | Alerts if curl is present in images. | Disabled |
+| Build/Deploy | Docker CIS 4.1: User for the Container Created | Ensures containers run as non-root users. | Enabled |
+| Build/Deploy | Docker CIS 4.7: Alert on Update Instruction | Ensures update instructions are not used alone in Dockerfile. | Enabled |
+| Build/Deploy | Insecure specified in CMD | Alerts if 'insecure' is used in command. | Enabled |
+| Build/Deploy | Latest tag | Alerts if images use the 'latest' tag. | Enabled |
+| Build/Deploy | Red Hat Package Manager in Image | Alerts if Red Hat, Fedora, or CentOS package managers are present. | Enabled |
+| Build/Deploy | Required Image Label | Alerts if images are missing required labels. | Disabled |
+| Build/Deploy | Ubuntu Package Manager Execution | Detects Ubuntu package manager usage. | Enabled |
+| Build/Deploy | Ubuntu Package Manager in Image | Alerts if Debian/Ubuntu package managers are present in images. | Enabled |
+| Build/Deploy | Wget in Image | Alerts if wget is present in images. | Disabled |
+| Deploy | Drop All Capabilities | Alerts if deployments do not drop all capabilities. | Disabled |
+| Deploy | Improper Usage of Orchestrator Secrets Volume | Alerts if Dockerfile uses 'VOLUME /run/secrets'. | Enabled |
+| Deploy | Kubernetes Dashboard Deployed | Alerts if a Kubernetes dashboard service is detected. | Enabled |
+| Deploy | Required Annotation: Email | Alerts if 'email' annotation is missing. | Disabled |
+| Deploy | Required Annotation: Owner/Team | Alerts if 'owner' or 'team' annotation is missing. | Disabled |
+| Deploy | Required Label: Owner/Team | Alerts if 'owner' or 'team' label is missing. | Disabled |
+| Runtime | Alpine Linux Package Manager Execution | Alerts if apk is run at runtime. | Enabled |
+| Runtime | chkconfig Execution | Detects chkconfig usage. | Enabled |
+| Runtime | Compiler Tool Execution | Alerts if compiler binaries are run at runtime. | Enabled |
+| Runtime | Red Hat Package Manager Execution | Alerts if Red Hat, Fedora, or CentOS package managers are run at runtime. | Enabled |
+| Runtime | Shell Management | Alerts on shell add/remove commands. | Disabled |
+| Runtime | systemctl Execution | Detects systemctl usage. | Enabled |
+| Runtime | systemd Execution | Detects systemd usage. | Enabled |
+
+---
+
+## Managing Default Policies
+
+- Default policies provide broad security coverage.
+- You can **view**, **clone**, and **edit** cloned default policies in the portal.
+- **Default policies cannot be deleted or directly modified.**
+
+> **Note:**
+> Default policies are not supported with the policies-as-code feature.
+
+---
+
+## Learn More
+
+For more details, refer to the Alauda Container Security documentation.
+
+Use `kubectl` for all Kubernetes command-line operations.

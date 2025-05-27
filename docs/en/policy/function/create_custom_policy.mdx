@@ -1,0 +1,113 @@
+---
+title: Create Custom Policy
+description: Learn how to create custom policies in Alauda Container Security.
+weight: 20
+---
+
+# Creating Custom Policies in Alauda Container Security
+
+Alauda Container Security allows you to create custom security policies in addition to using the default ones. You can create and manage policies through the web portal or as code using Kubernetes custom resources (CRs).
+
+## Methods to Create Custom Policies
+
+- In the Alauda Container Security portal, go to **Platform Configuration > Policy Management** and click **Create Policy**.
+- In the **Risk** section, use filters to select criteria and click **Create Policy**.
+- Manage policies as code by saving them as Kubernetes CRs and applying them to clusters using tools like Argo CD.
+
+## Creating Policies via the Portal
+
+### 1. Enter Policy Details
+- **Name**: Enter a name for the policy.
+- **Severity**: Select a severity level.
+- **Category**: Choose a policy category (required).
+- **Description**: Provide details about the policy.
+- **Rationale**: Explain the reason for the policy.
+- **Guidance**: Add steps to resolve violations.
+- **MITRE ATT&CK**: Select relevant tactics and techniques.
+
+### 2. Configure Policy Lifecycle
+- Select applicable **Lifecycle Stages**: **Build**, **Deploy**, or **Runtime**.
+- For **Runtime**, choose an **Event Source**: **Deployment** or **Audit logs**.
+
+### 3. Define Policy Rules and Criteria
+- In the **Rules** section, set conditions to trigger the policy.
+- Drag and drop policy fields to build rules. Available fields depend on the selected lifecycle stage.
+- Combine multiple values or rules using logical operators (**AND**/**OR**).
+
+### 4. Set Policy Scope
+- **Inclusion Scope**: Restrict policy to specific clusters, namespaces, or deployment labels. Supports RE2 regex for namespaces and labels.
+- **Exclusion Scope**: Exclude specific deployments, clusters, namespaces, or labels. Regex supported for namespaces and labels (not for deployments).
+- For **Build** stage, you can exclude images from the policy.
+
+### 5. Configure Policy Actions
+- **Activation State**: Set the policy as active or inactive.
+- **Enforcement**:
+  - **Inform**: Only report violations.
+  - **Inform and enforce**: Enforce actions based on lifecycle stage:
+    - **Build**: Fails CI builds for noncompliant images.
+    - **Deploy**: Blocks or edits noncompliant deployments if admission controller is enabled.
+    - **Runtime**: Deletes pods matching policy criteria.
+- **Notifiers**: Attach notifiers to send alerts to email or external tools (e.g., Jira, Splunk, webhooks). Notifiers must be pre-configured in **Platform Configuration > Integrations**.
+
+### 6. Review and Save Policy
+- Review all settings and preview potential violations.
+- Click **Save** to create the policy.
+
+## Creating and Managing Policies as Code
+
+> **Note:** Policy as code is a Technology Preview feature and not recommended for production environments.
+
+### Prerequisites
+- Alauda Container Security version 4.6 or later.
+- If installed via manifest (roxctl) method, manually apply the `config.stackrox.io` CRD:
+
+```bash
+kubectl create -f helm/chart/crds/config.stackrox.io_securitypolicies.yaml
+```
+
+### Steps to Create Policy as Code
+
+1. In **Policy Management**, create or clone a policy.
+2. In the policy list, click the overflow menu and select **Save as Custom Resource**. For multiple policies, use **Bulk actions > Save as Custom Resources**.
+3. Edit the saved CR as needed.
+4. Apply the CR to the namespace where Central is installed:
+
+```bash
+kubectl apply -f <your-policy-cr>.yaml -n stackrox
+```
+
+Or use Argo CD or your GitOps tool to push the CR.
+
+#### Example Policy CR
+
+```yaml
+kind: SecurityPolicy
+apiVersion: config.stackrox.io/v1alpha1
+metadata:
+  name: short-name
+spec:
+  policyName: A longer form name
+# ...
+```
+
+Use `kubectl explain securitypolicy.spec` for field details.
+
+## Editing and Managing Policies
+
+- To edit a policy, go to **Platform Configuration > Policy Management**, select a policy, and click **Actions > Edit Policy**.
+- Default policies cannot be edited directly; clone them first.
+
+## Disabling Policy as Code
+
+- **Operator installation**: Set `spec.configAsCode.configAsCodeComponent` to `Disabled`.
+- **Helm installation**: Set `configAsCode.enabled` in `values.yaml` to `false`.
+- **Manifest (roxctl) installation**: Delete the `config-controller` deployment:
+
+```bash
+kubectl -n stackrox delete deployment config-controller
+```
+
+## Additional Notes
+
+- Policy drift may occur if policies are edited both in the portal and externally. Drift is resolved automatically within ten hours.
+- For more information on policy criteria and lifecycle stages, refer to the official documentation.

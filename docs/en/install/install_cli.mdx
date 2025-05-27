@@ -1,0 +1,133 @@
+---
+weight: 10
+---
+
+# Roxctl CLI Installation 
+
+This guide describes how to install and verify the `roxctl` command-line interface (CLI) for Alauda Container Security. You can install `roxctl` on Linux, macOS, or Windows, or run it directly from a container image.
+
+---
+
+## Overview
+
+- **roxctl** is a CLI tool for managing and interacting with Alauda Container Security for Kubernetes.
+- Supported platforms: **Linux**, **macOS**, **Windows**, and **container image**.
+- After installation, you can verify the CLI version to ensure it is set up correctly.
+
+---
+
+## Installation Methods
+
+### 1. Install on Linux
+
+> Supported architectures: `amd64`, `arm64`, `ppc64le`, `s390x`
+
+**Steps:**
+
+1. Determine the architecture:
+    ```bash
+    arch="$(uname -m | sed 's/x86_64//')"; arch="${arch:+-$arch}"
+    ```
+2. Download the binary:
+    ```bash
+    curl -L -f -o roxctl "https://mirror.openshift.com/pub/rhacs/assets/4.7.3/bin/Linux/roxctl${arch}"
+    ```
+3. Make it executable:
+    ```bash
+    chmod +x roxctl
+    ```
+4. Move to a directory in your `PATH` (optional):
+    ```bash
+    echo $PATH
+    # mv roxctl /usr/local/bin/
+    ```
+
+---
+
+### 2. Install on macOS
+
+> Supported architectures: `amd64`, `arm64`
+
+**Steps:**
+
+1. Determine the architecture:
+    ```bash
+    arch="$(uname -m | sed 's/x86_64//')"; arch="${arch:+-$arch}"
+    ```
+2. Download the binary:
+    ```bash
+    curl -L -f -o roxctl "https://mirror.openshift.com/pub/rhacs/assets/4.7.3/bin/Darwin/roxctl${arch}"
+    ```
+3. Remove extended attributes:
+    ```bash
+    xattr -c roxctl
+    ```
+4. Make it executable:
+    ```bash
+    chmod +x roxctl
+    ```
+5. Move to a directory in your `PATH` (optional):
+    ```bash
+    echo $PATH
+    # mv roxctl /usr/local/bin/
+    ```
+
+---
+
+### 3. Install on Windows
+
+> Supported architecture: `amd64`
+
+**Steps:**
+
+1. Download the binary:
+    ```bash
+    curl -f -O https://mirror.openshift.com/pub/rhacs/assets/4.7.3/bin/Windows/roxctl.exe
+    ```
+2. (Optional) Add the directory containing `roxctl.exe` to your system `PATH` for easier access from any command prompt.
+3. Verify the installation:
+    ```bash
+    roxctl.exe version
+    ```
+
+---
+
+### 4. Run from a Container Image
+
+You can run `roxctl` directly from a container image without installing a binary.
+
+**Prerequisites:**
+- Generate an authentication token from the Alauda Container Security portal.
+
+**Steps:**
+1. Log in to the registry:
+    ```bash
+    docker login registry.redhat.io
+    ```
+2. Pull the container image:
+    ```bash
+    docker pull registry.redhat.io/advanced-cluster-security/rhacs-roxctl-rhel8:4.7.3
+    ```
+3. Run `roxctl`:
+    ```bash
+    docker run -e ROX_API_TOKEN=$ROX_API_TOKEN \
+      -it registry.redhat.io/advanced-cluster-security/rhacs-roxctl-rhel8:4.7.3 \
+      -e $ROX_CENTRAL_ADDRESS <command>
+    ```
+
+> **Note:** In Alauda Container Security Cloud Service, use the **Central instance address** from the **Instance Details** section of the Alauda Hybrid Cloud Console (e.g., `acs-ABCD12345.acs.rhcloud.com`).
+
+---
+
+## Verification
+
+After installation (any method), verify your `roxctl` version:
+
+- For local binary:
+    ```bash
+    roxctl version
+    ```
+- For container image:
+    ```bash
+    docker run -it registry.redhat.io/advanced-cluster-security/rhacs-roxctl-rhel8:4.7.3 version
+    ```

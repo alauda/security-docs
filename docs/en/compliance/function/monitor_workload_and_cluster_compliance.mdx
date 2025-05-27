@@ -1,0 +1,112 @@
+---
+weight: 10
+---
+
+# Workload and Cluster Compliance Monitoring
+
+Alauda Container Security enables you to perform compliance scans to assess the compliance status of your entire infrastructure. The compliance dashboard provides a centralized view, allowing you to filter data and monitor compliance across clusters, namespaces, and nodes.
+
+## Overview
+
+By generating detailed compliance reports and focusing on specific standards, controls, and industry benchmarks, you can track and share the compliance status of your environment, ensuring your infrastructure meets required standards.
+
+A compliance scan creates a snapshot of your environment, including alerts, images, network policies, deployments, and host-based data. Data is collected from Sensors and compliance containers running in each Collector pod.
+
+The compliance container gathers:
+- Configurations for the container daemon, runtime, and images
+- Container network information
+- Command-line arguments and processes for the container runtime, Kubernetes, and Alauda Container Platform
+- Permissions for specific file paths
+- Configuration files for Kubernetes and Alauda Container Platform core services
+
+After data collection, Alauda Container Security analyzes the results, which are available in the compliance dashboard and can be exported as reports.
+
+## Key Concepts
+
+- **Control**: A single requirement in an industry or regulatory standard. Alauda Container Security verifies compliance with a control by performing one or more checks.
+- **Check**: A specific test performed during a control assessment. If any check fails, the control is marked as Fail.
+
+## Running a Compliance Scan
+
+1. In the Alauda Container Security portal, go to **Compliance Dashboard**.
+2. (Optional) To filter by specific standards:
+   - Click **Manage standards**.
+   - Deselect any standards you do not want to display.
+   - Click **Save**.
+3. Click **Scan environment**.
+
+> **Note:** Scanning the entire environment typically takes about 2 minutes, depending on the number of clusters and nodes.
+
+## Viewing Compliance Results
+
+### Compliance Dashboard
+
+The dashboard provides an overview of compliance standards across all clusters, namespaces, and nodes, including charts and options to investigate issues.
+
+- To view compliance status for all clusters: Go to **Compliance Dashboard** and select the **Clusters** tab.
+- To view a specific cluster: In the **Passing standards by cluster** widget, click a cluster name.
+- To view all namespaces: Go to **Compliance Dashboard** and select the **Namespaces** tab.
+- To view a specific namespace: In the **Namespaces** table, click a namespace to open its details.
+
+### By Standard
+
+Alauda Container Security supports NIST, PCI DSS, HIPAA, and CIS for Kubernetes compliance standards. To view controls for a specific standard:
+
+1. Go to **Compliance Dashboard**.
+2. In the **Passing standards across clusters** widget, click a standard to see all associated controls.
+
+### By Control
+
+To view the compliance status for a specific control:
+
+1. Go to **Compliance Dashboard**.
+2. In the **Passing standards by cluster** widget, click a standard.
+3. In the **Controls** table, click a control to view its details.
+
+### Filtering Compliance Data
+
+You can filter compliance data by clusters, standards, or control status:
+
+1. Go to **Compliance Dashboard**.
+2. Select the **Clusters**, **Namespaces**, or **Nodes** tab.
+3. Enter filtering criteria in the search bar and press **Enter**.
+
+## Generating Compliance Reports
+
+Alauda Container Security allows you to generate:
+- **Executive reports**: Business-focused, with charts and summaries (PDF format)
+- **Evidence reports**: Technical, with detailed information (CSV format)
+
+To export reports:
+
+1. Go to **Compliance Dashboard**.
+2. Click the **Export** tab:
+   - Select **Download Page as PDF** for executive reports
+   - Select **Download Evidence as CSV** for evidence reports
+
+> **Tip:** The **Export** option is available on all compliance pages and filtered views.
+
+### Evidence Report Fields
+
+| CSV Field           | Description                                                                 |
+|---------------------|-----------------------------------------------------------------------------|
+| Standard            | The compliance standard, e.g., CIS Kubernetes                               |
+| Cluster             | The name of the assessed cluster                                            |
+| Namespace           | The namespace or project where the deployment exists                        |
+| Object Type         | The Kubernetes entity type (e.g., node, cluster, DaemonSet, Deployment)     |
+| Object Name         | The unique name of the object                                               |
+| Control             | The control number as per the compliance standard                           |
+| Control Description | Description of the compliance check                                         |
+| State               | Whether the compliance check passed or failed                               |
+| Evidence            | Explanation for the compliance check result                                 |
+| Assessment Time     | The time and date when the compliance scan was run                          |
+
+## Supported Compliance Standards
+
+| Benchmark                                      | Supported Version                |
+|------------------------------------------------|----------------------------------|
+| CIS Benchmark for Kubernetes                   | CIS Kubernetes v1.5.0            |
+| HIPAA (Health Insurance Portability and Accountability Act) | HIPAA 164                    |
+| NIST (National Institute of Standards and Technology)        | NIST SP 800-190, 800-53 Rev.4 |
+| PCI DSS (Payment Card Industry Data Security Standard)       | PCI DSS 3.2.1                  |
+
