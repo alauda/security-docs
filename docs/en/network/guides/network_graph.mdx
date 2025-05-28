@@ -65,26 +65,6 @@ When viewing a namespace, the side panel includes a search bar and a list of dep
 
 ![Side panel for a namespace example](../../assets/network-graph-20-namespace-mode.png)
 
-## External Connections and CIDR Blocks
-
-The network graph also visualizes connections between managed clusters and external sources. Alauda Container Security automatically discovers and highlights public Classless Inter-Domain Routing (CIDR) address blocks, such as Google Cloud, AWS, Microsoft Azure, Oracle Cloud, and Cloudflare. This helps you identify deployments with active external connections and determine if they are making or receiving unauthorized connections from outside your network.
-
-By default, external connections point to a common **External Entities** icon and different CIDR address blocks. You can hide auto-discovered CIDR blocks by clicking **Manage CIDR blocks** and deselecting **Auto-discovered CIDR blocks**.
-
-Alauda Container Security includes and regularly updates IP ranges for the following cloud providers:
-
-- Google Cloud
-- AWS
-- Microsoft Azure
-- Oracle Cloud
-- Cloudflare
-
-Cloud provider IP ranges are updated every 7 days, and CIDR blocks are updated daily. If you are using offline mode, you can update these ranges by installing new support packages.
-
-The network graph is especially useful for identifying deployments with active connections to entities that do not belong to any known deployment or CIDR block. Some of these connections never leave the cluster and are made within the cluster's private network, represented as connections to or from _internal entities_.
-
-Connections with internal entities are those between a deployment and an IP address within the private address space as defined in [RFC 1918](http://datatracker.ietf.org/doc/html/rfc1918). If the Sensor cannot identify one or both deployments involved, the system analyzes the IP address to determine if the connection is internal or external.
-
 ### Scenarios for Internal Entities
 
 Common scenarios for internal entity connections include:

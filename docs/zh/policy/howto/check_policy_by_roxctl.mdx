@@ -1,13 +1,13 @@
 ---
-title: 使用 roxctl 检查策略合规性
-description: 了解如何在 Alauda 容器安全中使用 roxctl 检查策略合规性。
+title: 使用 roxctl 检查政策合规性
+description: 了解如何在 Alauda 容器安全中使用 roxctl 检查政策合规性。
 weight: 10
-sourceSHA: 5deeb06f31fbec2e0697f32f15490b01cd3834ea6f5134abd0092d3a5fdc440f
+sourceSHA: bbd7733b415430bc1b5747b13a8ed8b8e671b4d11833e48a74585984d5a42952
 ---
 
-# 使用 roxctl 检查策略合规性
+# 使用 roxctl 检查政策合规性
 
-Alauda 容器安全提供了 `roxctl` CLI，帮助您检查部署 YAML 文件和容器镜像的策略合规性。本指南将解释如何使用 `roxctl` 进行这些检查并解读结果。
+Alauda 容器安全提供了 `roxctl` CLI，帮助您检查部署 YAML 文件和容器镜像的政策合规性。本指南将解释如何使用 `roxctl` 进行这些检查以及如何解读结果。
 
 ## 前提条件
 
@@ -33,15 +33,15 @@ roxctl deployment check --file=<yaml_filename> -o csv
 
 下表总结了可用的输出选项：
 
-| 选项                         | 描述                                                                      | 格式          |
-| ---------------------------- | ------------------------------------------------------------------------- | -------------- |
-| `--compact-output`           | 以紧凑格式显示 JSON 输出。                                                | `json`         |
-| `--headers`                  | 指定自定义表头。                                                          | `table`, `csv` |
-| `--no-header`                | 从输出中省略表头行。                                                      | `table`, `csv` |
-| `--row-jsonpath-expressions` | 使用 [GJSON 路径](https://github.com/tidwall/gjson) 选择特定数据。       | `table`, `csv` |
-| `--merge-output`             | 合并具有相同值的表格单元格。                                              | `table`        |
-| `headers-as-comment`         | 将表头行作为注释包含在输出中。                                          | `csv`          |
-| `--junit-suite-name`         | 指定 JUnit 测试套件的名称。                                              | `junit`        |
+| 选项                         | 描述                                                                        | 格式          |
+| ---------------------------- | --------------------------------------------------------------------------- | -------------- |
+| `--compact-output`           | 以紧凑格式显示 JSON 输出。                                                  | `json`         |
+| `--headers`                  | 指定自定义表头。                                                           | `table`, `csv` |
+| `--no-header`                | 从输出中省略表头行。                                                       | `table`, `csv` |
+| `--row-jsonpath-expressions` | 使用 [GJSON 路径](https://github.com/tidwall/gjson) 选择特定数据。         | `table`, `csv` |
+| `--merge-output`             | 合并具有相同值的表格单元格。                                               | `table`        |
+| `headers-as-comment`         | 将表头行作为注释包含在输出中。                                             | `csv`          |
+| `--junit-suite-name`         | 指定 JUnit 测试套件的名称。                                                | `junit`        |
 
 #### 示例：自定义表头和 JSONPath
 
@@ -51,9 +51,9 @@ roxctl deployment check --file=<yaml_filename> \
   --row-jsonpath-expressions="{results..violatedPolicies..name,results..violatedPolicies..severity}"
 ```
 
-## 检查部署的策略合规性
+## 检查部署的政策合规性
 
-要检查部署 YAML 文件中的构建时和部署时策略违规，请运行：
+要检查部署 YAML 文件中的构建时和部署时政策违规，请运行：
 
 ```bash
 roxctl deployment check --file=<yaml_filename> \
@@ -67,7 +67,7 @@ roxctl deployment check --file=<yaml_filename> \
 - `<cluster_name_or_id>`：（可选）上下文的集群名称或 ID。
 - `--verbose`：（可选）显示额外信息，例如 RBAC 权限和网络策略。
 
-> **注意：** 无论 `--verbose` 标志如何，额外的部署信息都包含在 JSON 输出中。
+> **注意：** 无论 `--verbose` 标志如何，JSON 输出中都会包含额外的部署信息。
 
 要强制 Alauda 容器安全重新拉取镜像元数据和扫描结果，请添加 `--force` 选项。
 
@@ -79,9 +79,9 @@ roxctl deployment check --file=<yaml_filename> \
 - YAML 文件中的配置选项（例如，资源限制、权限设置）
 - 镜像方面（例如，组件、漏洞）
 
-## 检查镜像的策略合规性
+## 检查镜像的政策合规性
 
-要检查镜像中的构建时策略违规，请运行：
+要检查镜像中的构建时政策违规，请运行：
 
 ```bash
 roxctl image check --image=<image_name>
@@ -106,5 +106,3 @@ roxctl image scan --image=<image_name>
 > 要检查特定的镜像扫描结果，您的令牌必须对 `Image` 资源具有 `read` 和 `write` 权限。默认的 **持续集成** 系统角色包括这些权限。
 
 ---
-
-有关更多详细信息，请参阅 Alauda 容器安全文档和 API 参考。

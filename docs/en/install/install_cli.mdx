@@ -1,22 +1,18 @@
----
-weight: 10
----
+# Roxctl CLI Installation
 
-# Roxctl CLI Installation 
-
-This guide describes how to install and verify the `roxctl` command-line interface (CLI) for Alauda Container Security. You can install `roxctl` on Linux, macOS, or Windows, or run it directly from a container image.
+This guide provides instructions for installing, configuring, and using the `roxctl` command-line interface (CLI) for Alauda Container Security. The CLI is available for Linux, macOS, Windows, and as a container image.
 
 ---
 
 ## Overview
 
 - **roxctl** is a CLI tool for managing and interacting with Alauda Container Security.
-- Supported platforms: **Linux**, **macOS**, **Windows**, and **container image**.
-- After installation, you can verify the CLI version to ensure it is set up correctly.
+- Supported platforms: **Linux**, **macOS**, **Windows**.
+- After installation, verify the CLI version to ensure correct setup.
 
 ---
 
-## Installation Methods
+## Installation
 
 ### Install on Linux
 
@@ -24,7 +20,7 @@ This guide describes how to install and verify the `roxctl` command-line interfa
 
 **Steps:**
 
-1. Determine the architecture:
+1. Determine your architecture:
     ```bash
     arch="$(uname -m | sed 's/x86_64//')"; arch="${arch:+-$arch}"
     ```
@@ -36,7 +32,7 @@ This guide describes how to install and verify the `roxctl` command-line interfa
     ```bash
     chmod +x roxctl
     ```
-4. Move to a directory in your `PATH` (optional):
+4. (Optional) Move to a directory in your `PATH`:
     ```bash
     echo $PATH
     # mv roxctl /usr/local/bin/
@@ -50,7 +46,7 @@ This guide describes how to install and verify the `roxctl` command-line interfa
 
 **Steps:**
 
-1. Determine the architecture:
+1. Determine your architecture:
     ```bash
     arch="$(uname -m | sed 's/x86_64//')"; arch="${arch:+-$arch}"
     ```
@@ -66,7 +62,7 @@ This guide describes how to install and verify the `roxctl` command-line interfa
     ```bash
     chmod +x roxctl
     ```
-5. Move to a directory in your `PATH` (optional):
+5. (Optional) Move to a directory in your `PATH`:
     ```bash
     echo $PATH
     # mv roxctl /usr/local/bin/
@@ -84,7 +80,7 @@ This guide describes how to install and verify the `roxctl` command-line interfa
     ```bash
     curl -f -O https://mirror.openshift.com/pub/rhacs/assets/4.7.3/bin/Windows/roxctl.exe
     ```
-2. (Optional) Add the directory containing `roxctl.exe` to your system `PATH` for easier access from any command prompt.
+2. (Optional) Add the directory containing `roxctl.exe` to your system `PATH`.
 3. Verify the installation:
     ```bash
     roxctl.exe version
@@ -92,42 +88,106 @@ This guide describes how to install and verify the `roxctl` command-line interfa
 
 ---
 
-### Run from a Container Image
+## Verification
 
-You can run `roxctl` directly from a container image without installing a binary.
+After installation, verify your `roxctl` version:
 
-**Prerequisites:**
-- Generate an authentication token from the Alauda Container Security portal.
-
-**Steps:**
-1. Log in to the registry:
-    ```bash
-    docker login registry.redhat.io
-    ```
-2. Pull the container image:
-    ```bash
-    docker pull registry.redhat.io/advanced-cluster-security/rhacs-roxctl-rhel8:4.7.3
-    ```
-3. Run `roxctl`:
-    ```bash
-    docker run -e ROX_API_TOKEN=$ROX_API_TOKEN \
-      -it registry.redhat.io/advanced-cluster-security/rhacs-roxctl-rhel8:4.7.3 \
-      -e $ROX_CENTRAL_ADDRESS <command>
-    ```
-
-> **Note:** In Alauda Container Security Cloud Service, use the **Central instance address** from the **Instance Details** section of the Alauda Hybrid Cloud Console (e.g., `acs-ABCD12345.acs.rhcloud.com`).
+```bash
+roxctl version
+```
 
 ---
 
-## Verification
+## Configuration
 
-After installation (any method), verify your `roxctl` version:
+### Setting Environment Variables
 
-- For local binary:
+Before using `roxctl`, set the required environment variables:
+
+```bash
+export ROX_ENDPOINT=<central_host:port>
+```
+
+If you use an API token for authentication:
+
+```bash
+export ROX_API_TOKEN=<api_token>
+```
+
+Alternatively, you can use the `--token-file` option:
+
+```bash
+roxctl central debug dump --token-file <token_file>
+```
+
+**Note:**
+- Do not use both `--password` and `--token-file` options at the same time.
+- If both `ROX_API_TOKEN` and `--token-file` are set, the CLI uses the token file.
+- If both `ROX_API_TOKEN` and `--password` are set, the CLI uses the password.
+
+---
+
+### Authentication Methods
+
+You can authenticate using an API token, administrator password (for testing only), or via the `roxctl central login` command.
+
+#### API Token
+
+API tokens are recommended for production and automation scenarios. They provide specific access permissions and are valid for up to one year.
+
+**To generate an API token:**
+
+1. In the Alauda Container Security portal, go to **Platform Configuration > Integrations**.
+2. Under **Authentication Tokens**, click **API Token**.
+3. Click **Generate Token**.
+4. Enter a name and select a role with the required access.
+5. Click **Generate** and securely store the token.
+
+**To use the token:**
+
+```bash
+export ROX_API_TOKEN=<api_token>
+```
+
+#### Interactive Login
+
+For interactive use, you can log in via your authentication provider:
+
+1. Set the endpoint:
     ```bash
-    roxctl version
+    export ROX_ENDPOINT=<central_host:port>
     ```
-- For container image:
+2. Start the login process:
     ```bash
-    docker run -it registry.redhat.io/advanced-cluster-security/rhacs-roxctl-rhel8:4.7.3 version
+    roxctl central login
     ```
+3. Follow the URL provided in the CLI to complete authentication in your browser.
+4. After successful login, token information is displayed and stored locally.
+
+**Configuration storage:**
+- By default: `$HOME/.roxctl/roxctl-config`
+- If `$ROX_CONFIG_DIR` is set: `$ROX_CONFIG_DIR/roxctl-config`
+- If `$XDG_RUNTIME_DIR` is set and `$ROX_CONFIG_DIR` is not: `$XDG_RUNTIME_DIR/roxctl-config`
+
+---
+
+## Using the roxctl CLI
+
+### Check Authentication and User Info
+
+To view your current authentication status and user profile:
+
+```bash
+roxctl central whoami
+```
+
+**Example output:**
+
+```bash
+UserID:        <redacted>
+User name:     <redacted>
+Roles:         Admin, Analyst, Continuous Integration, etc.
+Access:        rw Access, rw Administration, rw Alert, ...
+```
+
+Review the output to ensure your authentication and permissions are correct.
