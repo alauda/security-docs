@@ -2,16 +2,11 @@
 weight: 15
 ---
 
+# Architecture
 
-## Architecture
+## System Architecture
 
----
-
-Alauda Container Security (ACS) for Kubernetes 4.7
-
-### System Architecture
-
-**Abstract**
+### Abstract
 
 This document provides a concise overview of the Alauda Container Security (ACS) architecture for Kubernetes environments.
 
@@ -19,28 +14,26 @@ This document provides a concise overview of the Alauda Container Security (ACS)
 
 ACS adopts a distributed, container-based architecture for scalable, low-impact security on Alauda Container Platform or Kubernetes clusters.
 
-**Key Components**
+### Key Components
 
-- **Central Services**: Deployed on a single cluster, providing management, API, and UI (ACS Portal). Includes Central, Central DB (PostgreSQL 13), and vulnerability scanners (StackRox Scanner and Scanner V4).
-- **Secured Cluster Services**: Deployed on each protected cluster. Includes Sensor (cluster monitoring and policy enforcement), Admission Controller (policy admission), Collector (runtime and network data collection), and optional scanners.
+- **Central Services**: Deployed on a single cluster, providing management, API, and UI (ACS Portal). Includes Central, Central DB (PostgreSQL 13), and the Scanner V4 vulnerability scanner.
+- **Secured Cluster Services**: Deployed on each protected cluster. Includes Sensor (cluster monitoring and policy enforcement), Admission Controller (policy admission), Collector (runtime and network data collection), and optional scanner components.
 
-**Scanner Overview**
+### Scanner Overview
 
-- **StackRox Scanner**: Default scanner (deprecated from 4.6), required for node and platform scanning.
-- **Scanner V4**: Recommended from 4.4, supports language and OS-specific image scanning. Consists of Indexer, Matcher, and DB.
+- **Scanner V4**: The default and only supported scanner since version 4.7. Supports language and OS-specific image scanning. Consists of Indexer, Matcher, and DB.
 
-**Vulnerability Sources**
+### Vulnerability Sources
 
-- StackRox Scanner: Red Hat OVAL, Alpine, Amazon Linux, Debian, Ubuntu, NVD, and custom/manual sources.
 - Scanner V4: Red Hat VEX, Red Hat CVE Map, OSV, NVD, and additional OS sources.
 
-**Deployment Notes**
+### Deployment Notes
 
-- Operator installs a lightweight Scanner on each cluster for integrated registry scanning.
-- Helm installs require `scanner.disable=false` to enable the lightweight Scanner.
+- Operator installs a lightweight Scanner V4 on each cluster for integrated registry scanning.
+- Helm installs require `scannerV4.disable=false` to enable the lightweight Scanner V4.
 - If Central and secured cluster services share a namespace, only Central deploys Scanner V4 components.
 
-**External Integrations**
+### External Integrations
 
 - Third-party systems (CI/CD, SIEM, logging, email)
 - roxctl CLI
@@ -48,9 +41,9 @@ ACS adopts a distributed, container-based architecture for scalable, low-impact 
 - definitions.stackrox.io (vulnerability feeds)
 - collector-modules.stackrox.io (kernel modules)
 
-### Component Interactions
+## Component Interactions
 
-#### ACS with Scanner V4
+### ACS with Scanner V4
 
 | Component         | Direction | Component             | Description                                      |
 |-------------------|-----------|-----------------------|--------------------------------------------------|
@@ -66,22 +59,7 @@ ACS adopts a distributed, container-based architecture for scalable, low-impact 
 | Admission controller | ⮂      | Sensor                | Policy enforcement and scan requests             |
 | Admission controller | →      | Central               | Direct communication if Sensor unavailable       |
 
-#### ACS with StackRox Scanner
-
-| Component         | Direction | Interacts with            | Description                                      |
-|-------------------|-----------|--------------------------|--------------------------------------------------|
-| Central           | ⮂         | Scanner                  | Image scan requests and CVE DB updates            |
-| Central           | →         | definitions.stackrox.io   | Vulnerability data aggregation                   |
-| Central           | →         | collector-modules.stackrox.io | Kernel module downloads                     |
-| Central           | →         | Image registries          | Image metadata queries                           |
-| Scanner           | →         | Image registries          | Image pulls for scanning                         |
-| Sensor            | ⮂         | Central                   | Configuration and event sync                     |
-| Sensor            | ⮂         | Scanner                   | Data requests and registry access                |
-| Collector         | ⮂         | Sensor                    | Runtime/network data                             |
-| Admission controller | ⮂      | Sensor                    | Policy enforcement and scan requests             |
-| Admission controller | →      | Central                   | Direct communication if Sensor unavailable       |
-
-### Default Ports and Protocols
+## Default Ports and Protocols
 
 | Connection                        | Type         | Port  | Notes                                           |
 |------------------------------------|--------------|-------|-------------------------------------------------|
@@ -91,7 +69,6 @@ ACS adopts a distributed, container-based architecture for scalable, low-impact 
 | Central ↔ Vulnerability feeds      | HTTPS        | 443   | definitions.stackrox.io                          |
 | Collector → Sensor                 | gRPC         | 443   |                                                 |
 | Collector (Compliance) → Sensor    | gRPC         | 8444  | If node scanning enabled                         |
-| Scanner → Scanner-DB               | TCP          | 5432  |                                                 |
 | Scanner V4 Indexer → Central       | HTTPS        | 443   |                                                 |
 | Scanner V4 Indexer/Matcher → DB    | TCP          | 5432  |                                                 |
 | Sensor ↔ Admission Controller      | gRPC         | 443   | Bidirectional                                   |

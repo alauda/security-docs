@@ -82,7 +82,7 @@ To add more criteria, use the **OR** option to combine multiple rules.
 
 Alauda Container Security supports RE2 syntax for regular expressions. Here are some common examples:
 
-### 1. Match Production Clusters
+### Match Production Clusters
 
 To match clusters with names starting with `prod`:
 
@@ -90,7 +90,7 @@ To match clusters with names starting with `prod`:
 ^prod.*
 ```
 
-### 2. Match Non-Production Clusters
+### Match Non-Production Clusters
 
 To match clusters where `prod` does not appear in the name (RE2 does not support negative lookahead):
 
@@ -98,7 +98,7 @@ To match clusters where `prod` does not appear in the name (RE2 does not support
 ^[^p]*(p([^r]|$|r([^o]|$|o([^d]|$))))*[^p]*$
 ```
 
-### 3. Match All Entities
+### Match All Entities
 
 To match all deployments, namespaces, and clusters:
 
@@ -106,7 +106,7 @@ To match all deployments, namespaces, and clusters:
 - **Namespaces with names matching**: `.*`
 - **Clusters with names matching**: `.*`
 
-### 4. Match Specific Deployments and Labels
+### Match Specific Deployments and Labels
 
 To include the `reporting` deployment, any deployment ending with `-db`, and namespaces labeled `kubernetes.io/metadata.name=medical`:
 
