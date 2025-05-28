@@ -6,23 +6,23 @@ weight: 1
 
 ## What is Alauda Container Security?
 
-Alauda Container Security (ACS) is a comprehensive security solution designed for Kubernetes and containerized environments. It provides centralized management, automated vulnerability scanning, policy enforcement, and compliance checks to help organizations secure their container infrastructure across multiple clusters.
+Alauda Container Security is a comprehensive security solution designed for Kubernetes and containerized environments. It provides centralized management, automated vulnerability scanning, policy enforcement, and compliance checks to help organizations secure their container infrastructure across multiple clusters.
 
-ACS adopts a distributed, container-based architecture, consisting of Central Services (for management, API, and UI) and Secured Cluster Services (for monitoring, policy enforcement, and data collection). It integrates with CI/CD pipelines, SIEM, logging systems, and supports the built-in Scanner V4 vulnerability scanner.
+Alauda Container Security adopts a distributed, container-based architecture, consisting of Central Services (for management, API, and UI) and Secured Cluster Services (for monitoring, policy enforcement, and data collection). It integrates with CI/CD pipelines, SIEM, logging systems, and supports the built-in Scanner V4 vulnerability scanner.
 
-## What Problems Does ACS Solve?
+## What Problems Does Alauda Container Security Solve?
 
-- **Vulnerability Management:** ACS continuously scans container images and running workloads for known vulnerabilities, helping prevent exploitation that could lead to denial of service, remote code execution, or unauthorized data access.
-- **Policy Enforcement:** By defining and enforcing security policies, ACS helps prevent high-risk deployments and enables timely response to runtime security incidents.
-- **Compliance Automation:** ACS automates compliance checks against industry standards and regulatory frameworks such as CIS, PCI-DSS, HIPAA, and NIST, providing clear visibility into compliance status and helping organizations address gaps efficiently.
+- **Vulnerability Management:** Alauda Container Security continuously scans container images and running workloads for known vulnerabilities, helping prevent exploitation that could lead to denial of service, remote code execution, or unauthorized data access.
+- **Policy Enforcement:** By defining and enforcing security policies, Alauda Container Security helps prevent high-risk deployments and enables timely response to runtime security incidents.
+- **Compliance Automation:** Alauda Container Security automates compliance checks against industry standards and regulatory frameworks such as CIS, PCI-DSS, HIPAA, and NIST, providing clear visibility into compliance status and helping organizations address gaps efficiently.
 - **Centralized Visibility:** It offers a unified portal for monitoring security events, compliance status, and policy violations across all protected clusters.
-- **Integration:** ACS integrates with CI/CD pipelines, image registries, and third-party tools to streamline security throughout the container lifecycle.
+- **Integration:** Alauda Container Security integrates with CI/CD pipelines, image registries, and third-party tools to streamline security throughout the container lifecycle.
 
 ## Limitations
 
 - **Scanner Compatibility:** Scanner V4 is the default and only supported vulnerability scanner.
 - **Deployment Constraints:** Central Services must be deployed on a single cluster, and certain scanner components may only be deployed in specific namespaces or configurations.
-- **Kubernetes Focus:** ACS is primarily designed for Kubernetes and Alauda Container Platform environments; support for other orchestration platforms may be limited.
+- **Kubernetes Focus:** Alauda Container Security is primarily designed for Kubernetes and Alauda Container Platform environments; support for other orchestration platforms may be limited.
 - **External Dependencies:** Vulnerability data relies on external feeds (e.g., definitions.stackrox.io), and some integrations require additional configuration.
 - **Resource Requirements:** Running multiple components (Central, Sensor, Collector, Scanner) may require adequate cluster resources and network configuration.
 

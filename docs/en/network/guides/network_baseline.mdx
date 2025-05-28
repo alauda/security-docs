@@ -4,18 +4,18 @@ weight: 30
 
 # Network Baseline Management in the Network Graph
 
-Alauda Container Security (ACS) helps you minimize network risks by using network baselining. This proactive approach secures your infrastructure by learning normal network flows and identifying any deviations as anomalies.
+Alauda Container Security  helps you minimize network risks by using network baselining. This proactive approach secures your infrastructure by learning normal network flows and identifying any deviations as anomalies.
 
 ## How Network Baselining Works
 
-When you first install ACS, there is no default network baseline. As ACS observes network activity, it automatically adds discovered network flows to the baseline:
+When you first install Alauda Container Security , there is no default network baseline. As Alauda Container Security  observes network activity, it automatically adds discovered network flows to the baseline:
 
 - New network flows are added to the baseline during the observation phase.
 - These flows are considered normal and do not trigger any alerts or violations.
 
 After the observation phase:
 
-- ACS stops adding new flows to the baseline.
+- Alauda Container Security  stops adding new flows to the baseline.
 - Any new network flow not in the baseline is marked as anomalous, but does not trigger violations by default.
 
 ## Viewing and Managing Network Baselines
@@ -45,7 +45,7 @@ You can export network baselines as YAML files for further use.
 
 **Steps:**
 
-1. In the ACS portal, go to **Network Graph**.
+1. In the Alauda Container Security  portal, go to **Network Graph**.
 2. Select the desired namespaces and deployments.
 3. In the deployment's information panel, open the **Baseline** tab.
 4. (Optional) Filter flows or exclude ports/protocols.
@@ -53,7 +53,7 @@ You can export network baselines as YAML files for further use.
 
 ## Configuring Baseline Observation Period
 
-You can adjust how long ACS observes network flows before finalizing the baseline using environment variables.
+You can adjust how long Alauda Container Security  observes network flows before finalizing the baseline using environment variables.
 
 ### Setting Environment Variables
 
@@ -69,7 +69,7 @@ kubectl -n stackrox set env deploy/central ROX_BASELINE_GENERATION_DURATION=<val
 
 ## Enabling Alerts for Anomalous Network Flows
 
-ACS can be configured to trigger violations for anomalous network flows (flows not in the baseline).
+Alauda Container Security  can be configured to trigger violations for anomalous network flows (flows not in the baseline).
 
 **Steps:**
 
@@ -79,13 +79,3 @@ ACS can be configured to trigger violations for anomalous network flows (flows n
 
 - When enabled, anomalous flows will trigger violations.
 - Toggle off to stop receiving such alerts.
-
----
-
-**Note:**  
-- All references to "Red Hat Advanced Cluster Security" have been replaced with "Alauda Container Security".
-- All references to "RHACS" have been replaced with "ACS".
-- All references to "OpenShift Container Platform" have been replaced with "Alauda Container Platform".
-- No Legal Notice section was present in the original document.
-- Table formatting and MDX syntax have been reviewed and corrected.
-- Document structure and headings have been optimized for clarity and readability.

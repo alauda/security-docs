@@ -8,15 +8,15 @@ weight: 15
 
 ### Abstract
 
-This document provides a concise overview of the Alauda Container Security (ACS) architecture for Kubernetes environments.
+This document provides a concise overview of the Alauda Container Security architecture for Kubernetes environments.
 
 ---
 
-ACS adopts a distributed, container-based architecture for scalable, low-impact security on Alauda Container Platform or Kubernetes clusters.
+Alauda Container Security adopts a distributed, container-based architecture for scalable, low-impact security on Alauda Container Platform or Kubernetes clusters.
 
 ### Key Components
 
-- **Central Services**: Deployed on a single cluster, providing management, API, and UI (ACS Portal). Includes Central, Central DB (PostgreSQL 13), and the Scanner V4 vulnerability scanner.
+- **Central Services**: Deployed on a single cluster, providing management, API, and UI (Alauda Container Security Portal). Includes Central, Central DB (PostgreSQL 13), and the Scanner V4 vulnerability scanner.
 - **Secured Cluster Services**: Deployed on each protected cluster. Includes Sensor (cluster monitoring and policy enforcement), Admission Controller (policy admission), Collector (runtime and network data collection), and optional scanner components.
 
 ### Scanner Overview
@@ -43,7 +43,7 @@ ACS adopts a distributed, container-based architecture for scalable, low-impact 
 
 ## Component Interactions
 
-### ACS with Scanner V4
+### Alauda Container Security with Scanner V4
 
 | Component         | Direction | Component             | Description                                      |
 |-------------------|-----------|-----------------------|--------------------------------------------------|
@@ -59,7 +59,7 @@ ACS adopts a distributed, container-based architecture for scalable, low-impact 
 | Admission controller | ⮂      | Sensor                | Policy enforcement and scan requests             |
 | Admission controller | →      | Central               | Direct communication if Sensor unavailable       |
 
-## Default Ports and Protocols
+### Default Ports and Protocols
 
 | Connection                        | Type         | Port  | Notes                                           |
 |------------------------------------|--------------|-------|-------------------------------------------------|
