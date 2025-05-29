@@ -1,0 +1,73 @@
+---
+title: Use Policy to Verify Image Signature in Alauda Container Security
+description: Learn how to use policies to verify image signatures in Alauda Container Security.
+weight: 10
+---
+
+# Use Policy to Verify Image Signature
+
+Alauda Container Security allows you to ensure the integrity of container images in your clusters by verifying image signatures against pre-configured keys. You can create policies to block unsigned images or images without a verified signature, and enforce these policies using the admission controller to prevent unauthorized deployments.
+
+## Supported Signature Verification Methods
+
+Alauda Container Security supports the following signature verification methods:
+
+- Cosign public keys
+- Cosign certificates
+
+> **Note:**
+> - Only Cosign signatures and Cosign Public Keys/Certificates verification are supported. For more information, see [Cosign overview](https://docs.sigstore.dev/cosign/overview).
+> - Communication with the transparency log [Rekor](https://docs.sigstore.dev/logging/overview/) is not supported.
+> - At least one Cosign verification method must be configured for signature verification.
+> - For all deployed and watched images:
+>   - Signatures are fetched and verified every 4 hours.
+>   - Signatures are verified whenever you update signature integration verification data.
+
+## Prerequisites
+
+- You must have a PEM-encoded Cosign public key or the required certificate identity and issuer. For more details, see [Cosign overview](https://docs.sigstore.dev/cosign/overview) and [Cosign certificate verification](https://docs.sigstore.dev/verifying/verify/#verify-image-with-user-provided-trusted-chain).
+
+## Configure Signature Integration
+
+### Using Cosign Public Keys
+
+1. In the Alauda Container Security portal, go to **Platform Configuration** > **Integrations**.
+2. Scroll to **Signature Integrations** and click **Signature**.
+3. Click **New integration**.
+4. Enter a name for the integration.
+5. Click **Cosign public Keys** and then **Add a new public key**.
+6. Enter the public key name and the PEM-encoded public key value.
+7. (Optional) Add more public keys as needed.
+8. Click **Save**.
+
+### Using Cosign Certificates
+
+1. In the Alauda Container Security portal, go to **Platform Configuration** > **Integrations**.
+2. Scroll to **Signature Integrations** and click **Signature**.
+3. Click **New integration**.
+4. Enter a name for the integration.
+5. Click **Cosign certificates** and then **Add a new certificate verification**.
+6. Enter the **Certificate OIDC Issuer** (regular expressions in [RE2 Syntax](https://github.com/google/re2/wiki/Syntax) are supported).
+7. Enter the **Certificate identity** (regular expressions in [RE2 Syntax](https://github.com/google/re2/wiki/Syntax) are supported).
+8. (Optional) Enter the **Certificate Chain PEM encoded** to verify certificates. If not provided, certificates are verified against the [Fulcio](https://docs.sigstore.dev/certificate_authority/overview/) root.
+9. (Optional) Enter the **Certificate PEM encoded** to verify the signature.
+10. (Optional) Add more certificate verifications as needed.
+11. Click **Save**.
+
+## Create and Enforce Image Signature Verification Policies
+
+### Prerequisites
+
+- At least one Cosign public key must be configured in a signature integration.
+
+### Procedure
+
+1. When creating or editing a policy, drag the **Not verified by trusted image signers** criteria into the policy field under **Policy criteria**.
+2. Click **Select**.
+3. Choose the trusted image signers from the list and click **Save**.
+
+To prevent the use of unsigned images, enable the **Contact Image Scanners** feature in your cluster configuration. Then, when creating a security policy to enforce signature verification, select the **Inform and enforce** option.
+
+---
+
+For more information, refer to the official [Cosign documentation](https://docs.sigstore.dev/cosign/overview/).

@@ -1,0 +1,226 @@
+---
+title: View Security Policy
+description: Learn how to view and manage security policies in Alauda Container Security.
+weight: 10
+---
+
+# Viewing and Managing Security Policies
+
+Alauda Container Security offers both default and customizable security policies to help you prevent high-risk deployments and respond to runtime incidents in your container environment.
+
+---
+
+## Policy Categories
+
+Policies are organized by type and function for easier management and search. Default categories include:
+
+- Anomalous Activity
+- Cryptocurrency Mining
+- DevOps Best Practices
+- Docker CIS
+- Kubernetes
+- Kubernetes Events
+- Network Tools
+- Package Management
+- Privileges
+- Security Best Practices
+- Supply Chain Security
+- System Modification
+- Vulnerability Management
+- Zero Trust
+
+**To manage categories:**
+1. Go to **Platform Configuration** > **Policy Management**.
+2. Click the **Policy Categories** tab.
+3. Create, view, or manage categories as needed.
+
+---
+
+## Policy Lifecycle Stages
+
+When creating or editing a policy, you can specify one or more lifecycle stages:
+
+- **Build**: Checks image fields (e.g. CVEs, Dockerfile instructions).
+- **Deploy**: Includes build-time checks and cluster configuration (e.g. privileged mode).
+- **Runtime**: Adds process execution and runtime event checks.
+
+---
+
+## Policy Criteria and Attributes
+
+Policies are triggered by specific criteria (attributes). The following tables summarize common attributes and their descriptions. For details on allowed values, operators, and applicable phases, see the notes below each table.
+
+### Image Registry and Contents
+
+| Attribute         | Description                        | Allowed Values |
+|-------------------|------------------------------------|---------------|
+| Image Registry    | Name of the image registry         | String        |
+| Image Name        | Full image name in registry        | String        |
+| Image Tag         | Image identifier                   | String        |
+| Image Signature   | Signature integration for image    | Integration ID|
+| Fixable           | Image has fixable CVE              | Boolean       |
+| Days Since CVE    | Days since CVE discovered          | Integer       |
+| Image Age         | Days since image creation          | Integer       |
+| Image Scan Age    | Days since last image scan         | Integer       |
+| Image User        | USER directive in Dockerfile       | String        |
+| Dockerfile Line   | Dockerfile instruction/argument    | LABEL/RUN/etc.|
+| Unscanned Image   | Image scan status                  | Boolean       |
+| CVSS              | Vulnerability score                | Number        |
+| Severity          | Vulnerability severity             | Level         |
+| Fixed By          | Version that fixes vulnerability   | String        |
+| CVE               | Specific CVE number                | String        |
+| Image Component   | Software component in image        | key=value     |
+| Image OS          | Base OS of the image               | String        |
+| Required Image Label | Required Docker image label     | key=value     |
+| Disallowed Image Label | Disallowed Docker image label | key=value     |
+
+**Operators:** Regex, NOT, AND, OR, OR only, AND only, None, etc.  
+**Phases:** Build, Deploy, Runtime
+
+---
+
+### Container Configuration
+
+| Attribute                | Description                        | Allowed Values |
+|--------------------------|------------------------------------|---------------|
+| Environment Variable     | Check environment variables         | RAW=key=value |
+| Container CPU Request    | CPU cores requested                 | Number        |
+| Container CPU Limit      | CPU cores limit                     | Number        |
+| Container Memory Request | Memory requested (MB)               | Number        |
+| Container Memory Limit   | Memory limit (MB)                   | Number        |
+| Privileged Container     | Privileged mode enabled             | Boolean       |
+| Read-Only Root Filesystem| Root filesystem is read-only        | Boolean       |
+| Seccomp Profile Type     | Seccomp profile type                | UNCONFINED/RUNTIME_DEFAULT/LOCALHOST |
+| Allow Privilege Escalation| Privilege escalation allowed       | Boolean       |
+| Drop Capabilities        | Linux capabilities to drop           | List          |
+| Add Capabilities         | Linux capabilities not allowed       | List          |
+| Container Name           | Name of the container                | String        |
+| AppArmor Profile         | AppArmor profile used                | String        |
+| Liveness Probe           | Liveness probe defined               | Boolean       |
+| Readiness Probe          | Readiness probe defined              | Boolean       |
+
+**Operators:** Regex, AND, OR, None, etc.  
+**Phases:** Deploy, Runtime
+
+---
+
+### Deployment Metadata
+
+| Attribute                | Description                        | Allowed Values |
+|--------------------------|------------------------------------|---------------|
+| Disallowed Annotation    | Annotation not allowed             | key=value     |
+| Required Label           | Required Kubernetes label          | key=value     |
+| Required Annotation      | Required Kubernetes annotation     | key=value     |
+| Runtime Class            | RuntimeClass of the deployment     | String        |
+| Host Network             | Host network enabled               | Boolean       |
+| Host PID                 | Host PID namespace shared          | Boolean       |
+| Host IPC                 | Host IPC namespace shared          | Boolean       |
+| Namespace                | Namespace of the deployment        | String        |
+| Replicas                 | Number of deployment replicas      | Number        |
+
+**Operators:** Regex, AND, OR, NOT, None, etc.  
+**Phases:** Deploy, Runtime
+
+---
+
+### Storage and Networking
+
+| Attribute                | Description                        | Allowed Values |
+|--------------------------|------------------------------------|---------------|
+| Volume Name              | Name of the storage                | String        |
+| Volume Source            | Volume provision type              | String        |
+| Volume Destination       | Path where volume is mounted       | String        |
+| Volume Type              | Type of volume                     | String        |
+| Writable Mounted Volume  | Volume mounted as writable         | Boolean       |
+| Mount Propagation        | Mount propagation mode             | NONE/HOSTTOCONTAINER/BIDIRECTIONAL |
+| Writable Host Mount      | Host path mounted writable         | Boolean       |
+| Exposed Port Protocol    | Protocol used by exposed port      | String        |
+| Exposed Port             | Port numbers exposed               | Number        |
+| Exposed Node Port        | Node port exposed externally       | Number        |
+| Port Exposure Method     | Service exposure method            | UNSET/EXTERNAL/NODE/HOST/INTERNAL/ROUTE |
+| Unexpected Network Flow  | Detected network traffic not in baseline | Boolean  |
+| Has Ingress Network Policy| Presence of ingress network policy | Boolean      |
+| Has Egress Network Policy | Presence of egress network policy  | Boolean      |
+
+**Operators:** Regex, AND, OR, NOT, None, etc.  
+**Phases:** Deploy, Runtime, Runtime (Network)
+
+---
+
+### Process Activity (Runtime Only)
+
+| Attribute                | Description                        | Allowed Values |
+|--------------------------|------------------------------------|---------------|
+| Process Name             | Name of executed process           | String        |
+| Process Ancestor         | Parent process name                | String        |
+| Process Arguments        | Command arguments                  | String        |
+| Process UID              | Unix user ID                       | Integer       |
+| Unexpected Process Executed | Not in locked baseline           | Boolean       |
+
+**Operators:** Regex, AND, OR, NOT, None, etc.  
+**Phases:** Runtime (Process)
+
+---
+
+### Kubernetes Access and Events
+
+| Attribute                | Description                        | Allowed Values |
+|--------------------------|------------------------------------|---------------|
+| Service Account          | Name of the service account        | String        |
+| Automount Service Account Token | Auto-mount service account token | Boolean   |
+| Minimum RBAC Permissions | Minimum RBAC permission level      | DEFAULT/ELEVATED_IN_NAMESPACE/ELEVATED_CLUSTER_WIDE/CLUSTER_ADMIN |
+| Kubernetes Action        | Name of Kubernetes action          | PODS_EXEC/PODS_PORTFORWARD |
+| Kubernetes User Name     | Name of user accessing resource    | String        |
+| Kubernetes User Groups   | User group name                    | String        |
+| Kubernetes Resource Type | Type of accessed resource          | String        |
+| Kubernetes API Verb      | API verb used                      | CREATE/DELETE/GET/PATCH/UPDATE |
+| Kubernetes Resource Name | Name of accessed resource          | String        |
+| User Agent               | User agent used                    | String        |
+| Source IP Address        | Source IP address                  | IPv4/IPv6     |
+| Is Impersonated User     | Request made by impersonated user  | Boolean       |
+
+**Operators:** Regex, AND, OR, NOT, None, etc.  
+**Phases:** Deploy, Runtime, Runtime (K8s Events), Runtime (Audit Log)
+
+---
+
+## Policy Enforcement
+
+Alauda Container Security supports multiple enforcement types depending on the policy phase:
+
+- **Build-time enforcement**: Fails CI builds if images violate policy. The API returns a non-zero exit code, which can be used to fail the build pipeline.
+- **Deploy-time enforcement**: Integrates with Kubernetes admission controllers and Alauda Container Platform admission plugins to block noncompliant workloads. Enforcement can be:
+  - **Hard enforcement**: Admission controller blocks creation or update of violating deployments.
+  - **Soft enforcement**: Sensor scales violating deployments to zero replicas, preventing pods from being scheduled.
+
+> **Note:** By default, administrative namespaces such as `stackrox`, `kube-system`, and `istio-system` are excluded from enforcement blocking. Requests from service accounts in system namespaces are also bypassed.
+
+To apply policy changes to existing deployments, use **Policy Management** > **Reassess All** to trigger enforcement on all deployments.
+
+---
+
+## Exporting and Importing Policies
+
+You can share security policies between different Central instances by exporting and importing policies as JSON files.
+
+### Exporting a Policy
+
+1. Go to **Platform Configuration** > **Policy Management**.
+2. Select the policy to export.
+3. Click **Actions** > **Export policy to JSON**.
+
+### Importing a Policy
+
+1. Go to **Platform Configuration** > **Policy Management**.
+2. Click **Import Policy**.
+3. Upload the JSON file and click **Begin Import**.
+
+**Import Handling:**  
+- If the imported policy UID and name are unique, a new policy is created.
+- If the UID matches but the name differs, you can keep both (new UID) or replace the existing policy.
+- If the name matches but the UID differs, you can keep both (rename) or replace the existing policy.
+- If both UID and name match, Alauda Container Security checks if the criteria match. If so, the existing policy is kept; otherwise, you can keep both (rename) or replace.
+
+> **Important:**  
+> - When importing into the same Central instance, all exported fields are used.  
+> - When importing into a different Central instance, certain fields (e.g. cluster scopes exclusions notifications) are omitted and cannot be migrated.

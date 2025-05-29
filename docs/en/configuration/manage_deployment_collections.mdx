@@ -1,0 +1,136 @@
+---
+title: Managing Deployment Collections
+description: Learn how to manage deployment collections in Alauda Container Security.
+weight: 5
+---
+
+# Managing Deployment Collections
+
+Alauda Container Security allows you to define and manage deployment collections, which are logical groupings of resources based on matching patterns. Collections help you organize your infrastructure and streamline configuration management.
+
+## Overview
+
+Collections in Alauda Container Security are user-defined, named references that group deployments, namespaces, or clusters using selection rules. These rules can be based on exact matches or regular expressions (RE2 syntax is supported). Collections can also be nested, allowing you to build complex hierarchies.
+
+**Key Points:**
+- Collections are currently available only for deployments.
+- Collections are used with vulnerability reporting.
+- Deployment collections require the PostgreSQL database backend.
+
+## Prerequisites
+
+To use collections, your account must have the following permissions:
+- **WorkflowAdministration**: Read access to view collections; Write access to add, modify, or delete collections.
+- **Deployment**: Read or Read/Write access to view how rules match deployments.
+
+These permissions are included in the `Admin` system role. For more details, see the RBAC management documentation.
+
+## Benefits of Collections
+
+Collections provide a flexible way to:
+- Group resources owned by specific teams.
+- Apply different policies for development and production environments.
+- Manage distributed applications spanning multiple namespaces or clusters.
+- Organize production or test environments efficiently.
+
+## Accessing and Managing Collections
+
+You can manage collections through the Alauda Container Security portal:
+
+1. Navigate to **Platform Configuration > Collections**.
+2. The page displays a list of existing collections. You can:
+   - Search collections by name.
+   - View collection details in read-only mode.
+   - Edit, clone, or delete collections (collections in use cannot be deleted).
+   - Create new deployment collections.
+
+## Creating a Deployment Collection
+
+### Steps
+
+1. Click **Create collection**.
+2. Enter a name and description.
+3. In **Collection rules**, do at least one of the following:
+   - Define selection rules (see below).
+   - Attach existing collections.
+4. Use the live preview panel to see matching results.
+5. Click **Save**.
+
+> **Note:** At least one rule or attached collection is required.
+
+### Defining Collection Rules
+
+You can configure rules to select resources for the collection:
+
+- **Deployments**
+  - **No deployments specified**: Ignore deployment criteria.
+  - **Deployments with names matching**:
+    - **Exact value**: Enter the deployment name.
+    - **Regex value**: Use a regular expression (RE2 syntax) for pattern matching. For example, `.*` matches all deployments.
+  - **Deployments with labels matching exactly**: Enter a valid Kubernetes label in the format `key=value`.
+
+- **Namespaces**
+  - **Namespaces with names matching**: Use exact or regex values.
+  - **Namespaces with labels matching exactly**: Enter a label in `key=value` format.
+
+- **Clusters**
+  - **Clusters with names matching**: Use exact or regex values.
+
+To add more criteria, use the **OR** option to combine multiple rules.
+
+## Regular Expression Examples
+
+Alauda Container Security supports RE2 syntax for regular expressions. Here are some common examples:
+
+### Match Production Clusters
+
+To match clusters with names starting with `prod`:
+
+```
+^prod.*
+```
+
+### Match Non-Production Clusters
+
+To match clusters where `prod` does not appear in the name (RE2 does not support negative lookahead):
+
+```
+^[^p]*(p([^r]|$|r([^o]|$|o([^d]|$))))*[^p]*$
+```
+
+### Match All Entities
+
+To match all deployments, namespaces, and clusters:
+
+- **Deployments with names matching**: `.*`
+- **Namespaces with names matching**: `.*`
+- **Clusters with names matching**: `.*`
+
+### Match Specific Deployments and Labels
+
+To include the `reporting` deployment, any deployment ending with `-db`, and namespaces labeled `kubernetes.io/metadata.name=medical`:
+
+- **Deployments with names matching**: `reporting`
+- **OR**: Regex value `.*-db`
+- **Namespaces with labels matching exactly**: `kubernetes.io/metadata.name=medical`
+
+## Attaching Collections
+
+You can build hierarchical collections by attaching existing collections:
+
+1. Filter collections by name or select from the list.
+2. Click **+Attach** to add the selected collection.
+3. Attached collections extend the parent collection using an OR relationship.
+
+## Migration from Access Scopes
+
+When migrating from `rocksdb` to PostgreSQL, existing access scopes used in vulnerability reporting are converted to collections. The migration process creates embedded and root collections to replicate the original selection logic.
+
+- **Embedded collections**: Mimic the original access scope logic.
+- **Root collection**: Attaches embedded collections and is used in report configurations.
+
+If a scope cannot be migrated (e.g., uses unsupported label selector operators), a log message is generated. Only the `IN` operator is supported for label selectors.
+
+## API Usage
+
+Collections can also be managed via the `CollectionService` API. For example, `CollectionService_DryRunCollection` returns results similar to the live preview in the portal. Refer to the API reference in the portal for more details.

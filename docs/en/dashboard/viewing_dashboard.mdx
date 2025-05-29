@@ -1,0 +1,63 @@
+---
+weight: 13
+---
+
+# Viewing Dashboard
+
+## Introduction
+
+The Alauda Container Security  Dashboard provides a centralized view of your cluster's security and compliance posture. This document introduces the Dashboard's main components and explains how to use its features to monitor and manage your environment effectively.
+
+## Status Bar
+
+The Status Bar offers a quick overview of key resources in your environment and provides direct navigation to detailed resource lists. The counters reflect your current access scope, as defined by your user roles.
+
+| Counter     | Destination                                                        |
+|-------------|--------------------------------------------------------------------|
+| Clusters    | Platform Configuration Clusters                                    |
+| Nodes       | Configuration Management Application & Infrastructure Nodes        |
+| Violations  | Violations main menu                                               |
+| Deployments | Configuration Management Application & Infrastructure Deployments  |
+| Images      | Vulnerability Management Dashboard Images                          |
+| Secrets     | Configuration Management Application & Infrastructure Secrets      |
+
+*Use the Status Bar to quickly access detailed lists of clusters, nodes, violations, deployments, images, and secrets.*
+
+A top-level filter applies to all widgets. You can select clusters and namespaces to narrow the data shown. If no selection is made, the view defaults to **All**. Changes to the filter are instantly reflected in all widgets, except the Status Bar.
+
+Widgets are customizable, allowing you to sort, filter, and adjust their output. Customization options include:
+
+- An **Options** menu for widget-specific settings.
+- A **dynamic axis legend** to filter data by hiding or showing axis categories. For example, in the **Policy Violations by Category** widget, you can include or exclude violations by severity.
+
+> **Note:**  
+> Widget customization settings are temporary and reset to defaults when you leave the Dashboard.
+
+## Dashboard Widgets
+
+The Dashboard provides several actionable widgets to help you monitor and manage security risks and compliance. Each widget is described below with its main function and usage tips.
+
+### Violations by Severity
+This widget helps you quickly identify the most critical policy violations in your environment. It displays the distribution of violations by severity for the filtered scope. Click a **severity level** to navigate to the **Violations** page, filtered accordingly. The widget also lists the three most recent **Critical** policy violations within the selected scope. Click a violation to open its detail page and take action.
+
+### Top Vulnerable Images
+This widget highlights images with the highest risk, allowing you to prioritize remediation. It shows the top six vulnerable images in the filtered scope, sorted by risk priority, along with their critical and important CVEs. Click an image name to view its findings in **Vulnerability Management**. Use the **Options** menu to focus on fixable CVEs or active images.
+
+> **Note:**  
+> When clusters or namespaces are selected in the Dashboard filter, only active images or those used by deployments in the filtered scope are shown.
+
+### Top Risky Deployments
+This widget identifies the deployments most at risk in your environment, helping you focus on remediation. It shows the top deployments at risk, including their cluster, namespace, and risk score. Click a deployment to view its risk details, including policy violations and vulnerabilities, and take corrective action as needed.
+
+### Image Age Distribution
+This widget helps you assess the risk posed by older images, which may contain known vulnerabilities. You can use default or custom age ranges, and view both active and inactive images. Click an age group to see those images in the **Vulnerability Management** **Images** page. Use this widget to prioritize updating or removing outdated images.
+
+### Policy Violations by Category
+This widget provides insights into policy compliance challenges by showing the five most violated policy categories. Use the **Options** menu to filter by deploy or runtime violations, and change sorting modes (by highest severity or total violations). Some categories, like "Docker CIS," may have no critical policies, affecting the view depending on the sorting mode. Click a severity level at the bottom of the graph to include or exclude it. This may change the top five categories displayed. Data is filtered by the Dashboard filter.
+
+### Compliance by Standard
+This widget helps you track compliance with key security benchmarks. It lists the top or bottom six compliance benchmarks, depending on sort order. Use **Options** to sort by coverage percentage. Click a benchmark label or graph to go to the **Compliance Controls** page, filtered by scope and benchmark. Use this widget to focus your compliance efforts where they are needed most.
+
+---
+
+*By leveraging the Status Bar and Dashboard Widgets, you can efficiently monitor, investigate, and improve the security and compliance posture of your Kubernetes environment.*

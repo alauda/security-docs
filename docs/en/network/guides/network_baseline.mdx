@@ -1,0 +1,81 @@
+---
+weight: 30
+---
+
+# Network Baseline Management in the Network Graph
+
+Alauda Container Security  helps you minimize network risks by using network baselining. This proactive approach secures your infrastructure by learning normal network flows and identifying any deviations as anomalies.
+
+## How Network Baselining Works
+
+When you first install Alauda Container Security , there is no default network baseline. As Alauda Container Security  observes network activity, it automatically adds discovered network flows to the baseline:
+
+- New network flows are added to the baseline during the observation phase.
+- These flows are considered normal and do not trigger any alerts or violations.
+
+After the observation phase:
+
+- Alauda Container Security  stops adding new flows to the baseline.
+- Any new network flow not in the baseline is marked as anomalous, but does not trigger violations by default.
+
+## Viewing and Managing Network Baselines
+
+You can view and manage network baselines in the network graph interface.
+
+### Steps to View Baselines
+
+1. Click the **Namespaces** dropdown and search or select namespaces.
+2. Click the **Deployments** dropdown and search or select deployments to display in the network graph.
+3. In the network graph, click a deployment to open its information panel.
+4. Go to the **Baseline** tab. Use the **filter by entity name** field to narrow down displayed flows.
+
+### Marking Baseline Flows as Anomalous
+
+- To mark a single flow as anomalous, select the entity, click the overflow menu, and choose **Mark as anomalous**.
+- To mark multiple flows, select them, click **Bulk actions**, and choose **Mark as anomalous**.
+
+### Additional Options
+
+- **Exclude ports and protocols**: Check the box to ignore port and protocol information in the baseline.
+- **Download as network policy**: Click **Download baseline as network policy** to export the baseline as a YAML file.
+
+## Downloading Network Baselines
+
+You can export network baselines as YAML files for further use.
+
+**Steps:**
+
+1. In the Alauda Container Security  portal, go to **Network Graph**.
+2. Select the desired namespaces and deployments.
+3. In the deployment's information panel, open the **Baseline** tab.
+4. (Optional) Filter flows or exclude ports/protocols.
+5. Click **Download baseline as network policy**.
+
+## Configuring Baseline Observation Period
+
+You can adjust how long Alauda Container Security  observes network flows before finalizing the baseline using environment variables.
+
+### Setting Environment Variables
+
+Set the following variables in your deployment:
+
+```bash
+kubectl -n stackrox set env deploy/central ROX_NETWORK_BASELINE_OBSERVATION_PERIOD=<value>
+kubectl -n stackrox set env deploy/central ROX_BASELINE_GENERATION_DURATION=<value>
+```
+
+- `<value>` must be a valid time unit, e.g., `300ms`, `2h45m`, `-1.5h`.
+- Supported units: `ns`, `us`/`µs`, `ms`, `s`, `m`, `h`.
+
+## Enabling Alerts for Anomalous Network Flows
+
+Alauda Container Security  can be configured to trigger violations for anomalous network flows (flows not in the baseline).
+
+**Steps:**
+
+1. In the network graph, select the desired namespace and deployment.
+2. Open the **Baseline** tab in the deployment's information panel.
+3. Toggle the **Alert on baseline violations** option.
+
+- When enabled, anomalous flows will trigger violations.
+- Toggle off to stop receiving such alerts.

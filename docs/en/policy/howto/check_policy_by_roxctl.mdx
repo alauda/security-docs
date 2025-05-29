@@ -1,0 +1,106 @@
+---
+title: Checking Policy Compliance with roxctl
+description: Learn how to check policy compliance using roxctl in Alauda Container Security.
+weight: 10
+---
+
+# Checking Policy Compliance with roxctl
+
+Alauda Container Security provides the `roxctl` CLI to help you check deployment YAML files and container images for policy compliance. This guide explains how to use `roxctl` for these checks and interpret the results.
+
+## Prerequisites
+
+- Set the `ROX_ENDPOINT` environment variable:
+
+  ```bash
+  export ROX_ENDPOINT=<host:port>
+  ```
+
+  Replace `<host:port>` with the address of your Alauda Container Security Central instance.
+
+## Output Formats
+
+When running `roxctl deployment check` or `roxctl image check`, you can specify the output format using the `-o` option. Supported formats are `json`, `table`, `csv`, and `junit`. If not specified, the default is `table` for deployment and image checks, and `json` for image scans.
+
+### Example
+
+```bash
+roxctl deployment check --file=<yaml_filename> -o csv
+```
+
+## Output Options
+
+The following table summarizes the available output options:
+
+| Option                        | Description                                                                 | Formats         |
+|-------------------------------|-----------------------------------------------------------------------------|-----------------|
+| `--compact-output`            | Display JSON output in a compact format.                                    | `json`          |
+| `--headers`                   | Specify custom headers.                                                     | `table`, `csv`  |
+| `--no-header`                 | Omit the header row from the output.                                        | `table`, `csv`  |
+| `--row-jsonpath-expressions`  | Use [GJSON paths](https://github.com/tidwall/gjson) to select specific data.| `table`, `csv`  |
+| `--merge-output`              | Merge table cells with the same value.                                      | `table`         |
+| `headers-as-comment`          | Include the header row as a comment in the output.                          | `csv`           |
+| `--junit-suite-name`          | Specify the name of the JUnit test suite.                                   | `junit`         |
+
+#### Example: Custom Headers and JSONPath
+
+```bash
+roxctl deployment check --file=<yaml_filename> \
+  -o table --headers POLICY-NAME,SEVERITY \
+  --row-jsonpath-expressions="{results..violatedPolicies..name,results..violatedPolicies..severity}"
+```
+
+## Checking Policy Compliance for Deployments
+
+To check build-time and deploy-time policy violations in your deployment YAML files, run:
+
+```bash
+roxctl deployment check --file=<yaml_filename> \
+  --namespace=<cluster_namespace> \
+  --cluster=<cluster_name_or_id> \
+  --verbose
+```
+
+- `<yaml_filename>`: Path to the deployment YAML file(s). You can specify multiple files by repeating the `--file` flag.
+- `<cluster_namespace>`: (Optional) Namespace for context. Default is `default`.
+- `<cluster_name_or_id>`: (Optional) Cluster name or ID for context.
+- `--verbose`: (Optional) Show additional information, such as RBAC permissions and network policies.
+
+> **Note:** Additional deployment information is included in JSON output, regardless of the `--verbose` flag.
+
+To force Alauda Container Security to re-pull image metadata and scan results, add the `--force` option.
+
+> **Permission Requirement:**  
+> To check specific image scan results, your token must have both `read` and `write` permissions for the `Image` resource. The default **Continuous Integration** system role includes these permissions.
+
+**The deployment check validates:**
+- Configuration options in the YAML file (e.g., resource limits, privilege settings)
+- Image aspects (e.g., components, vulnerabilities)
+
+## Checking Policy Compliance for Images
+
+To check build-time policy violations in images, run:
+
+```bash
+roxctl image check --image=<image_name>
+```
+
+To force Alauda Container Security to re-pull image metadata and scan results, add the `--force` option.
+
+> **Permission Requirement:**  
+> To check specific image scan results, your token must have both `read` and `write` permissions for the `Image` resource. The default **Continuous Integration** system role includes these permissions.
+
+## Viewing Image Scan Results
+
+To view the components and vulnerabilities found in an image in JSON format, run:
+
+```bash
+roxctl image scan --image=<image_name>
+```
+
+To force Alauda Container Security to re-pull image metadata and scan results, add the `--force` option.
+
+> **Permission Requirement:**  
+> To check specific image scan results, your token must have both `read` and `write` permissions for the `Image` resource. The default **Continuous Integration** system role includes these permissions.
+
+---

@@ -1,0 +1,88 @@
+---
+weight: 15
+---
+
+# Integration with Email    
+
+Alauda Container Security supports sending notifications via email. You can configure your existing email provider or use the built-in email notifier to send alerts. Notifications can be sent to a default recipient or dynamically determined using annotations in your deployment or namespace.
+
+:::info 
+Port `25` is blocked by default. Configure your mail server to use port `587` or `465` for sending email notifications.
+:::
+
+## Configuring Email Integration
+
+Follow these steps to set up email notifications:
+
+### Add a New Email Integration
+
+1. Navigate to **Platform Configuration** > **Integrations**.
+2. Under **Notifier Integrations**, select **Email**.
+3. Click **New Integration**.
+4. Enter a name for your integration in the **Integration name** field.
+5. In the **Email server** field, provide the address of your email server, including the FQDN and port (e.g., `smtp.example.com:465`).
+6. (Optional) To use unauthenticated SMTP, select **Enable unauthenticated SMTP**.  
+   :::warning
+   This is insecure and not recommended unless required for internal servers.
+   :::
+7. Enter the username and password for the service account used for authentication.
+8. (Optional) Specify the display name for the `FROM` header in the **From** field (e.g., `Security Alerts`).
+9. Enter the sender's email address in the **Sender** field.
+10. Specify the default recipient's email address in the **Default recipient** field.
+
+### Dynamic Recipient with Annotations (Optional)
+
+You can use annotations to dynamically determine the recipient of email notifications:
+
+1. In the **Annotation key for recipient** field, enter an annotation key (e.g., `email`).
+2. Add an annotation to your deployment or namespace YAML file:
+
+    ```yaml
+    metadata:
+      annotations:
+        email: <recipient_email@example.com>
+    ```
+
+3. Alauda Container Security will send alerts to the email specified in the annotation. If no annotation is found, the alert is sent to the default recipient.
+
+**Recipient Resolution Rules:**
+
+- If a deployment has the annotation key, its value overrides the default recipient.
+- If the namespace has the annotation key, its value overrides the default recipient.
+- If neither exists, the default recipient is used.
+
+### TLS and StartTLS Settings
+
+- (Optional) To send email without TLS, select **Disable TLS certificate validation (insecure)**.  
+  :::info
+  It is recommended to use TLS for secure email delivery.
+  :::
+- (Optional) To use StartTLS, select either **Login** or **Plain** from the **Use STARTTLS** drop-down menu.  
+  - **Login:** Credentials are sent as a base64-encoded string.
+  - **Plain:** Credentials are sent in plain text.
+
+:::warning
+With StartTLS, credentials are transmitted in plain text before encryption is established.
+:::
+
+## Enabling Email Notifications for Policies
+
+1. In the Alauda Container Security portal, go to **Platform Configuration** > **Policy Management**.
+2. Select one or more policies to enable notifications for.
+3. Under **Bulk actions**, select **Enable notification**.
+4. In the **Enable notification** window, choose the **Email** notifier.
+5. Click **Enable**.
+
+:::info
+
+- Notifications are opt-in. Assign a notifier to each policy to receive alerts.
+- Notifications are sent only once per alert. A new alert is generated for:
+    - The first policy violation in a deployment.
+    - A runtime-phase policy violation after the previous alert is resolved.
+
+:::
+
+---
+
+By following these steps, you can ensure that Alauda Container Security notifies the right people about important security events in your container platform.
+
