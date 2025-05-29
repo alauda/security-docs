@@ -1,0 +1,74 @@
+---
+weight: 15
+---
+
+# Architecture
+
+## System Architecture
+
+### Abstract
+
+This document provides a concise overview of the Alauda Container Security architecture for Kubernetes environments.
+
+---
+
+Alauda Container Security adopts a distributed, container-based architecture for scalable, low-impact security on Alauda Container Platform or Kubernetes clusters.
+
+### Key Components
+
+- **Central Services**: Deployed on a single cluster, providing management, API, and UI (Alauda Container Security Portal). Includes Central, Central DB (PostgreSQL 13), and the Scanner V4 vulnerability scanner.
+- **Secured Cluster Services**: Deployed on each protected cluster. Includes Sensor (cluster monitoring and policy enforcement), Admission Controller (policy admission), Collector (runtime and network data collection), and optional scanner components.
+
+### Scanner Overview
+
+- **Scanner V4**: The default and only supported scanner since version 4.7. Supports language and OS-specific image scanning. Consists of Indexer, Matcher, and DB.
+
+### Vulnerability Sources
+
+- Scanner V4: Red Hat VEX, Red Hat CVE Map, OSV, NVD, and additional OS sources.
+
+### Deployment Notes
+
+- Operator installs a lightweight Scanner V4 on each cluster for integrated registry scanning.
+- Helm installs require `scannerV4.disable=false` to enable the lightweight Scanner V4.
+- If Central and secured cluster services share a namespace, only Central deploys Scanner V4 components.
+
+### External Integrations
+
+- Third-party systems (CI/CD, SIEM, logging, email)
+- roxctl CLI
+- Image registries (auto/manual integration)
+- definitions.stackrox.io (vulnerability feeds)
+- collector-modules.stackrox.io (kernel modules)
+
+## Component Interactions
+
+### Alauda Container Security with Scanner V4
+
+| Component         | Direction | Component             | Description                                      |
+|-------------------|-----------|-----------------------|--------------------------------------------------|
+| Central           | ⮂         | Scanner V4 Indexer    | Image indexing and report generation             |
+| Central           | ⮂         | Scanner V4 Matcher    | Vulnerability matching and reporting             |
+| Sensor            | ⮂         | Scanner V4 Indexer    | Delegated image indexing                         |
+| Scanner V4 Indexer| →         | Image Registries      | Pulls image metadata and layers                  |
+| Scanner V4 Matcher| →         | Scanner V4 Indexer    | Fetches index reports                            |
+| Scanner V4 Indexer| →         | Scanner V4 DB         | Stores indexing results                          |
+| Scanner V4 Matcher| →         | Scanner V4 DB         | Stores and updates vulnerability data            |
+| Sensor            | ⮂         | Central               | Configuration and event sync                     |
+| Collector         | ⮂         | Sensor                | Sends runtime/network data                       |
+| Admission controller | ⮂      | Sensor                | Policy enforcement and scan requests             |
+| Admission controller | →      | Central               | Direct communication if Sensor unavailable       |
+
+### Default Ports and Protocols
+
+| Connection                        | Type         | Port  | Notes                                           |
+|------------------------------------|--------------|-------|-------------------------------------------------|
+| Central ↔ Scanner V4 Indexer       | gRPC         | 8443  |                                                 |
+| Central ↔ Sensor                   | TCP/gRPC     | 443   | Bidirectional, Sensor initiates                  |
+| Central ↔ CLI                      | gRPC/HTTPS   | 443   | See `roxctl` for options                        |
+| Central ↔ Vulnerability feeds      | HTTPS        | 443   | definitions.stackrox.io                          |
+| Collector → Sensor                 | gRPC         | 443   |                                                 |
+| Collector (Compliance) → Sensor    | gRPC         | 8444  | If node scanning enabled                         |
+| Scanner V4 Indexer → Central       | HTTPS        | 443   |                                                 |
+| Scanner V4 Indexer/Matcher → DB    | TCP          | 5432  |                                                 |
+| Sensor ↔ Admission Controller      | gRPC         | 443   | Bidirectional                                   |

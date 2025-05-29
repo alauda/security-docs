@@ -1,0 +1,24 @@
+---
+weight: 10
+---
+
+# Integrating with a Generic Docker Registry
+
+This guide explains how to integrate Alauda Container Security with Docker Registry or Harbor.
+
+## Prerequisites
+
+- Obtain a username and password for authenticating with the Docker Registry or Harbor.
+
+## Integration Steps
+
+1. In the Alauda Container Security portal, navigate to **Platform Configuration** > **Integrations**.
+2. Under the **Image Integrations** section, select **Generic Docker Registry**.
+3. Click **New integration**.
+4. Fill in the following fields:
+   - **Integration name**: Enter a name for this integration.
+   - **Endpoint**: Specify the registry address.
+   - **Username** and **Password**: Enter your credentials.
+5. (Optional) If you are not using a TLS certificate to connect to the registry, select **Disable TLS certificate validation (insecure)**.
+6. To verify the connection, click **Test**. If you prefer to skip testing, select **Create integration without testing**.
+7. Click **Save** to complete the integration.

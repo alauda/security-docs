@@ -1,0 +1,45 @@
+---
+weight: 6
+---
+
+# API Token Configuration
+
+Alauda Container Security requires API tokens for system integrations, authentication, and various system functions. You can manage tokens through the Alauda Container Security web interface.
+
+## Key Points
+
+- To prevent privilege escalation, when you create a new token, your role's permissions limit the permissions you can assign to that token. For example, if you only have `read` permission for the Integration resource, you cannot create a token with `write` permission.
+- If you want a custom role to create tokens for other users, you must assign the required permissions to that custom role.
+- Use short-lived tokens for machine-to-machine communication, such as CI/CD pipelines, scripts, and automation. For human-to-machine communication, such as CLI or API access, use the `roxctl central login` command.
+- Most cloud service providers support OIDC identity tokens, such as Microsoft Entra ID, Google Cloud Identity Platform, and AWS Cognito. OIDC identity tokens issued by these services can be used for Alauda Container Security short-lived access.
+
+## Procedure
+
+1. In the Alauda Container Security portal, go to **Platform Configuration** > **Integrations**.
+2. Scroll to the **Authentication Tokens** category and click **API Token**.
+3. Click **Generate Token**.
+4. Enter a name for the token and select a role that provides the required level of access (for example, **Continuous Integration** or **Sensor Creator**).
+5. Click **Generate**.
+
+   **Important:**  
+   Copy the generated token and store it securely. You will not be able to view it again.
+
+## Token Expiration and Notification
+
+API tokens expire one year from the creation date. Alauda Container Security alerts you in the web interface and by sending log messages to Central when a token will expire in less than one week. The log message process runs once an hour. Once a day, the process lists the tokens that are expiring and creates a log message for each one. Log messages are issued once a day and appear in Central logs.
+
+**Log message format:**
+
+```
+Warn: API Token [token name] (ID [token ID]) will expire in less than X days.
+```
+
+## Configuring Notification Settings
+
+You can change the default settings for the log message process by configuring the following environment variables:
+
+| Environment Variable                         | Default Value | Description                                                                                  |
+|-----------------------------------------------|--------------|----------------------------------------------------------------------------------------------|
+| ROX_TOKEN_EXPIRATION_NOTIFIER_INTERVAL        | 1h           | Frequency at which the background process checks and logs expiring tokens.                    |
+| ROX_TOKEN_EXPIRATION_NOTIFIER_BACKOFF_INTERVAL| 24h          | Frequency at which notifications are issued for expiring tokens.                              |
+| ROX_TOKEN_EXPIRATION_DETECTION_WINDOW         | 168h         | Time period before token expiration that triggers a notification (default: 1 week).           |
