@@ -53,8 +53,6 @@ This guide provides step-by-step instructions for installing the Alauda Containe
      -n stackrox
    ```
 
-5. Create an ingressClass named `stackrox` as required by your environment.
-
 ---
 
 ### Install via UI
@@ -145,7 +143,7 @@ spec:
 3. **Configure Ingress domain certificate (if needed):**
 
    ```bash
-   kubectl create secret generic additional-ca \
+   kubectl create secret generic additional-ca-sensor \
      --from-file=00-ingress-ca.crt=<path-to-cert-file> \
      -n stackrox
    ```
