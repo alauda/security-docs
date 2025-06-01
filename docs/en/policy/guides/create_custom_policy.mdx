@@ -57,18 +57,3 @@ Alauda Container Security allows you to create custom security policies in addit
 
 - To edit a policy, go to **Platform Configuration > Policy Management**, select a policy, and click **Actions > Edit Policy**.
 - Default policies cannot be edited directly; clone them first.
-
-## Disabling Policy as Code
-
-- **Operator installation**: Set `spec.configAsCode.configAsCodeComponent` to `Disabled`.
-- **Helm installation**: Set `configAsCode.enabled` in `values.yaml` to `false`.
-- **Manifest (roxctl) installation**: Delete the `config-controller` deployment:
-
-```bash
-kubectl -n stackrox delete deployment config-controller
-```
-
-## Additional Notes
-
-- Policy drift may occur if policies are edited both in the portal and externally. Drift is resolved automatically within ten hours.
-- For more information on policy criteria and lifecycle stages, refer to the official documentation.
