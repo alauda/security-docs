@@ -54,8 +54,6 @@ sourceSHA: f299889705c95dc0e00b02cc4b5da3aae0530ba0d7964f4659abbf80212e5eb6
      -n stackrox
    ```
 
-5. 根据您的环境创建名为 `stackrox` 的 ingressClass。
-
 ---
 
 ### 通过 UI 安装
@@ -147,7 +145,7 @@ spec:
 3. **配置 Ingress 域名证书（如有需要）：**
 
    ```bash
-   kubectl create secret generic additional-ca \
+   kubectl create secret generic additional-ca-sensor \
      --from-file=00-ingress-ca.crt=<path-to-cert-file> \
      -n stackrox
    ```
