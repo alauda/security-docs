@@ -1,0 +1,187 @@
+---
+weight: 5
+---
+
+# Evaluating Security Risks
+
+Alauda Container Security assesses and ranks your deployments by security risk, highlighting vulnerabilities, configurations, and runtime activities needing attention.
+
+## Risk View
+
+The **Risk** view lists all deployments, sorted by a multi-factor risk metric (policy violations, image contents, configuration, etc.). Deployments at the top are the most at risk.
+
+Each deployment shows:
+- **Name**
+- **Created**
+- **Cluster**
+- **Namespace**
+- **Priority**
+
+**Features:**
+- Sort and filter violations
+- Create new policies from filtered results
+
+To see more details, select a deployment.
+
+### Creating Policies from Risk View
+
+You can create security policies based on your filters in the **Risk** view.
+
+**Steps:**
+1. Go to **Risk** in the portal.
+2. Apply filters.
+3. Click **New Policy** and fill required fields.
+
+**Note:** Only Cluster, Namespace, Deployment, and Label filters are converted to policy scopes. Other filters may be dropped or modified.
+
+#### Filter Mapping Table
+
+| Search Attribute                | Policy Criteria                    |
+|----------------------------------|------------------------------------|
+| Add Capabilities                 | Add Capabilities                   |
+| Annotation                       | Disallowed Annotation              |
+| CPU Cores Limit                  | Container CPU Limit                |
+| CPU Cores Request                | Container CPU Request              |
+| CVE                              | CVE                                |
+| CVE Published On                 | ✕ Dropped                          |
+| CVE Snoozed                      | ✕ Dropped                          |
+| CVSS                             | CVSS                               |
+| Cluster                          | ⟳ Converted to scope               |
+| Component                        | Image Component (name)             |
+| Component Version                | Image Component (version)          |
+| Deployment                       | ⟳ Converted to scope               |
+| Deployment Type                  | ✕ Dropped                          |
+| Dockerfile Instruction Keyword   | Dockerfile Line (key)              |
+| Dockerfile Instruction Value     | Dockerfile Line (value)            |
+| Drop Capabilities                | ✕ Dropped                          |
+| Environment Key                  | Environment Variable (key)         |
+| Environment Value                | Environment Variable (value)       |
+| Environment Variable Source      | Environment Variable (source)      |
+| Exposed Node Port                | ✕ Dropped                          |
+| Exposing Service                 | ✕ Dropped                          |
+| Exposing Service Port            | ✕ Dropped                          |
+| Exposure Level                   | Port Exposure                      |
+| External Hostname                | ✕ Dropped                          |
+| External IP                      | ✕ Dropped                          |
+| Image                            | ✕ Dropped                          |
+| Image Command                    | ✕ Dropped                          |
+| Image Created Time               | Days since image was created       |
+| Image Entrypoint                 | ✕ Dropped                          |
+| Image Label                      | Disallowed Image Label             |
+| Image OS                         | Image OS                           |
+| Image Pull Secret                | ✕ Dropped                          |
+| Image Registry                   | Image Registry                     |
+| Image Remote                     | Image Remote                       |
+| Image Scan Time                  | Days since image was last scanned  |
+| Image Tag                        | Image Tag                          |
+| Image Top CVSS                   | ✕ Dropped                          |
+| Image User                       | ✕ Dropped                          |
+| Image Volumes                    | ✕ Dropped                          |
+| Label                            | ⟳ Converted to scope               |
+| Max Exposure Level               | ✕ Dropped                          |
+| Memory Limit (MB)                | Container Memory Limit             |
+| Memory Request (MB)              | Container Memory Request           |
+| Namespace                        | ⟳ Converted to scope               |
+| Namespace ID                     | ✕ Dropped                          |
+| Pod Label                        | ✕ Dropped                          |
+| Port                             | Port                               |
+| Port Protocol                    | Protocol                           |
+| Priority                         | ✕ Dropped                          |
+| Privileged                       | Privileged                         |
+| Process Ancestor                 | Process Ancestor                   |
+| Process Arguments                | Process Arguments                  |
+| Process Name                     | Process Name                       |
+| Process Path                     | ✕ Dropped                          |
+| Process Tag                      | ✕ Dropped                          |
+| Process UID                      | Process UID                        |
+| Read Only Root Filesystem        | Read-Only Root Filesystem          |
+| Secret                           | ✕ Dropped                          |
+| Secret Path                      | ✕ Dropped                          |
+| Service Account                  | ✕ Dropped                          |
+| Service Account Permission Level | Minimum RBAC Permission Level      |
+| Toleration Key                   | ✕ Dropped                          |
+| Toleration Value                 | ✕ Dropped                          |
+| Volume Destination               | Volume Destination                 |
+| Volume Name                      | Volume Name                        |
+| Volume ReadOnly                  | Writable Volume                    |
+| Volume Source                    | Volume Source                      |
+| Volume Type                      | Volume Type                        |
+
+**Scope Conversion Example:**
+Filtering by `Cluster:A,B` and `Namespace:Z` creates:
+- (Cluster=A AND Namespace=Z)
+- (Cluster=B AND Namespace=Z)
+
+## Risk Details Panel
+
+Selecting a deployment opens the **Risk Details** panel with multiple tabs.
+
+### Risk Indicators Tab
+
+Shows:
+- **Policy Violations**
+- **Suspicious Process Executions**
+- **Image Vulnerabilities**
+- **Service Configurations**
+- **Service Reachability**
+- **Components Useful for Attackers**
+- **Number of Components in Image**
+- **Image Freshness**
+- **RBAC Configuration**
+
+*Only relevant sections are shown for the selected deployment.*
+
+### Deployment Details Tab
+
+Provides:
+- Deployment ID
+- Namespace
+- Updated (timestamp)
+- Deployment Type
+- Replicas
+- Labels
+- Cluster name
+- Annotations
+- Service Account
+
+**Container Configuration:**
+- Image Name
+- Resources: CPU/Memory requests and limits
+- Mounts: Name, Source, Destination, Type
+- Secrets: Kubernetes secrets and X.509 certificate details
+
+**Security Context:**
+- Privileged: `true` if privileged
+
+### Process Discovery Tab
+
+Lists all binaries executed in each container, summarized by deployment:
+- **Binary Name**
+- **Container**
+- **Arguments**
+- **Time** (most recent)
+- **Pod ID**
+- **UID**
+
+Use `Process Name:<name>` in the filter bar to search.
+
+### Event Timeline
+
+The **Event Timeline** shows events for the selected deployment:
+- Process activities
+- Policy violations
+- Container restarts/terminations
+
+Events appear as icons on a timeline. Hover for details. You can:
+- Show legend for event types
+- Export as PDF/CSV
+- Filter event types
+- Expand to see events per container
+
+A minimap controls the visible range.
+
+**Notes:**
+- On container restarts, up to 10 inactive instances per container are shown; process activities for previous instances are not tracked.
+- Only the most recent execution of each (process name, arguments, UID) per pod is shown.
+- Events are shown only for active pods.
+- Timestamps are adjusted for accuracy.

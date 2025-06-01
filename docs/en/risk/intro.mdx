@@ -5,34 +5,3 @@ weight: 5
 # Introduction
 
 Alauda Container Security for Kubernetes is a platform designed to help you identify, assess, and manage security risks across your containerized environments. It provides visibility into vulnerabilities, misconfigurations, and risky runtime activities, enabling you to prioritize and address the most critical security issues in your deployments.
-
-## Risk View
-
-The **Risk** view displays all deployments from all clusters, sorted by a comprehensive risk metric. This metric considers policy violations, image contents, deployment configurations, and other relevant factors. Deployments with the highest risk appear at the top of the list.
-
-### Deployment Attributes
-
-Each deployment in the **Risk** view includes the following attributes:
-
-| Attribute     | Description                                            |
-|---------------|--------------------------------------------------------|
-| **Name**      | Name of the deployment                                 |
-| **Created**   | Creation time of the deployment                        |
-| **Cluster**   | Name of the cluster where the deployment is running    |
-| **Namespace** | Namespace in which the deployment exists               |
-| **Priority**  | Priority ranking based on severity and risk metrics    |
-
-### Actions in the Risk View
-
-You can perform the following actions in the **Risk** view:
-
-- Sort deployments by any column in ascending or descending order.
-- Filter deployments using the filter bar.
-- Create new policies based on filtered criteria.
-- Select a deployment to view detailed risk information.
-
-By analyzing the **Risk** view, you can quickly identify and address the most critical security risks in your environment.
-
-## How to Access the Risk View
-
-- Go to the Alauda Container Security portal and select **Risk** from the navigation menu.

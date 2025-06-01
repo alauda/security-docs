@@ -112,7 +112,7 @@ Alauda 容器安全支持 RE2 语法的正则表达式。以下是一些常见�
 
 ### 匹配特定部署和标签
 
-要包括 `reporting` 部署、任何以 `-db` 结尾的部署，以及标记为 `kubernetes.io/metadata.name=medical` 的命名空间：
+要包含 `reporting` 部署、任何以 `-db` 结尾的部署，以及标记为 `kubernetes.io/metadata.name=medical` 的命名空间：
 
 - **名称匹配的部署**：`reporting`
 - **或**：正则值 `.*-db`
@@ -133,8 +133,8 @@ Alauda 容器安全支持 RE2 语法的正则表达式。以下是一些常见�
 - **嵌入式集合**：模仿原始访问范围逻辑。
 - **根集合**：附加嵌入式集合，并用于报告配置。
 
-如果某个范围无法迁移（例如，使用不支持的标签选择器操作符），则会生成日志消息。仅支持 `IN` 操作符用于标签选择器。
+如果某个范围无法迁移（例如，使用不支持的标签选择器运算符），则会生成日志消息。仅支持 `IN` 运算符用于标签选择器。
 
 ## API 使用
 
-集合也可以通过 `CollectionService` API 进行管理。例如，`CollectionService_DryRunCollection` 返回与门户中的实时预览类似的结果。有关更多详细信息，请参阅门户中的 API 参考。
+集合也可以通过 `CollectionService` API 进行管理。例如，`CollectionService_DryRunCollection` 返回与门户中的实时预览类似的结果。有关更多详细信息，请参见门户中的 API 参考。

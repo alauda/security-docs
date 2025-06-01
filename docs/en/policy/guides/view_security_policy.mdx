@@ -192,8 +192,9 @@ Alauda Container Security supports multiple enforcement types depending on the p
 - **Deploy-time enforcement**: Integrates with Kubernetes admission controllers and Alauda Container Platform admission plugins to block noncompliant workloads. Enforcement can be:
   - **Hard enforcement**: Admission controller blocks creation or update of violating deployments.
   - **Soft enforcement**: Sensor scales violating deployments to zero replicas, preventing pods from being scheduled.
+- **Runtime enforcement**: When enabled, any runtime activity within a pod that violates this policy will cause the pod to be automatically deleted. Violations triggered via the API server will also be blocked.
 
-> **Note:** By default, administrative namespaces such as `stackrox`, `kube-system`, and `istio-system` are excluded from enforcement blocking. Requests from service accounts in system namespaces are also bypassed.
+> **Note:** By default, administrative namespaces such as `stackrox`, `kube-system`, `cpaas-system`,and `istio-system` are excluded from enforcement blocking. Requests from service accounts in system namespaces are also bypassed.
 
 To apply policy changes to existing deployments, use **Policy Management** > **Reassess All** to trigger enforcement on all deployments.
 
