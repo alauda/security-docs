@@ -1,0 +1,129 @@
+---
+weight: 14
+---
+
+# Responding to Violations
+
+Alauda Container Security helps you view, investigate, and address policy violations.
+
+Its built-in policies detect vulnerabilities (CVEs), DevOps best practice violations, risky build/deploy actions, and suspicious runtime behaviors. Violations are reported when enabled policies are not met.
+
+Understanding namespace conditions helps you manage which namespaces belong to the Alauda Container Platform, layered products, and third-party partners.
+
+## Namespace Conditions for Platform Components
+
+| Platform Component         | Namespace Condition                                                                                  |
+|---------------------------|------------------------------------------------------------------------------------------------------|
+| Alauda Container Platform | Namespace = `cpaas-system`, Namespace starts with `kube-`                                        |
+| Layered Products          | Namespace = `stackrox`, Namespace starts with `acs-operator`, Namespace starts with `open-cluster-management`, Namespace = `multicluster-engine`, Namespace = `aap`, Namespace = `hive` |
+| Third Party Partners      | Namespace = `nvidia-gpu-operator`                                                                    |
+
+Alauda Container Security uses the following regex to identify platform workloads:
+
+```
+^kube-.*|^alauda-.*|^stackrox$|^acs-operator$|^open-cluster-management$|^multicluster-engine$|^aap$|^hive$|^nvidia-gpu-operator$|^cpaas-system$
+```
+
+This definition is not customizable. To see its effect:
+
+1. Click **Search** in the portal.
+2. Select **Show Orchestrator Components**.
+3. Filter by `Platform Component: true`.
+
+## Viewing Violations
+
+1. In the portal, click **Violations**.
+2. Tabs let you view violations by category:
+   - **User Workloads**: User-managed workloads
+   - **Platform**: Platform and layered services
+   - **All Violations**: All, including audit log violations
+3. Tabs let you view by type:
+   - **Active**: Unresolved or in build/deploy
+   - **Resolved**: Addressed or manually resolved
+   - **Attempted**: Blocked by enforced policies
+4. Sort, filter, and view details as needed.
+5. To exclude deployments from a policy:
+   - For one: use the overflow menu, select **Exclude deployment from policy**
+   - For multiple: use **Row actions** > **Exclude deployments from policy**
+
+## Violation Details
+
+The **Violations** page shows:
+
+- **Policy**: Violated policy name
+- **Entity**: Where the violation occurred
+- **Type**: Entity type (e.g., Deployment, Pod, DaemonSet, Secrets, ConfigMaps, ClusterRoles)
+- **Enforced**: Whether enforcement was active
+- **Severity**: `Low`, `Medium`, `High`, `Critical`
+- **Categories**: Policy category
+- **Lifecycle**: `Build`, `Deploy`, `Runtime`
+- **Time**: When the violation occurred
+
+Selecting a violation opens a details panel:
+
+### Violation Tab
+
+Shows how the policy was violated, including specific values or runtime process details.
+
+### Deployment Tab
+
+Shows deployment details:
+- **Deployment ID/Name/Type**
+- **Cluster/Namespace/Replicas**
+- **Created/Updated** times
+- **Labels/Annotations/Service Account**
+
+#### Container Configuration
+- **Image Name**
+- **Resources**: CPU/Memory requests and limits
+- **Volumes**
+- **Secrets**: Name and container path
+- **Volume Details**: Name, source, destination, type
+
+#### Port Configuration
+- **containerPort**
+- **protocol**
+- **exposure**
+- **exposureInfo**: Internal/external, service name/ID, cluster IP, service port, node port, external IPs
+
+#### Security Context
+- **Privileged**: `true` or `false`
+
+#### Network Policy
+- Lists namespace and network policies; click a policy name to view YAML
+
+## Policy Tab
+
+Shows details of the policy that caused the violation.
+
+### Policy Overview
+- **Severity**
+- **Categories**
+- **Type**: User or system policy
+- **Description**
+- **Rationale**
+- **Guidance**
+- **MITRE ATT&CK**: Related tactics/techniques
+
+### Policy Behavior
+- **Lifecycle Stage**: `Build`, `Deploy`, `Runtime`
+- **Event Source** (for `Runtime`):
+  - **Deployment**: Triggered by process/network activity, pod execution, or port forwarding
+  - **Audit logs**: Triggered by matching audit log records
+- **Response**:
+  - **Inform**: Generates a violation
+  - **Inform and enforce**: Enforced
+- **Enforcement**:
+  - **Build**: Fails CI builds for noncompliant images
+  - **Deploy**: Blocks creation/update of noncompliant deployments if admission controller is enabled
+  - **Runtime**: Deletes pods when events match policy criteria
+
+### Policy Criteria
+Alauda Container Security supports two deploy-time enforcement types:
+- **Hard Enforcement**: Admission controller blocks creation or update of violating deployments
+- **Soft Enforcement**: Sensor scales replicas to 0 for violating deployments
+
+**Note:** By default, certain admin namespaces (e.g., `stackrox`, `kube-system`, `cpaas-system`, `istio-system`) are excluded from enforcement. Requests from service accounts in system namespaces are also bypassed.
+
+For existing deployments, policy changes are enforced at the next relevant Kubernetes event. To reassess, go to **Policy Management** and click **Reassess All**.
+

@@ -1,0 +1,53 @@
+---
+weight: 18
+---
+
+# Using Process Baseline
+
+Process baselining in Alauda Container Security helps secure your infrastructure by learning which processes normally run in your containers and enforcing that only these are allowed.
+
+## What is a Process Baseline?
+
+When you deploy Alauda Container Security, there is no default process baseline. As deployments are discovered, a process baseline is automatically created for each container type, including all observed processes.
+
+## Baseline States
+
+### Unlocked
+- During initial discovery (first hour), baselines are unlocked.
+- New processes are automatically added to the baseline and do not trigger risks or violations.
+- After one hour, new processes are marked as risks but do not trigger violations, and are not added to the baseline.
+
+### Locked
+- Locking a baseline stops new processes from being added.
+- Any process not in the baseline triggers a violation.
+- You can always manually add or remove processes from the baseline.
+
+If a deployment has multiple container types, each has its own baseline. If some are locked and others unlocked, the deployment status shows as **Mixed**.
+
+## Managing Process Baselines
+
+You can view and manage process baselines in the **Risk** view of the Alauda Container Security portal.
+
+### Viewing Baselines
+1. Go to **Risk** in the portal.
+2. Select a deployment.
+3. In the details panel, open the **Process Discovery** tab.
+4. Baselines are listed under **Spec Container Baselines**.
+
+### Adding a Process
+1. In **Process Discovery**, under **Running Processes**, click the **Add** icon next to a process not already in the baseline.
+
+### Removing a Process
+1. In **Process Discovery**, under **Spec Container Baselines**, click the **Remove** icon next to the process you want to remove.
+
+### Locking/Unlocking the Baseline
+- Click the **Lock** icon to enforce violations for unlisted processes.
+- Click the **Unlock** icon to stop enforcing violations.
+
+---
+
+By managing process baselines, you ensure only approved processes run in your environment, reducing security risks.
+
+
+
+
