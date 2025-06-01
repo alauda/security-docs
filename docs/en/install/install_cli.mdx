@@ -24,10 +24,10 @@ This guide provides instructions for installing, configuring, and using the `rox
     ```bash
     arch="$(uname -m | sed 's/x86_64//')"; arch="${arch:+-$arch}"
     ```
-2. Download the binary:
-    ```bash
-    curl -L -f -o roxctl "https://mirror.openshift.com/pub/rhacs/assets/4.7.3/bin/Linux/roxctl${arch}"
-    ```
+2. Download the binary form the Portal:
+
+    ![download roxctl](../assets/download_cli.png)
+
 3. Make it executable:
     ```bash
     chmod +x roxctl
@@ -50,10 +50,10 @@ This guide provides instructions for installing, configuring, and using the `rox
     ```bash
     arch="$(uname -m | sed 's/x86_64//')"; arch="${arch:+-$arch}"
     ```
-2. Download the binary:
-    ```bash
-    curl -L -f -o roxctl "https://mirror.openshift.com/pub/rhacs/assets/4.7.3/bin/Darwin/roxctl${arch}"
-    ```
+2. Download the binary form the Portal:
+
+    ![download roxctl](../assets/download_cli.png)
+
 3. Remove extended attributes:
     ```bash
     xattr -c roxctl
@@ -76,10 +76,9 @@ This guide provides instructions for installing, configuring, and using the `rox
 
 **Steps:**
 
-1. Download the binary:
-    ```bash
-    curl -f -O https://mirror.openshift.com/pub/rhacs/assets/4.7.3/bin/Windows/roxctl.exe
-    ```
+2. Download the binary form the Portal:
+
+    ![download roxctl](../assets/download_cli.png)
 2. (Optional) Add the directory containing `roxctl.exe` to your system `PATH`.
 3. Verify the installation:
     ```bash
@@ -148,27 +147,6 @@ API tokens are recommended for production and automation scenarios. They provide
 ```bash
 export ROX_API_TOKEN=<api_token>
 ```
-
-#### Interactive Login
-
-For interactive use, you can log in via your authentication provider:
-
-1. Set the endpoint:
-    ```bash
-    export ROX_ENDPOINT=<central_host:port>
-    ```
-2. Start the login process:
-    ```bash
-    roxctl central login
-    ```
-3. Follow the URL provided in the CLI to complete authentication in your browser.
-4. After successful login, token information is displayed and stored locally.
-
-**Configuration storage:**
-- By default: `$HOME/.roxctl/roxctl-config`
-- If `$ROX_CONFIG_DIR` is set: `$ROX_CONFIG_DIR/roxctl-config`
-- If `$XDG_RUNTIME_DIR` is set and `$ROX_CONFIG_DIR` is not: `$XDG_RUNTIME_DIR/roxctl-config`
-
 ---
 
 ## Using the roxctl CLI

@@ -1,10 +1,10 @@
 ---
-sourceSHA: 96b15e46933a2fc62c7ec2074cbc9214a53cb863be9ec9bab7607d47b5a66465
+sourceSHA: c96e78a2cdaca2892005ef1b28150bdec1f299eeb0fa67078fcc142ba7b723c5
 ---
 
 # Roxctl CLI 安装
 
-本指南提供了安装、配置和使用 Alauda 容器安全的 `roxctl` 命令行界面 (CLI) 的说明。该 CLI 可用于 Linux、macOS、Windows，并且可以作为容器镜像使用。
+本指南提供了安装、配置和使用 Alauda 容器安全的 `roxctl` 命令行界面（CLI）的说明。该 CLI 可用于 Linux、macOS、Windows，并且可以作为容器镜像使用。
 
 ---
 
@@ -28,14 +28,16 @@ sourceSHA: 96b15e46933a2fc62c7ec2074cbc9214a53cb863be9ec9bab7607d47b5a66465
    ```bash
    arch="$(uname -m | sed 's/x86_64//')"; arch="${arch:+-$arch}"
    ```
-2. 下载二进制文件：
-   ```bash
-   curl -L -f -o roxctl "https://mirror.openshift.com/pub/rhacs/assets/4.7.3/bin/Linux/roxctl${arch}"
-   ```
+
+2. 从 Portal 下载二进制文件：
+
+   ![下载 roxctl](../assets/download_cli.png)
+
 3. 使其可执行：
    ```bash
    chmod +x roxctl
    ```
+
 4. （可选）移动到您的 `PATH` 中的目录：
    ```bash
    echo $PATH
@@ -54,18 +56,21 @@ sourceSHA: 96b15e46933a2fc62c7ec2074cbc9214a53cb863be9ec9bab7607d47b5a66465
    ```bash
    arch="$(uname -m | sed 's/x86_64//')"; arch="${arch:+-$arch}"
    ```
-2. 下载二进制文件：
-   ```bash
-   curl -L -f -o roxctl "https://mirror.openshift.com/pub/rhacs/assets/4.7.3/bin/Darwin/roxctl${arch}"
-   ```
+
+2. 从 Portal 下载二进制文件：
+
+   ![下载 roxctl](../assets/download_cli.png)
+
 3. 移除扩展属性：
    ```bash
    xattr -c roxctl
    ```
+
 4. 使其可执行：
    ```bash
    chmod +x roxctl
    ```
+
 5. （可选）移动到您的 `PATH` 中的目录：
    ```bash
    echo $PATH
@@ -80,12 +85,11 @@ sourceSHA: 96b15e46933a2fc62c7ec2074cbc9214a53cb863be9ec9bab7607d47b5a66465
 
 **操作步骤：**
 
-1. 下载二进制文件：
-   ```bash
-   curl -f -O https://mirror.openshift.com/pub/rhacs/assets/4.7.3/bin/Windows/roxctl.exe
-   ```
-2. （可选）将包含 `roxctl.exe` 的目录添加到您的系统 `PATH` 中。
-3. 验证安装：
+2. 从 Portal 下载二进制文件：
+
+   ![下载 roxctl](../assets/download_cli.png)
+3. （可选）将包含 `roxctl.exe` 的目录添加到您的系统 `PATH`。
+4. 验证安装：
    ```bash
    roxctl.exe version
    ```
@@ -153,27 +157,6 @@ API 令牌推荐用于生产和自动化场景。它们提供特定的访问权�
 ```bash
 export ROX_API_TOKEN=<api_token>
 ```
-
-#### 交互式登录
-
-对于交互式使用，您可以通过身份验证提供者登录：
-
-1. 设置端点：
-   ```bash
-   export ROX_ENDPOINT=<central_host:port>
-   ```
-2. 开始登录过程：
-   ```bash
-   roxctl central login
-   ```
-3. 按照 CLI 中提供的 URL 在浏览器中完成身份验证。
-4. 登录成功后，令牌信息将显示并保存在本地。
-
-**配置存储：**
-
-- 默认：`$HOME/.roxctl/roxctl-config`
-- 如果设置了 `$ROX_CONFIG_DIR`：`$ROX_CONFIG_DIR/roxctl-config`
-- 如果设置了 `$XDG_RUNTIME_DIR` 且未设置 `$ROX_CONFIG_DIR`：`$XDG_RUNTIME_DIR/roxctl-config`
 
 ---
 
