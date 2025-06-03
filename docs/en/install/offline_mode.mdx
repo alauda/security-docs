@@ -1,0 +1,49 @@
+---
+weight: 15
+---
+
+# Using Alauda Container Security in Offline Mode
+
+Alauda Container Security can be deployed in environments without internet access by enabling offline mode. In offline mode, all components operate without connecting to external addresses or hosts.
+
+## Enabling Offline Mode
+
+- When installing via YAML, set `env.offlineMode` to `true`.
+
+## Updating Vulnerability Definitions
+
+Scanner maintains a local vulnerability database. In online mode, Central retrieves the latest vulnerability data from the internet, and Scanner syncs with Central. In offline mode, you must manually update the vulnerability data by uploading a definitions file to Central, which Scanner then retrieves.
+
+- Scanner checks for new data from Central every 5 minutes by default.
+- The offline data source is updated approximately every 3 hours.
+
+### Downloading the Definitions
+
+- Use the following command to download the definitions:
+  ```bash
+  roxctl scanner download-db --scanner-db-file scanner-vuln-updates.zip
+  ```
+- Alternatively, download from:  
+  [https://install.stackrox.io/scanner/scanner-vuln-updates.zip](https://install.stackrox.io/scanner/scanner-vuln-updates.zip)
+
+### Uploading the Definitions to Central
+
+You can upload the vulnerability definitions database to Central using either an API token or your administrator password.
+
+#### Using an API Token
+
+- Prerequisites:
+  - API token with administrator role
+  - `roxctl` CLI installed
+
+- Procedure:
+  ```bash
+  export ROX_API_TOKEN=<api_token>
+  export ROX_CENTRAL_ADDRESS=<address>:<port_number>
+  roxctl scanner upload-db \
+    -e "$ROX_CENTRAL_ADDRESS" \
+    --scanner-db-file=<compressed_scanner_definitions.zip>
+  ```
+
+
+---
