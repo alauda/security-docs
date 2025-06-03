@@ -48,17 +48,17 @@ Alauda 容器安全采用分布式、基于容器的架构，以实现对 Alauda
 
 | 组件                | 方向     | 组件                | 描述                                      |
 | ------------------- | -------- | ------------------- | ----------------------------------------- |
-| Central             | ⮂        | Scanner V4 Indexer  | 镜像索引和报告生成                        |
-| Central             | ⮂        | Scanner V4 Matcher  | 漏洞匹配和报告                            |
-| Sensor              | ⮂        | Scanner V4 Indexer  | 委托的镜像索引                            |
-| Scanner V4 Indexer  | →        | 镜像注册表         | 拉取镜像元数据和层                        |
-| Scanner V4 Matcher  | →        | Scanner V4 Indexer  | 获取索引报告                              |
-| Scanner V4 Indexer  | →        | Scanner V4 DB       | 存储索引结果                              |
-| Scanner V4 Matcher  | →        | Scanner V4 DB       | 存储和更新漏洞数据                        |
-| Sensor              | ⮂        | Central             | 配置和事件同步                            |
-| Collector           | ⮂        | Sensor              | 发送运行时/网络数据                       |
-| 准入控制器         | ⮂        | Sensor              | 策略执行和扫描请求                        |
-| 准入控制器         | →        | Central             | 如果 Sensor 不可用则进行直接通信         |
+| Central             | ⮂       | Scanner V4 Indexer  | 镜像索引和报告生成                        |
+| Central             | ⮂       | Scanner V4 Matcher  | 漏洞匹配和报告                            |
+| Sensor              | ⮂       | Scanner V4 Indexer  | 委托的镜像索引                            |
+| Scanner V4 Indexer  | →       | 镜像注册表         | 拉取镜像元数据和层                        |
+| Scanner V4 Matcher  | →       | Scanner V4 Indexer  | 获取索引报告                              |
+| Scanner V4 Indexer  | →       | Scanner V4 DB       | 存储索引结果                              |
+| Scanner V4 Matcher  | →       | Scanner V4 DB       | 存储和更新漏洞数据                        |
+| Sensor              | ⮂       | Central             | 配置和事件同步                            |
+| Collector           | ⮂       | Sensor              | 发送运行时/网络数据                       |
+| 准入控制器        | ⮂       | Sensor              | 策略执行和扫描请求                        |
+| 准入控制器        | →       | Central             | 如果 Sensor 不可用则进行直接通信          |
 
 ### 默认端口和协议
 
@@ -71,5 +71,5 @@ Alauda 容器安全采用分布式、基于容器的架构，以实现对 Alauda
 | Collector → Sensor            | gRPC       | 443  |                                  |
 | Collector (合规性) → Sensor   | gRPC       | 8444 | 如果启用节点扫描                |
 | Scanner V4 Indexer → Central  | HTTPS      | 443  |                                  |
-| Scanner V4 Indexer/Matcher → DB | TCP        | 5432 |                                  |
+| Scanner V4 Indexer/Matcher → DB | TCP      | 5432 |                                  |
 | Sensor ↔ 准入控制器         | gRPC       | 443  | 双向                             |

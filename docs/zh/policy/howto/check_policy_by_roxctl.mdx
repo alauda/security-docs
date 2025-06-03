@@ -33,15 +33,15 @@ roxctl deployment check --file=<yaml_filename> -o csv
 
 下表总结了可用的输出选项：
 
-| 选项                         | 描述                                                                        | 格式          |
-| ---------------------------- | --------------------------------------------------------------------------- | -------------- |
-| `--compact-output`           | 以紧凑格式显示 JSON 输出。                                                  | `json`         |
-| `--headers`                  | 指定自定义标题。                                                           | `table`, `csv` |
-| `--no-header`                | 从输出中省略标题行。                                                       | `table`, `csv` |
-| `--row-jsonpath-expressions` | 使用 [GJSON 路径](https://github.com/tidwall/gjson) 选择特定数据。         | `table`, `csv` |
-| `--merge-output`             | 合并具有相同值的表格单元格。                                               | `table`        |
-| `headers-as-comment`         | 将标题行作为注释包含在输出中。                                            | `csv`          |
-| `--junit-suite-name`         | 指定 JUnit 测试套件的名称。                                                | `junit`        |
+| 选项                          | 描述                                                                       | 格式          |
+| ----------------------------- | -------------------------------------------------------------------------- | ------------- |
+| `--compact-output`            | 以紧凑格式显示 JSON 输出。                                                 | `json`       |
+| `--headers`                   | 指定自定义标题。                                                          | `table`, `csv` |
+| `--no-header`                 | 从输出中省略标题行。                                                      | `table`, `csv` |
+| `--row-jsonpath-expressions`  | 使用 [GJSON 路径](https://github.com/tidwall/gjson) 选择特定数据。        | `table`, `csv` |
+| `--merge-output`              | 合并具有相同值的表格单元格。                                              | `table`      |
+| `headers-as-comment`          | 将标题行作为注释包含在输出中。                                            | `csv`        |
+| `--junit-suite-name`          | 指定 JUnit 测试套件的名称。                                               | `junit`      |
 
 #### 示例：自定义标题和 JSONPath
 
