@@ -1,6 +1,6 @@
 ---
 weight: 5
-sourceSHA: f299889705c95dc0e00b02cc4b5da3aae0530ba0d7964f4659abbf80212e5eb6
+sourceSHA: 423d1e8e7767306e12058e2a46340b3477a9995b53d80172d904868a4539f9ed
 ---
 
 # Alauda 容器安全插件安装
@@ -46,7 +46,7 @@ sourceSHA: f299889705c95dc0e00b02cc4b5da3aae0530ba0d7964f4659abbf80212e5eb6
      -n stackrox
    ```
 
-4. 创建额外的 CA 密钥（如有需要）：
+4. 创建额外的 CA 密钥：
 
    ```bash
    kubectl create secret generic additional-ca \
@@ -59,13 +59,13 @@ sourceSHA: f299889705c95dc0e00b02cc4b5da3aae0530ba0d7964f4659abbf80212e5eb6
 ### 通过 UI 安装
 
 1. 在平台管理中，转到 **Marketplace → Cluster Plugins**。
-2. 点击中央服务插件旁边的 **Install** 按钮。
+2. 点击中央服务 StackRox 插件旁边的 **Install** 按钮。
 3. 按提示填写存储类和配置参数。
 
 | 参数                             | 描述                                                                                                                                               |
 | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 中央数据库连接字符串            | 中央数据库的连接字符串。例如: `host=acid-business-1.proj01-postgres.svc port=5432 user=postgres sslmode=require`                                   |
-| Ingress 主机                     | 为中央 Ingress 指定自定义主机名。在 stackrox 命名空间中指定一个包含 tls.crt 和 tls.key 的 "central-ingress-tls" ts 类型密钥。 |
+| 主机                             | 为中央 Ingress 指定自定义主机名。在 stackrox 命名空间中指定一个名为 "central-ingress-tls" 的 ts 类型密钥，该密钥包含 tls.crt 和 tls.key。 |
 
 ---
 
@@ -74,6 +74,9 @@ sourceSHA: f299889705c95dc0e00b02cc4b5da3aae0530ba0d7964f4659abbf80212e5eb6
 将以下 YAML 应用到您的目标集群：
 
 ```yaml
+# StackRox 集群插件的 YAML 部署方法
+# 创建 StackRox 中央服务插件实例
+---
 apiVersion: cluster.alauda.io/v1alpha1
 kind: ClusterPluginInstance
 metadata:
@@ -87,9 +90,11 @@ metadata:
 spec:
   pluginName: stackrox-central-services
   config:
+    env:
+      offlineMode: true     # 是否以离线模式运行 StackRox。
     central:
       db:
-        source:
+        source:                    
           connectionString: "host=acid-business-1.proj01-postgres.svc port=5432 user=postgres sslmode=require" # 指定数据库连接字符串
       exposure:
         ingress:
@@ -103,7 +108,7 @@ spec:
 
 ### 访问中央控制台
 
-- **地址:** `https://example.com`（中央 Ingress 主机的地址）
+- **地址:** `https://example.com` (中央 Ingress 主机的地址)
 - **初始账户:** `admin/07Apples@`
 
 ---
@@ -112,9 +117,9 @@ spec:
 
 ### 生成集群访问证书
 
-1. 在平台配置中，转到 **Clusters**。
+1. 在平台配置中，转到 **Platform Configuration → Integrations**。
 
-2. 点击中央服务插件旁边的 **Init bundles** 按钮。
+2. 点击 **Authentication Tokens --> Cluster Init Bundle** 按钮。
 
    ![init bundle](../assets/init_bundle.png)
 
@@ -142,23 +147,24 @@ spec:
    kubectl apply -f business-1-Operator-secrets-cluster-init-bundle.yaml -n stackrox
    ```
 
-3. **配置 Ingress 域名证书（如有需要）：**
+3. 如果中央域使用不受信任的证书，您需要创建 additional-ca-sensor 密钥。
+**配置 Ingress 域名证书：**
 
-   ```bash
-   kubectl create secret generic additional-ca-sensor \
-     --from-file=00-ingress-ca.crt=<path-to-cert-file> \
-     -n stackrox
-   ```
+```bash
+kubectl create secret generic additional-ca-sensor \
+  --from-file=00-ingress-ca.crt=<path-to-cert-file> \
+  -n stackrox
+```
 
 ---
 
 ### 集群通过 UI 安装
 
 1. 在平台管理中，转到 **Marketplace → Cluster Plugins**。
-2. 点击集群服务插件旁边的 **Install** 按钮。
+2. 点击集群服务 StackRox 插件旁边的 **Install** 按钮。
 3. 按提示填写存储类和配置参数。
 
-> **注意:** 中央服务地址是访问地址，例如 `wss://example.com:443`。
+> **注意：** 中央服务地址是访问地址，例如 `wss://example.com:443`。
 
 ---
 
@@ -193,10 +199,8 @@ spec:
 | ------------------- | ----------------------- |
 | central-\*          | 与中央相关的密钥         |
 | scanner-\*          | 与扫描器相关的密钥       |
-| sensor-tls          | 传感器 TLS 密钥          |
+| sensor-tls          | 传感器 TLS 密钥         |
 | service-ca          | 服务 CA 密钥            |
-| admission-control-tls | 审批控制 TLS            |
+| admission-control-tls| 审批控制 TLS           |
 | collector-tls       | 收集器 TLS 密钥         |
-| stackrox-generated-once | 一次性生成的密钥       |
-
----
+| stackrox-generated-once | 一次性生成的密钥     |
