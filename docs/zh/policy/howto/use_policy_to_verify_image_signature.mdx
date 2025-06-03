@@ -51,7 +51,7 @@ Alauda 容器安全支持以下签名验证方法：
 5. 点击 **Cosign 证书**，然后 **添加新的证书验证**。
 6. 输入 **证书 OIDC 颁发者**（支持 [RE2 语法](https://github.com/google/re2/wiki/Syntax) 的正则表达式）。
 7. 输入 **证书身份**（支持 [RE2 语法](https://github.com/google/re2/wiki/Syntax) 的正则表达式）。
-8. （可选）输入 **证书链 PEM 编码** 以验证证书。如果未提供，则证书将与 [Fulcio](https://docs.sigstore.dev/certificate_authority/overview/) 根进行验证。
+8. （可选）输入 **证书链 PEM 编码** 以验证证书。如果未提供，则证书将根据 [Fulcio](https://docs.sigstore.dev/certificate_authority/overview/) 根进行验证。
 9. （可选）输入 **证书 PEM 编码** 以验证签名。
 10. （可选）根据需要添加更多证书验证。
 11. 点击 **保存**。
@@ -64,7 +64,7 @@ Alauda 容器安全支持以下签名验证方法：
 
 ### 操作步骤
 
-1. 在创建或编辑策略时，将 **未经过可信镜像签名者验证** 条件拖入 **策略条件** 下的策略字段。
+1. 在创建或编辑策略时，将 **未经过可信镜像签名者验证** 的条件拖入 **策略条件** 下的策略字段。
 2. 点击 **选择**。
 3. 从列表中选择可信镜像签名者，然后点击 **保存**。
 

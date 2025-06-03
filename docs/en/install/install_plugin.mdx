@@ -45,7 +45,7 @@ This guide provides step-by-step instructions for installing the Alauda Containe
      -n stackrox
    ```
 
-4. Create additional CA secret (if needed):
+4. Create additional CA secret :
 
    ```bash
    kubectl create secret generic additional-ca \
@@ -64,7 +64,7 @@ This guide provides step-by-step instructions for installing the Alauda Containe
 |Parameters|Description|
 |---|---|
 |Central Database Connection String|The connection string for the central database.For example: `host=acid-business-1.proj01-postgres.svc port=5432 user=postgres sslmode=require`|
-|Ingress Host|Specify a custom hostname for the central ingress. Specify a "central-ingress-tls" ts type secret in stackrox namespace that contains tls.crt, tls.key.|
+|Host|Specify a custom hostname for the central ingress. Specify a "central-ingress-tls" ts type secret in stackrox namespace that contains tls.crt, tls.key.|
 
 ---
 
@@ -73,6 +73,9 @@ This guide provides step-by-step instructions for installing the Alauda Containe
 Apply the following YAML to your target cluster:
 
 ```yaml
+# YAML Deployment Method for StackRox Cluster Plugin
+# Create a StackRox Central Services plugin instance
+---
 apiVersion: cluster.alauda.io/v1alpha1
 kind: ClusterPluginInstance
 metadata:
@@ -86,9 +89,11 @@ metadata:
 spec:
   pluginName: stackrox-central-services
   config:
+    env:
+      offlineMode: true     # Whether to run StackRox in offline mode.
     central:
       db:
-        source:
+        source:                    
           connectionString: "host=acid-business-1.proj01-postgres.svc port=5432 user=postgres sslmode=require" # Specify the database connection string
       exposure:
         ingress:
@@ -111,9 +116,9 @@ spec:
 
 ### Generate Cluster Access Certificate
 
-1. In Platform Configuration, go to **Clusters**.
+1. In Platform Configuration, go to **Platform Configuration → Integrations**.
 
-2. Click the **Init bundles** button next to Central Service for StackRox.  
+2. Click the button of **Authentication Tokens --> Cluster Init Bundle**
    
    ![init bundle](../assets/init_bundle.png)  
 
@@ -140,7 +145,8 @@ spec:
    kubectl apply -f business-1-Operator-secrets-cluster-init-bundle.yaml -n stackrox
    ```
 
-3. **Configure Ingress domain certificate (if needed):**
+3.If the central domain uses an untrusted certificate, you need to create the additional-ca-sensor secret. 
+**Configure Ingress domain certificate :**
 
    ```bash
    kubectl create secret generic additional-ca-sensor \
@@ -197,4 +203,3 @@ After uninstalling the plugin, manually clean up the following secret resources 
 | collector-tls              | Collector TLS secret       |
 | stackrox-generated-once    | One-time generated secret  |
 
----
