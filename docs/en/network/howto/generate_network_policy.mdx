@@ -71,11 +71,11 @@ $ kubectl delete -f "<generated_file>.yml"
 - To revert to a previous policy, use the **Revert rules to previously applied YAML** option in the Alauda Container Security portal.
 - To delete all automatically generated policies:
 
-```bash
-$ kubectl get ns -o jsonpath='{.items[*].metadata.name}' | \
-xargs -n 1 kubectl delete networkpolicies -l \
-'network-policy-generator.stackrox.io/generated=true' -n
-```
+    ```bash
+    $ kubectl get ns -o jsonpath='{.items[*].metadata.name}' | \
+    xargs -n 1 kubectl delete networkpolicies -l \
+    'network-policy-generator.stackrox.io/generated=true' -n
+    ```
 
 ## Additional Notes
 

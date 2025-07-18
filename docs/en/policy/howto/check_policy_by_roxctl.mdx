@@ -42,13 +42,13 @@ The following table summarizes the available output options:
 | `headers-as-comment`          | Include the header row as a comment in the output.                          | `csv`           |
 | `--junit-suite-name`          | Specify the name of the JUnit test suite.                                   | `junit`         |
 
-#### Example: Custom Headers and JSONPath
+### Example: Custom Headers and JSONPath
 
-```bash
-roxctl deployment check --file=<yaml_filename> \
-  -o table --headers POLICY-NAME,SEVERITY \
-  --row-jsonpath-expressions="{results..violatedPolicies..name,results..violatedPolicies..severity}"
-```
+  ```bash
+  roxctl deployment check --file=<yaml_filename> \
+    -o table --headers POLICY-NAME,SEVERITY \
+    --row-jsonpath-expressions="{results..violatedPolicies..name,results..violatedPolicies..severity}"
+  ```
 
 ## Checking Policy Compliance for Deployments
 
