@@ -42,7 +42,7 @@ The following table summarizes the available output options:
 | `headers-as-comment`          | Include the header row as a comment in the output.                          | `csv`           |
 | `--junit-suite-name`          | Specify the name of the JUnit test suite.                                   | `junit`         |
 
-#### Example: Custom Headers and JSONPath
+### Example: Custom Headers and JSONPath
 
 ```bash
 roxctl deployment check --file=<yaml_filename> \
@@ -70,7 +70,7 @@ roxctl deployment check --file=<yaml_filename> \
 
 To force Alauda Container Security to re-pull image metadata and scan results, add the `--force` option.
 
-> **Permission Requirement:**  
+> **Permission Requirement:**
 > To check specific image scan results, your token must have both `read` and `write` permissions for the `Image` resource. The default **Continuous Integration** system role includes these permissions.
 
 **The deployment check validates:**
@@ -87,7 +87,7 @@ roxctl image check --image=<image_name>
 
 To force Alauda Container Security to re-pull image metadata and scan results, add the `--force` option.
 
-> **Permission Requirement:**  
+> **Permission Requirement:**
 > To check specific image scan results, your token must have both `read` and `write` permissions for the `Image` resource. The default **Continuous Integration** system role includes these permissions.
 
 ## Viewing Image Scan Results
@@ -100,7 +100,7 @@ roxctl image scan --image=<image_name>
 
 To force Alauda Container Security to re-pull image metadata and scan results, add the `--force` option.
 
-> **Permission Requirement:**  
+> **Permission Requirement:**
 > To check specific image scan results, your token must have both `read` and `write` permissions for the `Image` resource. The default **Continuous Integration** system role includes these permissions.
 
 ---
