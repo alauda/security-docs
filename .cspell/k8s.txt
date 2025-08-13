@@ -1,7 +1,2 @@
-cpaas
-k8s
-kubernetes
-roxctl
 stackrox
 unsnoozed
-SARIF
