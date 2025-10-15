@@ -2,9 +2,9 @@
 weight: 5
 ---
 
-# Alauda Container Security Plugin Installation
+# Alauda Security Service for StackRox Installation
 
-This guide provides step-by-step instructions for installing the Alauda Container Security plugin.
+This guide provides step-by-step instructions for installing the Alauda Security Service for StackRox.
 
 ## Installation Requirements
 
@@ -16,36 +16,60 @@ This guide provides step-by-step instructions for installing the Alauda Containe
 - PostgreSQL: `>=13`
 - TLS Certificate
 
-## Central Service Plugin Installation
+## Download and Import
 
-### Pre-installation Steps
+1. Download the Alauda Security Service for StackRox from the Custom portal.
 
-1. Create the stackrox namespace:
+2. Use the Violet tool to upload the plugin to the platform.
 
-   ```bash
-   kubectl create ns stackrox
-   ```
+    ```bash
+    violet push stackrox-operator.vx.x.x.tgz --platform-address https://192.168.0.1 --platform-username <user> --platform-password <password>
+    ```
 
-2. Create the central-db-password secret:  
+## Install Stackrox operator
+
+1. Log in to the platform and navigate to the Administrator page.
+
+2. In the left navigation bar, select Marketplace -> OperatorHub to enter the OperatorHub page.
+
+3. Find Alauda Security Service for StackRox, click Install to access the installation page.
+
+Configuration Parameters:
+
+| **Parameter**             | **Recommended Configuration**                                                                                                                  |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Channel**               | The default Channel is **alpha**.                                                                                                             |
+| **Version**               | Select the desired version to install.                                                                                                         |
+| **Installation Mode**     | **Cluster**: All namespaces under the cluster share one Operator for creating and managing instances, resulting in lower resource usage.       |
+| **Installation Location** | Choose the **Recommended**: If none exists, it will be created automatically.                                                                  |
+| **Upgrade Strategy**      | **Manual**: When a new version is available in the OperatorHub, manual confirmation is required to upgrade the Operator to the latest version. |
+
+4.  On the **Install Operator** page, select **Default Configuration**, then click **Install** to complete the installation of **AAlauda Security Service for StackRox**.
+
+## Central Service Installation
+
+### Pre-installation procedure
+
+1. Create the central-db-password secret:  
    Store the password in the `password` data item.
 
    ```bash
    kubectl create secret generic central-db-password \
      --from-literal=password=<central db password> \
-     -n stackrox
+     -n stackrox-operator
    ```
 
-3. Enable Ingress and configure domain certificate:  
+2. Enable Ingress and configure domain certificate:  
    Create a TLS secret with your certificate and key.
 
    ```bash
    kubectl create secret tls central-ingress-tls \
      --cert=<path/to/tls.crt> \
      --key=<path/to/tls.key> \
-     -n stackrox
+     -n stackrox-operator
    ```
 
-4. Create additional CA secret :
+3. Create additional CA secret :
 
    ```bash
    kubectl create secret generic additional-ca \
@@ -57,14 +81,17 @@ This guide provides step-by-step instructions for installing the Alauda Containe
 
 ### Install via UI
 
-1. In Platform Management, go to **Marketplace → Cluster Plugins**.
-2. Click the **Install** button next to the Central Service for StackRox plugin.
-3. Fill in the storage class and configuration parameters as prompted.  
+1. Log in to the platform and navigate to the Administrator page.
 
-|Parameters|Description|
-|---|---|
-|Central Database Connection String|The connection string for the central database.For example: `host=acid-business-1.proj01-postgres.svc port=5432 user=postgres sslmode=require`|
-|Host|Specify a custom hostname for the central ingress. Specify a "central-ingress-tls" ts type secret in stackrox namespace that contains tls.crt, tls.key.|
+2. In the left navigation bar, select Marketplace -> OperatorHub to enter the OperatorHub page.
+
+3. Find Alauda Security Service for StackRox, click the card access the Details page.
+
+4. Navigate to the **All Instances** tab, click **Create** and select **Cental** to access the **Create Central** page.
+
+5. Fill in the configuration parameters as prompted.
+
+6. Click **Create** to complete the installation of **Central Service**.
 
 ---
 
@@ -73,96 +100,155 @@ This guide provides step-by-step instructions for installing the Alauda Containe
 Apply the following YAML to your target cluster:
 
 ```yaml
-# YAML Deployment Method for StackRox Cluster Plugin
-# Create a StackRox Central Services plugin instance
+# YAML Deployment Method for StackRox Operator
+# Create a StackRox Central Services instance
 ---
-apiVersion: cluster.alauda.io/v1alpha1
-kind: ClusterPluginInstance
+apiVersion: platform.stackrox.io/v1alpha1
+kind: Central
 metadata:
-  annotations:
-    cpaas.io/display-name: stackrox-central-services
-  labels:
-    create-by: cluster-transformer
-    manage-delete-by: cluster-transformer
-    manage-update-by: cluster-transformer
   name: stackrox-central-services
+  namespace: stackrox-operator
+  labels: {}
+  annotations:
+    cpaas.io/display-name: ""
 spec:
-  pluginName: stackrox-central-services
-  config:
-    env:
-      offlineMode: true     # Whether to run StackRox in offline mode.
-    central:
-      db:
-        source:                    
-          connectionString: "host=acid-business-1.proj01-postgres.svc port=5432 user=postgres sslmode=require" # Specify the database connection string
-      exposure:
-        ingress:
-          enabled: true
-          host: "example.com"
-        loadBalancer:
-          enabled: false
+  egress:
+    connectivityPolicy: Online                    # support: Online / Offline. offline mode requires manual upload of the vulnerability database.
+  scanner:
+    scannerComponent: Disabled
+  central:
+    exposure:
+      ingress:
+        enabled: true
+        host: example.com
+        tls:
+          secretName: central-ingress-tls
+      nodePort:
+        enabled: true
+      loadBalancer:
+        enabled: false
+    db:
+      passwordSecret:
+        name: central-htpasswd
+      connectionString: host=central-db.stackrox port=5432 user=postgres sslmode=require  # Specify the database connection string
+  tls:                              # ingress domain certificate ca or cert， If ingress is not enabled, no configuration is needed.
+    additionalCAs:
+      content: |-
+        -----BEGIN CERTIFICATE-----
+        MIIB0TCCAXigAwIBAgIUXvN2ovk16V6+7jUAJpYdEXo1K4UwCgYIKoZIzj0EAwIw
+        RzEnMCUGA1UEAxMeU3RhY2tSb3ggQ2VydGlmaWNhdGUgQXV0aG9yaXR5MRwwGgYD
+        VQQFExM2MDYyNzAwMjg3MTkxNjM0NDY4MB4XDTI1MDkyNTA2MjQwMFoXDTMwMDky
+        NDA2MjQwMFowRzEnMCUGA1UEAxMeU3RhY2tSb3ggQ2VydGlmaWNhdGUgQXV0aG9y
+        aXR5MRwwGgYDVQQFExM2MDYyNzAwMjg3MTkxNjM0NDY4MFkwEwYHKoZIzj0CAQYI
+        KoZIzj0DAQcDQgAE57RYqus1/v3VcJ/fP+vG4flQ8uunyx2lguQ9cT0VYOZJnKDh
+        FQ/58jgEPeHGgu+wU2Mvjumc7qFe1gP/jSuW66NCMEAwDgYDVR0PAQH/BAQDAgEG
+        MA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFKxLpgvy2HnDYZTQw2nIiLdR3fxh
+        MAoGCCqGSM49BAMCA0cAMEQCID2uapFJnsdM4BGmnRCx7HqUrwrpBEjXZ98atcKO
+        IDCXAiAwuYzXAIMLNfLRakIz+hXxvvGY3+A5ZeRARZQVPatTaQ==
+        -----END CERTIFICATE-----
+      name: additional-ca
 ```
 
 ---
 
+### Central Settings
+
+| Parameter                                             | Description |
+| ----------------------------------------------------- | ----------- |
+| central.declarativeConfiguration.mounts.configMaps    | Mounts config maps used for declarative configurations. |
+| Central.declarativeConfiguration.mounts.secrets       | Mounts secrets used for declarative configurations. |
+| central.endpointsConfig                               | The endpoint configuration options for Central. |
+| central.nodeSelector                                  | If the node selector selects tainted nodes, use this parameter to specify a taint toleration key, value, and effect for Central. This parameter is mainly used for infrastructure nodes. |
+| central.tolerations                                   | If the node selector selects tainted nodes, use this parameter to specify a taint toleration key, value, and effect for Central. This parameter is mainly used for infrastructure nodes. |
+| central.exposeMonitoring                               | Specify true to expose Prometheus metrics endpoint for Central on port number 9090. |
+| central.image.registry                                 | A custom registry that overrides the global image.registry parameter for the Central image. |
+| central.image.name                                     | The custom image name that overrides the default Central image name (main). |
+| central.image.tag                                      | The custom image tag that overrides the default tag for Central image. If you specify your own image tag during a new installation, you must manually increment this tag when you to upgrade to a new version by running the helm upgrade command. If you mirror Central images in your own registry, do not modify the original image tags. |
+| central.image.fullRef                                  | Full reference including registry address, image name, and image tag for the Central image. Setting a value for this parameter overrides the central.image.registry, central.image.name, and central.image.tag parameters. |
+| central.resources.requests.memory                      | The memory request for Central. |
+| central.resources.requests.cpu                         | The CPU request for Central. |
+| central.resources.limits.memory                        | The memory limit for Central. |
+| central.resources.limits.cpu                           | The CPU limit for Central. |
+| central.exposure.loadBalancer.enabled                  | Use true to expose Central by using a load balancer. |
+| central.exposure.loadBalancer.port                     | The port number on which to expose Central. The default port number is 443. |
+| central.exposure.nodePort.enabled                      | Use true to expose Central by using the node port service. |
+| central.exposure.nodePort.port                         | The port number on which to expose Central. When you skip this parameter, Alauda Container Platform automatically assigns a port number. Red Hat recommends that you do not specify a port number if you are exposing Stackrox by using a node port. |
+| central.exposure.route.enabled                         | Use true to expose Central by using a route. Disables all route settings if set to false. This parameter is only available for Alauda Container Platform clusters. |
+| central.exposure.route.host                            | Use this parameter to specify a custom hostname to use for Central's passthrough route. Leave this unset to accept the default value that Alauda Container Platform provides. This parameter is only available for Alauda Container Platform clusters. |
+| central.exposure.route.reencrypt.enabled               | Set this to true to expose Central through a Red Hat Alauda reencrypt route. The default value is false. This parameter is only available for Alauda Container Platform clusters. |
+| central.exposure.route.reencrypt.host                  | Use this parameter to specify a custom hostname to use for Central's reencrypt route. Leave this unset to accept the default value that Alauda Container Platform provides. This parameter is only available for Alauda Container Platform clusters. |
+| central.exposure.route.reencrypt.tls.caCertificate     | Use this parameter to specify a PEM-encoded certificate chain that might be used to establish a complete chain of trust. By default, Alauda Container Platform provides the certificate authority. This parameter is only available for Alauda Container Platform clusters. |
+| central.exposure.route.reencrypt.tls.certificate       | Use this parameter to specify the PEM-encoded certificate that is served on the route. The Alauda Container Platform certificate authority signs the default certificate. This parameter is only available for Alauda Container Platform clusters. |
+| central.exposure.route.reencrypt.tls.destinationCACertificate | Use this parameter to specify the CA certificate of the final destination, that is of Central. The Alauda Container Platform router uses this certificate to perform health checks on the secure connection. By default, Central provides the certificate authority. |
+| central.exposure.route.reencrypt.tls.key               | Use this parameter to specify the PEM-encoded private key of the certificate that is served on the route. The Alauda Container Platform certificate authority signs the default certificate. This parameter is only available for Alauda Container Platform clusters. |
+| central.db.external                                    | Use true to specify that Central DB should not be deployed and that an external database will be used. |
+| central.db.source.connectionString                     | The connection string for Central to use to connect to the database. This is only used when central.db.external is set to true. The connection string must be in keyword/value format as described in the PostgreSQL documentation in "Additional resources". Postgres 15 is the recommended and supported version. Red Hat has deprecated the support for Postgres 13 and will remove it in the newer versions. Connections through PgBouncer are not supported. User must be superuser with ability to create and delete databases. |
+| central.db.source.minConns                             | The minimum number of connections to the database to be established. |
+| central.db.source.maxConns                             | The maximum number of connections to the database to be established. |
+| central.db.source.statementTimeoutMs                   | The number of milliseconds a single query or transaction can be active against the database. |
+| central.db.postgresConfig                              | The postgresql.conf to be used for Central DB as described in the PostgreSQL documentation in "Additional resources". |
+| central.db.hbaConfig                                   | The pg_hba.conf to be used for Central DB as described in the PostgreSQL documentation in "Additional resources". |
+| central.db.nodeSelector                                | Specify a node selector label as label-key: label-value to force Central DB to only schedule on nodes with the specified label. |
+| central.db.image.registry                              | A custom registry that overrides the global image.registry parameter for the Central DB image. |
+| central.db.image.name                                  | The custom image name that overrides the default Central DB image name (central-db). |
+| central.db.image.tag                                   | The custom image tag that overrides the default tag for Central DB image. If you specify your own image tag during a new installation, you must manually increment this tag when you to upgrade to a new version by running the helm upgrade command. If you mirror Central DB images in your own registry, do not modify the original image tags. |
+| central.db.image.fullRef                               | Full reference including registry address, image name, and image tag for the Central DB image. Setting a value for this parameter overrides the central.db.image.registry, central.db.image.name, and central.db.image.tag parameters. |
+| central.db.resources.requests.memory                   | The memory request for Central DB. |
+| central.db.resources.requests.cpu                      | The CPU request for Central DB. |
+| central.db.resources.limits.memory                     | The memory limit for Central DB. |
+| central.db.resources.limits.cpu                        | The CPU limit for Central DB. |
+| central.db.persistence.hostPath                        | The path on the node where stackrox should create a database volume. Red Hat does not recommend using this option. |
+| central.db.persistence.persistentVolumeClaim.claimName | The name of the persistent volume claim (PVC) you are using. |
+| central.db.persistence.persistentVolumeClaim.createClaim | Use true to create a new persistent volume claim, or false to use an existing claim. |
+| central.db.persistence.persistentVolumeClaim.size      | The size (in GiB) of the persistent volume managed by the specified claim. |
+
+
 ### Access Central Console
 
 - **Address:** `https://example.com` (The address of the central ingress host)
-- **Initial account:** `admin/07Apples@`
+- **Initial account:** admin
+- **Initial password:** The initial password is in the stackrox central-htpasswd secret.
+
+  ```bash
+  kubectl -n stackrox-operator get secret central-htpasswd -o go-template='{{index .data "password" | base64decode}}'
+  ```
 
 ---
 
-## Cluster Service Plugin Installation
+## Cluster Service  Installation
 
-### Generate Cluster Access Certificate
+### Cluster Pre-installation procedure
 
-1. In Platform Configuration, go to **Platform Configuration → Integrations**.
+1. Download the CLI tool following the guide [Download CLI](../install/install_cli.mdx) from the platform.
 
-2. Click the button of **Authentication Tokens --> Cluster Init Bundle**
-   
-   ![init bundle](../assets/init_bundle.png)  
-
-3. Click **Create bundle**.  
-   
-   ![create bundle](../assets/create_bundle.png)
-4. Enter the name of the access cluster and download the generated file (e.g., `business-1-Operator-secrets-cluster-init-bundle.yaml`).  
-   
-   ![download bundle enter](../assets/create_bundle_enter.png)
-
----
-
-### Cluster Pre-installation Steps
-
-1. **Create the stackrox namespace:**
+2. Run the following command to generate the cluster access certificate:
 
    ```bash
-   kubectl create ns stackrox
+   roxctl central crs generate <cluster name> --output crs.yaml --endpoint <stackrox central address> --password <central admin password>
    ```
+   The password can be obtained from the central-htpasswd secret
 
-2. **Apply the cluster init bundle secret:**
-
-   ```bash
-   kubectl apply -f business-1-Operator-secrets-cluster-init-bundle.yaml -n stackrox
-   ```
-
-3.If the central domain uses an untrusted certificate, you need to create the additional-ca-sensor secret. 
-**Configure Ingress domain certificate :**
+3. Create secured cluster crs yaml
 
    ```bash
-   kubectl create secret generic additional-ca-sensor \
-     --from-file=00-ingress-ca.crt=<path-to-cert-file> \
-     -n stackrox
+   kubectl apply -f crs.yaml -n stackrox-operator
    ```
 
 ---
 
 ### Cluster Install via UI
 
-1. In Platform Management, go to **Marketplace → Cluster Plugins**.
-2. Click the **Install** button next to the Cluster Service for StackRox plugin.
-3. Fill in the storage class and configuration parameters as prompted.  
+1. Log in to the platform and navigate to the Administrator page.
 
-> **Note:** The Central service address is the access address, e.g., `wss://example.com:443`.
+2. In the left navigation bar, select Marketplace -> OperatorHub to enter the OperatorHub page.
+
+3. Find Alauda Security Service for StackRox, click the card access the Details page.
+
+4. Navigate to the **All Instances** tab, click **Create** and select **Cental** to access the **Create Cluster Service** page.
+
+5. Fill in the configuration parameters as prompted.
+
+6. Click **Create** to complete the installation of **Cluster Service**.
 
 ---
 
@@ -171,35 +257,35 @@ spec:
 Apply the following YAML to your target cluster:
 
 ```yaml
-apiVersion: cluster.alauda.io/v1alpha1
-kind: ClusterPluginInstance
-metadata:
-  annotations:
-    cpaas.io/display-name: stackrox-secured-cluster-services
-  labels:
-    create-by: cluster-transformer
-    manage-delete-by: cluster-transformer
-    manage-update-by: cluster-transformer
-  name: stackrox-secured-cluster-services
-spec:
-  pluginName: stackrox-secured-cluster-services
-  config:
-    centralEndpoint: "wss://example.com:443" # Specify the address of StackRox Central Services
-```
-
 ---
-
-## Plugin Uninstallation
-
-After uninstalling the plugin, manually clean up the following secret resources in the `stackrox` namespace if they remain:
-
-| Secret Name Pattern         | Description                |
-|----------------------------|----------------------------|
-| central-*                  | Central related secrets    |
-| scanner-*                  | Scanner related secrets    |
-| sensor-tls                 | Sensor TLS secret          |
-| service-ca                 | Service CA secret          |
-| admission-control-tls      | Admission control TLS      |
-| collector-tls              | Collector TLS secret       |
-| stackrox-generated-once    | One-time generated secret  |
+# Create a StackRox Secured Cluster Services instance
+---
+apiVersion: platform.stackrox.io/v1alpha1
+kind: SecuredCluster
+metadata:
+  name: stackrox-secured-cluster-services
+  namespace: stackrox-operator
+  labels: {}
+  annotations:
+    cpaas.io/display-name: ""
+spec:
+  clusterName: business-1
+  centralEndpoint: wss://example.com:443    # Specify the address of StackRox Central Services, If it is in the same cluster as central, configuration may not be necessary.
+  tls:                                      # ingress domain certificate ca or cert， If ingress is not enabled, no configuration is needed.
+    additionalCAs:
+      content: |-
+        -----BEGIN CERTIFICATE-----
+        MIIB0TCCAXigAwIBAgIUXvN2ovk16V6+7jUAJpYdEXo1K4UwCgYIKoZIzj0EAwIw
+        RzEnMCUGA1UEAxMeU3RhY2tSb3ggQ2VydGlmaWNhdGUgQXV0aG9yaXR5MRwwGgYD
+        VQQFExM2MDYyNzAwMjg3MTkxNjM0NDY4MB4XDTI1MDkyNTA2MjQwMFoXDTMwMDky
+        NDA2MjQwMFowRzEnMCUGA1UEAxMeU3RhY2tSb3ggQ2VydGlmaWNhdGUgQXV0aG9y
+        aXR5MRwwGgYDVQQFExM2MDYyNzAwMjg3MTkxNjM0NDY4MFkwEwYHKoZIzj0CAQYI
+        KoZIzj0DAQcDQgAE57RYqus1/v3VcJ/fP+vG4flQ8uunyx2lguQ9cT0VYOZJnKDh
+        FQ/58jgEPeHGgu+wU2Mvjumc7qFe1gP/jSuW66NCMEAwDgYDVR0PAQH/BAQDAgEG
+        MA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFKxLpgvy2HnDYZTQw2nIiLdR3fxh
+        MAoGCCqGSM49BAMCA0cAMEQCID2uapFJnsdM4BGmnRCx7HqUrwrpBEjXZ98atcKO
+        IDCXAiAwuYzXAIMLNfLRakIz+hXxvvGY3+A5ZeRARZQVPatTaQ==
+        -----END CERTIFICATE-----
+      name: additional-ca
+```
 
