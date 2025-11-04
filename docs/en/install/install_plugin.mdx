@@ -69,14 +69,6 @@ Configuration Parameters:
      -n stackrox-operator
    ```
 
-3. Create additional CA secret :
-
-   ```bash
-   kubectl create secret generic additional-ca \
-     --from-file=00-ingress-ca.crt=<path-to-cert-file> \
-     -n stackrox
-   ```
-
 ---
 
 ### Install via UI
@@ -114,8 +106,6 @@ metadata:
 spec:
   egress:
     connectivityPolicy: Online                    # support: Online / Offline. offline mode requires manual upload of the vulnerability database.
-  scanner:
-    scannerComponent: Disabled
   central:
     exposure:
       ingress:
@@ -123,10 +113,6 @@ spec:
         host: example.com
         tls:
           secretName: central-ingress-tls
-      nodePort:
-        enabled: true
-      loadBalancer:
-        enabled: false
     db:
       passwordSecret:
         name: central-htpasswd
@@ -155,9 +141,6 @@ spec:
 
 | Parameter                                             | Description |
 | ----------------------------------------------------- | ----------- |
-| central.declarativeConfiguration.mounts.configMaps    | Mounts config maps used for declarative configurations. |
-| Central.declarativeConfiguration.mounts.secrets       | Mounts secrets used for declarative configurations. |
-| central.endpointsConfig                               | The endpoint configuration options for Central. |
 | central.nodeSelector                                  | If the node selector selects tainted nodes, use this parameter to specify a taint toleration key, value, and effect for Central. This parameter is mainly used for infrastructure nodes. |
 | central.tolerations                                   | If the node selector selects tainted nodes, use this parameter to specify a taint toleration key, value, and effect for Central. This parameter is mainly used for infrastructure nodes. |
 | central.exposeMonitoring                               | Specify true to expose Prometheus metrics endpoint for Central on port number 9090. |
@@ -173,35 +156,27 @@ spec:
 | central.exposure.loadBalancer.port                     | The port number on which to expose Central. The default port number is 443. |
 | central.exposure.nodePort.enabled                      | Use true to expose Central by using the node port service. |
 | central.exposure.nodePort.port                         | The port number on which to expose Central. When you skip this parameter, Alauda Container Platform automatically assigns a port number. Red Hat recommends that you do not specify a port number if you are exposing Stackrox by using a node port. |
-| central.exposure.route.enabled                         | Use true to expose Central by using a route. Disables all route settings if set to false. This parameter is only available for Alauda Container Platform clusters. |
-| central.exposure.route.host                            | Use this parameter to specify a custom hostname to use for Central's passthrough route. Leave this unset to accept the default value that Alauda Container Platform provides. This parameter is only available for Alauda Container Platform clusters. |
-| central.exposure.route.reencrypt.enabled               | Set this to true to expose Central through a Red Hat Alauda reencrypt route. The default value is false. This parameter is only available for Alauda Container Platform clusters. |
-| central.exposure.route.reencrypt.host                  | Use this parameter to specify a custom hostname to use for Central's reencrypt route. Leave this unset to accept the default value that Alauda Container Platform provides. This parameter is only available for Alauda Container Platform clusters. |
-| central.exposure.route.reencrypt.tls.caCertificate     | Use this parameter to specify a PEM-encoded certificate chain that might be used to establish a complete chain of trust. By default, Alauda Container Platform provides the certificate authority. This parameter is only available for Alauda Container Platform clusters. |
-| central.exposure.route.reencrypt.tls.certificate       | Use this parameter to specify the PEM-encoded certificate that is served on the route. The Alauda Container Platform certificate authority signs the default certificate. This parameter is only available for Alauda Container Platform clusters. |
-| central.exposure.route.reencrypt.tls.destinationCACertificate | Use this parameter to specify the CA certificate of the final destination, that is of Central. The Alauda Container Platform router uses this certificate to perform health checks on the secure connection. By default, Central provides the certificate authority. |
-| central.exposure.route.reencrypt.tls.key               | Use this parameter to specify the PEM-encoded private key of the certificate that is served on the route. The Alauda Container Platform certificate authority signs the default certificate. This parameter is only available for Alauda Container Platform clusters. |
-| central.db.external                                    | Use true to specify that Central DB should not be deployed and that an external database will be used. |
-| central.db.source.connectionString                     | The connection string for Central to use to connect to the database. This is only used when central.db.external is set to true. The connection string must be in keyword/value format as described in the PostgreSQL documentation in "Additional resources". Postgres 15 is the recommended and supported version. Red Hat has deprecated the support for Postgres 13 and will remove it in the newer versions. Connections through PgBouncer are not supported. User must be superuser with ability to create and delete databases. |
-| central.db.source.minConns                             | The minimum number of connections to the database to be established. |
-| central.db.source.maxConns                             | The maximum number of connections to the database to be established. |
-| central.db.source.statementTimeoutMs                   | The number of milliseconds a single query or transaction can be active against the database. |
-| central.db.postgresConfig                              | The postgresql.conf to be used for Central DB as described in the PostgreSQL documentation in "Additional resources". |
-| central.db.hbaConfig                                   | The pg_hba.conf to be used for Central DB as described in the PostgreSQL documentation in "Additional resources". |
-| central.db.nodeSelector                                | Specify a node selector label as label-key: label-value to force Central DB to only schedule on nodes with the specified label. |
-| central.db.image.registry                              | A custom registry that overrides the global image.registry parameter for the Central DB image. |
-| central.db.image.name                                  | The custom image name that overrides the default Central DB image name (central-db). |
-| central.db.image.tag                                   | The custom image tag that overrides the default tag for Central DB image. If you specify your own image tag during a new installation, you must manually increment this tag when you to upgrade to a new version by running the helm upgrade command. If you mirror Central DB images in your own registry, do not modify the original image tags. |
-| central.db.image.fullRef                               | Full reference including registry address, image name, and image tag for the Central DB image. Setting a value for this parameter overrides the central.db.image.registry, central.db.image.name, and central.db.image.tag parameters. |
-| central.db.resources.requests.memory                   | The memory request for Central DB. |
-| central.db.resources.requests.cpu                      | The CPU request for Central DB. |
-| central.db.resources.limits.memory                     | The memory limit for Central DB. |
-| central.db.resources.limits.cpu                        | The CPU limit for Central DB. |
-| central.db.persistence.hostPath                        | The path on the node where stackrox should create a database volume. Red Hat does not recommend using this option. |
-| central.db.persistence.persistentVolumeClaim.claimName | The name of the persistent volume claim (PVC) you are using. |
-| central.db.persistence.persistentVolumeClaim.createClaim | Use true to create a new persistent volume claim, or false to use an existing claim. |
-| central.db.persistence.persistentVolumeClaim.size      | The size (in GiB) of the persistent volume managed by the specified claim. |
-
+| central.exposure.ingress.enabled                       | Use true to expose Central by using a ingress. Disables all ingress settings if set to false. This parameter is only available for Alauda Container Platform clusters. |
+| central.exposure.ingress.host                          | Use this parameter to specify a custom hostname to use for Central's passthrough route. Leave this unset to accept the default value that Alauda Container Platform provides. This parameter is only available for Alauda Container Platform clusters. |
+| central.exposure.ingress.ingressClassName              | Specify a custom ingress class name for the Central ingress. |
+| central.exposure.ingress.tls.secretName                | Set up a Central ingress with TLS secret. |
+| central.db.passwordSecret.name                         | Specify a secret that contains the password in the "password" data item. |
+| central.db.connectionString                            | Specify a connection string that corresponds to a database managed elsewhere. |
+| scannerV4.db.tolerations                               | If you want this component to only run on specific nodes, you can configure tolerations of tainted nodes. |
+| scannerV4.db.nodeSelector                              | If you want this component to only run on specific nodes, you can configure a node selector here. |
+| scannerV4.indexer.scaling.autoScaling                  | When enabled, the number of component replicas is managed dynamically based on the load, within the limits specified below. |
+| scannerV4.indexer.scaling.maxReplicas                  | |
+| scannerV4.indexer.scaling.minReplicas                  | |
+| scannerV4.indexer.scaling.replicas                     |  When autoscaling is disabled, the number of replicas will always be configured to match this value.|
+| scannerV4.indexer.tolerations                          | If you want this component to only run on specific nodes, you can configure tolerations of tainted nodes. |
+| scannerV4.indexer.nodeSelector                         | If you want this component to only run on specific nodes, you can configure a node selector here. |
+| scannerV4.matcher.scaling.autoScaling                  | When enabled, the number of component replicas is managed dynamically based on the load, within the limits specified below.|
+| scannerV4.matcher.scaling.maxReplicas                  | |
+| scannerV4.matcher.scaling.minReplicas                  | |
+| scannerV4.matcher.scaling.replicas                     |  When autoscaling is disabled, the number of replicas will always be configured to match this value. |
+| scannerV4.matcher.tolerations                          | If you want this component to only run on specific nodes, you can configure tolerations of tainted nodes. |
+| scannerV4.matcher.nodeSelector                         | If you want this component to only run on specific nodes, you can configure a node selector here. |
+| tls.additionalCAs                                      | Allows you to specify additional trusted Root CAs. |
 
 ### Access Central Console
 
@@ -289,3 +264,15 @@ spec:
       name: additional-ca
 ```
 
+### Secured Cluster Settings
+
+| Parameter                                             | Description |
+| ----------------------------------------------------- | ----------- |
+| clusterName | The unique name of this cluster, as it will be shown in the StackRox UI. Note: Once a name is set here, you will not be able to change it again. You will need to delete and re-create this object in order to register a cluster with a new name. |
+| centralEndpoint | The endpoint of the StackRox Central instance to connect to, including the port number. If no port is specified and the endpoint contains an https:// protocol specification, then the port 443 is implicitly assumed. If using a non-gRPC capable load balancer, use the WebSocket protocol by prefixing the endpoint address with wss://. Note: when leaving this blank, Sensor will attempt to connect to a Central instance running in the same namespace. |
+| admissionControl.replicas                              | The number of replicas of the admission control pod. |
+| admissionControl.tolerations                           | If you want this component to only run on specific nodes, you can configure tolerations of tainted nodes. |
+| admissionControl.nodeSelector                          | If you want this component to only run on specific nodes, you can configure a node selector here. |
+| sensor.tolerations                                     | If you want this component to only run on specific nodes, you can configure tolerations of tainted nodes. |
+| sensor.nodeSelector                                    | If you want this component to only run on specific nodes, you can configure a node selector here. |
+| tls.additionalCAs                                      | Allows you to specify additional trusted Root CAs. |
