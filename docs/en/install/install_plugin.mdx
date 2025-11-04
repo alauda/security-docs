@@ -26,7 +26,7 @@ This guide provides step-by-step instructions for installing the Alauda Security
     violet push stackrox-operator.vx.x.x.tgz --platform-address https://192.168.0.1 --platform-username <user> --platform-password <password>
     ```
 
-## Install Stackrox operator
+## Install StackRox Operator
 
 1. Log in to the platform and navigate to the Administrator page.
 
@@ -44,9 +44,15 @@ Configuration Parameters:
 | **Installation Location** | Choose the **Recommended**: If none exists, it will be created automatically.                                                                  |
 | **Upgrade Strategy**      | **Manual**: When a new version is available in the OperatorHub, manual confirmation is required to upgrade the Operator to the latest version. |
 
-4.  On the **Install Operator** page, select **Default Configuration**, then click **Install** to complete the installation of **AAlauda Security Service for StackRox**.
+4. On the **Install Operator** page, select **Default Configuration**, then click **Install** to complete the installation of **Alauda Security Service for StackRox**.
 
 ## Central Service Installation
+
+:::info
+Some components of the StackRox Central service are resource-intensive. We recommend running them on infra nodes and setting nodeSelector and tolerations to ensure they run only on those nodes. If you are evaluating the product and have not provisioned infra nodes, you can remove these settings so the components run on all nodes.
+
+For guidance on planning infra nodes, see <ExternalSiteLink name="acp" href="/configure/clusters/acp-node-planning.html" children="Cluster Node Planning" />.
+:::
 
 ### Pre-installation procedure
 
@@ -77,9 +83,9 @@ Configuration Parameters:
 
 2. In the left navigation bar, select Marketplace -> OperatorHub to enter the OperatorHub page.
 
-3. Find Alauda Security Service for StackRox, click the card access the Details page.
+3. Find Alauda Security Service for StackRox, click the card to access the Details page.
 
-4. Navigate to the **All Instances** tab, click **Create** and select **Cental** to access the **Create Central** page.
+4. Navigate to the **All Instances** tab, click **Create** and select **Central** to access the **Create Central** page.
 
 5. Fill in the configuration parameters as prompted.
 
@@ -105,7 +111,7 @@ metadata:
     cpaas.io/display-name: ""
 spec:
   egress:
-    connectivityPolicy: Online                    # support: Online / Offline. offline mode requires manual upload of the vulnerability database.
+    connectivityPolicy: Online  # Supported: Online/Offline. Offline mode requires manual upload of the vulnerability database.
   central:
     exposure:
       ingress:
@@ -113,26 +119,83 @@ spec:
         host: example.com
         tls:
           secretName: central-ingress-tls
+      nodePort:
+        enabled: true
+      loadBalancer:
+        enabled: false
     db:
       passwordSecret:
-        name: central-htpasswd
+        name: central-db-password
       connectionString: host=central-db.stackrox port=5432 user=postgres sslmode=require  # Specify the database connection string
-  tls:                              # ingress domain certificate ca or cert， If ingress is not enabled, no configuration is needed.
+
+    # Tolerations Optional
+    # If you want this component to only run on specific nodes, you can configure tolerations of tainted nodes.
+    tolerations:
+    - effect: NoSchedule
+      key: node-role.kubernetes.io/infra
+      value: reserved
+      operator: Equal
+    nodeSelector:
+      node-role.kubernetes.io/infra: ""
+  
+
+  # scannerV4 Optional
+  scannerV4:
+    db:
+      tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/infra
+        value: reserved
+        operator: Equal
+
+      nodeSelector:
+        node-role.kubernetes.io/infra: ""
+
+    indexer:
+      scaling:
+        autoScaling: Enabled
+        maxReplicas: 5
+        minReplicas: 2
+        replicas: 3
+      tolerations:
+        - effect: NoSchedule
+        key: node-role.kubernetes.io/infra
+        value: reserved
+        operator: Equal
+      nodeSelector:
+        node-role.kubernetes.io/infra: ""
+
+    matcher:
+      scaling:
+        autoScaling: Enabled
+        maxReplicas: 5
+        minReplicas: 1
+        replicas: 3
+      tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/infra
+        value: reserved
+        operator: Equal
+      nodeSelector:
+        node-role.kubernetes.io/infra: ""
+
+  # Ingress domain certificate CA or cert. If ingress is not enabled, no configuration is needed.
+  tls:
     additionalCAs:
-      content: |-
-        -----BEGIN CERTIFICATE-----
-        MIIB0TCCAXigAwIBAgIUXvN2ovk16V6+7jUAJpYdEXo1K4UwCgYIKoZIzj0EAwIw
-        RzEnMCUGA1UEAxMeU3RhY2tSb3ggQ2VydGlmaWNhdGUgQXV0aG9yaXR5MRwwGgYD
-        VQQFExM2MDYyNzAwMjg3MTkxNjM0NDY4MB4XDTI1MDkyNTA2MjQwMFoXDTMwMDky
-        NDA2MjQwMFowRzEnMCUGA1UEAxMeU3RhY2tSb3ggQ2VydGlmaWNhdGUgQXV0aG9y
-        aXR5MRwwGgYDVQQFExM2MDYyNzAwMjg3MTkxNjM0NDY4MFkwEwYHKoZIzj0CAQYI
-        KoZIzj0DAQcDQgAE57RYqus1/v3VcJ/fP+vG4flQ8uunyx2lguQ9cT0VYOZJnKDh
-        FQ/58jgEPeHGgu+wU2Mvjumc7qFe1gP/jSuW66NCMEAwDgYDVR0PAQH/BAQDAgEG
-        MA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFKxLpgvy2HnDYZTQw2nIiLdR3fxh
-        MAoGCCqGSM49BAMCA0cAMEQCID2uapFJnsdM4BGmnRCx7HqUrwrpBEjXZ98atcKO
-        IDCXAiAwuYzXAIMLNfLRakIz+hXxvvGY3+A5ZeRARZQVPatTaQ==
-        -----END CERTIFICATE-----
-      name: additional-ca
+      - content: |-
+          -----BEGIN CERTIFICATE-----
+          MIIB0TCCAXigAwIBAgIUXvN2ovk16V6+7jUAJpYdEXo1K4UwCgYIKoZIzj0EAwIw
+          RzEnMCUGA1UEAxMeU3RhY2tSb3ggQ2VydGlmaWNhdGUgQXV0aG9yaXR5MRwwGgYD
+          VQQFExM2MDYyNzAwMjg3MTkxNjM0NDY4MB4XDTI1MDkyNTA2MjQwMFoXDTMwMDky
+          NDA2MjQwMFowRzEnMCUGA1UEAxMeU3RhY2tSb3ggQ2VydGlmaWNhdGUgQXV0aG9y
+          aXR5MRwwGgYDVQQFExM2MDYyNzAwMjg3MTkxNjM0NDY4MFkwEwYHKoZIzj0CAQYI
+          KoZIzj0DAQcDQgAE57RYqus1/v3VcJ/fP+vG4flQ8uunyx2lguQ9cT0VYOZJnKDh
+          FQ/58jgEPeHGgu+wU2Mvjumc7qFe1gP/jSuW66NCMEAwDgYDVR0PAQH/BAQDAgEG
+          MA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFKxLpgvy2HnDYZTQw2nIiLdR3fxh
+          MAoGCCqGSM49BAMCA0cAMEQCID2uapFJnsdM4BGmnRCx7HqUrwrpBEjXZ98atcKO
+          IDCXAiAwuYzXAIMLNfLRakIz+hXxvvGY3+A5ZeRARZQVPatTaQ==
+          -----END CERTIFICATE-----
+        name: additional-ca
 ```
 
 ---
@@ -146,7 +209,7 @@ spec:
 | central.exposeMonitoring                               | Specify true to expose Prometheus metrics endpoint for Central on port number 9090. |
 | central.image.registry                                 | A custom registry that overrides the global image.registry parameter for the Central image. |
 | central.image.name                                     | The custom image name that overrides the default Central image name (main). |
-| central.image.tag                                      | The custom image tag that overrides the default tag for Central image. If you specify your own image tag during a new installation, you must manually increment this tag when you to upgrade to a new version by running the helm upgrade command. If you mirror Central images in your own registry, do not modify the original image tags. |
+| central.image.tag                                      | The custom image tag that overrides the default tag for Central image. If you specify your own image tag during a new installation, you must manually increment this tag when you upgrade to a new version by running the helm upgrade command. If you mirror Central images in your own registry, do not modify the original image tags. |
 | central.image.fullRef                                  | Full reference including registry address, image name, and image tag for the Central image. Setting a value for this parameter overrides the central.image.registry, central.image.name, and central.image.tag parameters. |
 | central.resources.requests.memory                      | The memory request for Central. |
 | central.resources.requests.cpu                         | The CPU request for Central. |
@@ -155,8 +218,8 @@ spec:
 | central.exposure.loadBalancer.enabled                  | Use true to expose Central by using a load balancer. |
 | central.exposure.loadBalancer.port                     | The port number on which to expose Central. The default port number is 443. |
 | central.exposure.nodePort.enabled                      | Use true to expose Central by using the node port service. |
-| central.exposure.nodePort.port                         | The port number on which to expose Central. When you skip this parameter, Alauda Container Platform automatically assigns a port number. Red Hat recommends that you do not specify a port number if you are exposing Stackrox by using a node port. |
-| central.exposure.ingress.enabled                       | Use true to expose Central by using a ingress. Disables all ingress settings if set to false. This parameter is only available for Alauda Container Platform clusters. |
+| central.exposure.nodePort.port                         | The port number on which to expose Central. When you skip this parameter, Alauda Container Platform automatically assigns a port number. Red Hat recommends that you do not specify a port number if you are exposing StackRox by using a node port. |
+| central.exposure.ingress.enabled                       | Use true to expose Central by using an ingress. Disables all ingress settings if set to false. This parameter is only available for Alauda Container Platform clusters. |
 | central.exposure.ingress.host                          | Use this parameter to specify a custom hostname to use for Central's passthrough route. Leave this unset to accept the default value that Alauda Container Platform provides. This parameter is only available for Alauda Container Platform clusters. |
 | central.exposure.ingress.ingressClassName              | Specify a custom ingress class name for the Central ingress. |
 | central.exposure.ingress.tls.secretName                | Set up a Central ingress with TLS secret. |
@@ -190,7 +253,7 @@ spec:
 
 ---
 
-## Cluster Service  Installation
+## Cluster Service Installation
 
 ### Cluster Pre-installation procedure
 
@@ -201,9 +264,9 @@ spec:
    ```bash
    roxctl central crs generate <cluster name> --output crs.yaml --endpoint <stackrox central address> --password <central admin password>
    ```
-   The password can be obtained from the central-htpasswd secret
+   The password can be obtained from the central-htpasswd secret.
 
-3. Create secured cluster crs yaml
+3. Create Secured Cluster CRs YAML
 
    ```bash
    kubectl apply -f crs.yaml -n stackrox-operator
@@ -217,9 +280,9 @@ spec:
 
 2. In the left navigation bar, select Marketplace -> OperatorHub to enter the OperatorHub page.
 
-3. Find Alauda Security Service for StackRox, click the card access the Details page.
+3. Find Alauda Security Service for StackRox, click the card to access the Details page.
 
-4. Navigate to the **All Instances** tab, click **Create** and select **Cental** to access the **Create Cluster Service** page.
+4. Navigate to the **All Instances** tab, click **Create** and select **Central** to access the **Create Cluster Service** page.
 
 5. Fill in the configuration parameters as prompted.
 
@@ -245,8 +308,31 @@ metadata:
     cpaas.io/display-name: ""
 spec:
   clusterName: business-1
-  centralEndpoint: wss://example.com:443    # Specify the address of StackRox Central Services, If it is in the same cluster as central, configuration may not be necessary.
-  tls:                                      # ingress domain certificate ca or cert， If ingress is not enabled, no configuration is needed.
+  centralEndpoint: wss://example.com:443  # Specify the address of StackRox Central Services. If it is in the same cluster as Central, configuration may not be necessary.
+
+  # AdmissionControl Optional
+  admissionControl:
+    replicas: 3
+    tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/infra
+        value: reserved
+        operator: Equal
+    nodeSelector:
+      node-role.kubernetes.io/infra: ""
+
+  # Sensor Optional
+  sensor:
+    tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/infra
+        value: reserved
+        operator: Equal
+    nodeSelector:
+      node-role.kubernetes.io/infra: ""
+
+  # Ingress domain certificate CA or cert. If ingress is not enabled, no configuration is needed.
+  tls: 
     additionalCAs:
       content: |-
         -----BEGIN CERTIFICATE-----
@@ -262,7 +348,10 @@ spec:
         IDCXAiAwuYzXAIMLNfLRakIz+hXxvvGY3+A5ZeRARZQVPatTaQ==
         -----END CERTIFICATE-----
       name: additional-ca
+ 
 ```
+
+
 
 ### Secured Cluster Settings
 
