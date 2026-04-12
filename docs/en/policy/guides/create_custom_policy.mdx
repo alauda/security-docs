@@ -1,59 +1,92 @@
 ---
 title: Create Custom Policy
-description: Learn how to create custom policies in Alauda Container Security.
+description: Learn how to create custom policies in Alauda Security Service.
 weight: 20
 ---
 
-# Creating Custom Policies in Alauda Container Security
+# Creating Custom Policies in Alauda Security Service
 
-Alauda Container Security allows you to create custom security policies in addition to using the default ones. You can create and manage policies through the web portal or as code using Kubernetes custom resources (CRs).
+Alauda Security Service allows you to create custom security policies in addition to using the default ones. In the current UI, the main entry point is **Platform Configuration > Policy Management > Create policy**.
 
-## Methods to Create Custom Policies
+## Ways to Start a Custom Policy
 
-- In the Alauda Container Security portal, go to **Platform Configuration > Policy Management** and click **Create Policy**.
-- In the **Risk** section, use filters to select criteria and click **Create Policy**.
-- Manage policies as code by saving them as Kubernetes CRs and applying them to clusters using tools like Argo CD.
+- Go to **Platform Configuration > Policy Management** and click **Create policy**
+- Go to **Risk**, apply filters, and click **Create policy**
 
-## Creating Policies via the Portal
+## Policy Definition Flow
 
-### Enter Policy Details
-- **Name**: Enter a name for the policy.
-- **Severity**: Select a severity level.
-- **Category**: Choose a policy category (required).
-- **Description**: Provide details about the policy.
-- **Rationale**: Explain the reason for the policy.
-- **Guidance**: Add steps to resolve violations.
-- **MITRE ATT&CK**: Select relevant tactics and techniques.
+When you click **Create policy**, the product opens a multi-step flow under **Policy definition**. The current steps are:
 
-### Configure Policy Lifecycle
-- Select applicable **Lifecycle Stages**: **Build**, **Deploy**, or **Runtime**.
-- For **Runtime**, choose an **Event Source**: **Deployment** or **Audit logs**.
+- **Details**
+- **Lifecycle**
+- **Rules**
+- **Policy behavior**
+- **Scope**
+- **Actions**
+- **Review**
 
-### Define Policy Rules and Criteria
-- In the **Rules** section, set conditions to trigger the policy.
-- Drag and drop policy fields to build rules. Available fields depend on the selected lifecycle stage.
-- Combine multiple values or rules using logical operators (**AND**/**OR**).
+## Details
 
-### Set Policy Scope
-- **Inclusion Scope**: Restrict policy to specific clusters, namespaces, or deployment labels. Supports RE2 regex for namespaces and labels.
-- **Exclusion Scope**: Exclude specific deployments, clusters, namespaces, or labels. Regex supported for namespaces and labels (not for deployments).
-- For **Build** stage, you can exclude images from the policy.
+In the **Details** step, define the core metadata for the policy:
 
-### Configure Policy Actions
-- **Activation State**: Set the policy as active or inactive.
-- **Enforcement**:
-  - **Inform**: Only report violations.
-  - **Inform and enforce**: Enforce actions based on lifecycle stage:
-    - **Build**: Fails CI builds for noncompliant images.
-    - **Deploy**: Blocks or edits noncompliant deployments if admission controller is enabled.
-    - **Runtime**: Deletes pods matching policy criteria.
-- **Notifiers**: Attach notifiers to send alerts to email or external tools (e.g., Jira, Splunk, webhooks). Notifiers must be pre-configured in **Platform Configuration > Integrations**.
+- **Name**
+- **Severity**
+- **Categories**
+- **Description**
+- **Rationale**
+- **Guidance**
+- **MITRE ATT&CK**
 
-### Review and Save Policy
-- Review all settings and preview potential violations.
-- Click **Save** to create the policy.
+## Lifecycle
 
-## Editing and Managing Policies
+In the **Lifecycle** step:
 
-- To edit a policy, go to **Platform Configuration > Policy Management**, select a policy, and click **Actions > Edit Policy**.
-- Default policies cannot be edited directly; clone them first.
+- Select one or more lifecycle stages: **Build**, **Deploy**, or **Runtime**
+- For **Runtime**, select the event source appropriate for the policy, such as deployment activity or audit-log-based activity
+
+## Rules
+
+In the **Rules** step:
+
+- Add the criteria that determine when the policy should trigger
+- Build rules from the fields available for the selected lifecycle stage
+- Combine criteria using logical operators as needed
+
+## Policy Behavior
+
+In the **Policy behavior** step:
+
+- Set whether the policy is active
+- Choose whether it should only inform or inform and enforce
+
+Enforcement depends on lifecycle stage:
+
+- **Build**: Fails CI checks when the image violates policy
+- **Deploy**: Blocks or edits noncompliant deployments when admission enforcement is enabled
+- **Runtime**: Enforces response when matching runtime activity occurs
+
+## Scope
+
+In the **Scope** step:
+
+- Limit where the policy applies
+- Add cluster, namespace, deployment, or label-based restrictions as needed
+- Use scope rules to keep a policy targeted to the workloads or environments it is meant to protect
+
+## Actions
+
+In the **Actions** step:
+
+- Attach notifiers when you want violations to be sent to configured integrations
+- Review any response actions supported by the selected lifecycle and policy behavior settings
+
+## Review and Save
+
+- Review the full policy definition in the **Review** step
+- Click **Save** to create the policy
+
+## Editing Existing Policies
+
+- Go to **Platform Configuration > Policy Management**
+- Select the policy and open its available actions
+- Default policies cannot be edited directly; clone them first if you want to customize their logic

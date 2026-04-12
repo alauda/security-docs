@@ -2,13 +2,21 @@
 weight: 15
 ---
 
-# Using Alauda Container Security in Offline Mode
+# Using Alauda Security Service in Offline Mode
 
-Alauda Container Security can be deployed in environments without internet access by enabling offline mode. In offline mode, all components operate without connecting to external addresses or hosts.
+Alauda Security Service can be deployed in environments without internet access. In offline mode, Central and Scanner continue to operate without reaching public endpoints, but vulnerability definitions must be supplied manually.
 
 ## Enabling Offline Mode
 
-- When installing via YAML, set `env.offlineMode` to `true`.
+When installing the Central service by using the operator custom resource, set the egress connectivity policy to offline:
+
+```yaml
+spec:
+  egress:
+    connectivityPolicy: Offline
+```
+
+This setting matches the installation flow documented in [Alauda Security Service for StackRox Installation](./install_plugin.mdx).
 
 ## Updating Vulnerability Definitions
 
@@ -28,7 +36,7 @@ Scanner maintains a local vulnerability database. In online mode, Central retrie
 
 ### Uploading the Definitions to Central
 
-You can upload the vulnerability definitions database to Central using either an API token or your administrator password.
+You can upload the vulnerability definitions database to Central by using either an API token or an administrator password.
 
 #### Using an API Token
 
@@ -44,6 +52,21 @@ You can upload the vulnerability definitions database to Central using either an
     -e "$ROX_CENTRAL_ADDRESS" \
     --scanner-db-file=<compressed_scanner_definitions.zip>
   ```
+
+#### Using a Password
+
+```bash
+roxctl scanner upload-db \
+  -e <address>:<port_number> \
+  --scanner-db-file=<compressed_scanner_definitions.zip> \
+  --password <admin_password>
+```
+
+## Operational Notes
+
+- Keep the downloaded bundle file in your offline software distribution path so that it can be promoted alongside image content and deployment manifests.
+- In larger environments, update the bundle on a regular schedule to reduce drift between actual scanner results and current vulnerability definitions.
+- Recent releases handle offline vulnerability bundles more efficiently, but the upload workflow remains the same from an operator perspective.
 
 
 ---

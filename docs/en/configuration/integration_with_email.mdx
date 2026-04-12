@@ -2,9 +2,9 @@
 weight: 15
 ---
 
-# Integration with Email    
+# Integration with Email
 
-Alauda Container Security supports sending notifications via email. You can configure your existing email provider or use the built-in email notifier to send alerts. Notifications can be sent to a default recipient or dynamically determined using annotations in your deployment or namespace.
+Alauda Security Service supports sending notifications by email. You can configure an existing email provider or mail relay to forward alerts about policy violations. Notifications can be sent to a default recipient or determined dynamically from deployment or namespace annotations.
 
 :::info 
 Port `25` is blocked by default. Configure your mail server to use port `587` or `465` for sending email notifications.
@@ -18,23 +18,34 @@ Follow these steps to set up email notifications:
 
 1. Navigate to **Platform Configuration** > **Integrations**.
 2. Under **Notifier Integrations**, select **Email**.
-3. Click **New Integration**.
+3. Click **New integration**.
 4. Enter a name for your integration in the **Integration name** field.
 5. In the **Email server** field, provide the address of your email server, including the FQDN and port (e.g., `smtp.example.com:465`).
 6. (Optional) To use unauthenticated SMTP, select **Enable unauthenticated SMTP**.  
    :::warning
    This is insecure and not recommended unless required for internal servers.
    :::
+   :::info
+   You cannot change an existing email integration that uses authentication to enable unauthenticated SMTP. Delete the existing integration and create a new one with **Enable unauthenticated SMTP** selected.
+   :::
 7. Enter the username and password for the service account used for authentication.
 8. (Optional) Specify the display name for the `FROM` header in the **From** field (e.g., `Security Alerts`).
 9. Enter the sender's email address in the **Sender** field.
 10. Specify the default recipient's email address in the **Default recipient** field.
+11. (Optional) Enter an annotation key in **Annotation key for recipient** if you want the platform to determine recipients dynamically from deployment or namespace annotations.
+12. (Optional) Configure transport security settings:
+    - Select **Disable TLS (insecure)** if you need to connect without TLS.
+    - Select a value in **Use STARTTLS (requires TLS to be disabled)** if your mail server requires StartTLS. The available values are **Disabled**, **Login**, and **Plain**.
+    - Select **Skip TLS verification** only if the server certificate cannot be validated and your environment explicitly allows this behavior.
+13. (Optional) Enter a hostname in **Hostname for SMTP HELO/EHLO** if your mail relay requires a specific identity during the SMTP handshake. If you leave it blank, `localhost` is used.
+14. (Optional) Click **Test** to verify the connection.
+15. Click **Save**.
 
-### Dynamic Recipient with Annotations (Optional)
+### Dynamic Recipient with Annotations
 
 You can use annotations to dynamically determine the recipient of email notifications:
 
-1. In the **Annotation key for recipient** field, enter an annotation key (e.g., `email`).
+1. In the **Annotation key for recipient** field, enter an annotation key (for example, `email`).
 2. Add an annotation to your deployment or namespace YAML file:
 
     ```yaml
@@ -43,7 +54,7 @@ You can use annotations to dynamically determine the recipient of email notifica
         email: <recipient_email@example.com>
     ```
 
-3. Alauda Container Security will send alerts to the email specified in the annotation. If no annotation is found, the alert is sent to the default recipient.
+3. Alauda Security Service sends the alert to the email specified in the annotation. If no annotation is found, the alert is sent to the default recipient.
 
 **Recipient Resolution Rules:**
 
@@ -53,21 +64,22 @@ You can use annotations to dynamically determine the recipient of email notifica
 
 ### TLS and StartTLS Settings
 
-- (Optional) To send email without TLS, select **Disable TLS certificate validation (insecure)**.  
+- (Optional) Select **Disable TLS (insecure)** if you need to connect to the mail server without TLS.
   :::info
-  It is recommended to use TLS for secure email delivery.
+  Use TLS for email notifications whenever possible. Without TLS, all email is sent unencrypted. Do not disable TLS certificate validation unless you are using StartTLS.
   :::
-- (Optional) To use StartTLS, select either **Login** or **Plain** from the **Use STARTTLS** drop-down menu.  
+- (Optional) To use StartTLS, select either **Login** or **Plain** from the **Use STARTTLS (requires TLS to be disabled)** drop-down menu.
   - **Login:** Credentials are sent as a base64-encoded string.
   - **Plain:** Credentials are sent in plain text.
+- (Optional) Select **Skip TLS verification** only if the server certificate cannot be validated against the trusted certificate chain.
 
 :::warning
-With StartTLS, credentials are transmitted in plain text before encryption is established.
+With StartTLS, credentials are passed in plain text to the email server before the session encryption is established.
 :::
 
 ## Enabling Email Notifications for Policies
 
-1. In the Alauda Container Security portal, go to **Platform Configuration** > **Policy Management**.
+1. In the Alauda Security Service portal, go to **Platform Configuration** > **Policy Management**.
 2. Select one or more policies to enable notifications for.
 3. Under **Bulk actions**, select **Enable notification**.
 4. In the **Enable notification** window, choose the **Email** notifier.
@@ -84,5 +96,4 @@ With StartTLS, credentials are transmitted in plain text before encryption is es
 
 ---
 
-By following these steps, you can ensure that Alauda Container Security notifies the right people about important security events in your container platform.
-
+By following these steps, you can ensure that Alauda Security Service notifies the right people about important security events in your container platform.

@@ -1,21 +1,24 @@
 ---
-title: Default Policies in Alauda Container Security
-description: Overview of default and custom policies in Alauda Container Security.
+title: Default Policies in Alauda Security Service
+description: Overview of default and custom policies in Alauda Security Service.
 weight: 30
 ---
 
-# Default Policies in Alauda Container Security
+# Default Policies in Alauda Security Service
 
-Alauda Container Security offers a set of default policies to help you prevent high-risk deployments and respond to runtime incidents in your Kubernetes environment. These policies are designed to identify security issues and enforce best practices across your clusters.
+Alauda Security Service provides built-in system policies to help you prevent high-risk deployments and respond to runtime incidents in Kubernetes environments. These policies cover common vulnerability, configuration, runtime, and supply chain checks and provide the baseline for day-to-day policy management.
 
 ## Overview
 
-Default policies cover the entire container lifecycle: build, deploy, and runtime. You can view, clone, and edit these policies in the Alauda Container Security portal. **Default policies cannot be deleted or directly modified.**
+Default policies cover the full container lifecycle: build, deploy, and runtime. You can review them from **Platform Configuration > Policy Management**, clone them, and then tailor the cloned copies for your own environment. Default policies cannot be deleted or edited in place.
+
+The exact policy inventory can vary by release, enabled integrations, and imported content. The tables below summarize the default policies commonly present in supported deployments.
 
 ### Viewing Policies
 
 1. Go to **Platform Configuration** > **Policy Management** in the portal.
-2. The **Policies** view lists all default and custom policies, including their status, severity, and lifecycle stage.
+2. Review the **Policies** table and use filters, search, or categories to narrow the list.
+3. Use the row actions or policy details page to view policy logic or clone a default policy.
 
 ## Policy Table Structure
 
@@ -71,7 +74,7 @@ Default policies cover the entire container lifecycle: build, deploy, and runtim
 | Runtime | Shadow File Modification | Detects shadow file modifications. | Disabled |
 | Runtime | Shell Spawned by Java Application | Detects shell spawned as a subprocess of Java apps. | Enabled |
 | Runtime | Unauthorized Network Flow | Alerts on anomalous network flows. | Enabled |
-| Runtime | Unauthorized Processed Execution | Alerts on unauthorized process execution in locked baselines. | Enabled |
+| Runtime | Unauthorized Process Execution | Alerts on unauthorized process execution in locked baselines. | Enabled |
 
 ---
 
@@ -146,8 +149,3 @@ Default policies cover the entire container lifecycle: build, deploy, and runtim
 - Default policies provide broad security coverage.
 - You can **view**, **clone**, and **edit** cloned default policies in the portal.
 - **Default policies cannot be deleted or directly modified.**
-
-> **Note:**
-> Default policies are not supported with the policies-as-code feature.
-
----

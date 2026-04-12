@@ -4,18 +4,18 @@ weight: 30
 
 # Network Baseline Management in the Network Graph
 
-Alauda Container Security  helps you minimize network risks by using network baselining. This proactive approach secures your infrastructure by learning normal network flows and identifying any deviations as anomalies.
+Alauda Security Service helps you minimize network risk by using network baselining. This approach learns normal network flows for a deployment and then highlights deviations as anomalies.
 
 ## How Network Baselining Works
 
-When you first install Alauda Container Security , there is no default network baseline. As Alauda Container Security  observes network activity, it automatically adds discovered network flows to the baseline:
+When you first install Alauda Security Service, there is no default network baseline. As the platform observes network activity, it automatically adds discovered flows to the baseline during the observation phase:
 
 - New network flows are added to the baseline during the observation phase.
 - These flows are considered normal and do not trigger any alerts or violations.
 
 After the observation phase:
 
-- Alauda Container Security  stops adding new flows to the baseline.
+- Alauda Security Service stops adding new flows to the baseline.
 - Any new network flow not in the baseline is marked as anomalous, but does not trigger violations by default.
 
 ## Viewing and Managing Network Baselines
@@ -45,7 +45,7 @@ You can export network baselines as YAML files for further use.
 
 **Steps:**
 
-1. In the Alauda Container Security  portal, go to **Network Graph**.
+1. In the Alauda Security Service portal, go to **Network Graph**.
 2. Select the desired namespaces and deployments.
 3. In the deployment's information panel, open the **Baseline** tab.
 4. (Optional) Filter flows or exclude ports/protocols.
@@ -53,7 +53,7 @@ You can export network baselines as YAML files for further use.
 
 ## Configuring Baseline Observation Period
 
-You can adjust how long Alauda Container Security  observes network flows before finalizing the baseline using environment variables.
+You can adjust how long Alauda Security Service observes network flows before finalizing the baseline by using environment variables.
 
 ### Setting Environment Variables
 
@@ -69,7 +69,7 @@ kubectl -n stackrox set env deploy/central ROX_BASELINE_GENERATION_DURATION=<val
 
 ## Enabling Alerts for Anomalous Network Flows
 
-Alauda Container Security  can be configured to trigger violations for anomalous network flows (flows not in the baseline).
+Alauda Security Service can be configured to trigger violations for anomalous network flows.
 
 **Steps:**
 

@@ -4,13 +4,13 @@ weight: 10
 
 # Roxctl CLI Installation
 
-This guide provides instructions for installing, configuring, and using the `roxctl` command-line interface (CLI) for Alauda Container Security. The CLI is available for Linux, macOS, Windows, and as a container image.
+This guide provides instructions for installing, configuring, and using the `roxctl` command-line interface (CLI) for Alauda Security Service.
 
 ---
 
 ## Overview
 
-- **roxctl** is a CLI tool for managing and interacting with Alauda Container Security.
+- **roxctl** is the command-line entry point for managing and querying Alauda Security Service.
 - Supported platforms: **Linux**, **macOS**, **Windows**.
 - After installation, verify the CLI version to ensure correct setup.
 
@@ -28,7 +28,7 @@ This guide provides instructions for installing, configuring, and using the `rox
     ```bash
     arch="$(uname -m | sed 's/x86_64//')"; arch="${arch:+-$arch}"
     ```
-2. Download the binary form the Portal:
+2. Download the binary from the portal:
 
     ![download roxctl](../assets/download_cli.png)
 
@@ -54,7 +54,7 @@ This guide provides instructions for installing, configuring, and using the `rox
     ```bash
     arch="$(uname -m | sed 's/x86_64//')"; arch="${arch:+-$arch}"
     ```
-2. Download the binary form the Portal:
+2. Download the binary from the portal:
 
     ![download roxctl](../assets/download_cli.png)
 
@@ -80,7 +80,7 @@ This guide provides instructions for installing, configuring, and using the `rox
 
 **Steps:**
 
-2. Download the binary form the Portal:
+1. Download the binary from the portal:
 
     ![download roxctl](../assets/download_cli.png)
 2. (Optional) Add the directory containing `roxctl.exe` to your system `PATH`.
@@ -105,11 +105,13 @@ roxctl version
 
 ### Setting Environment Variables
 
-Before using `roxctl`, set the required environment variables:
+Before using `roxctl`, set the environment variables required by your workflow:
 
 ```bash
 export ROX_ENDPOINT=<central_host:port>
 ```
+
+Some commands also accept `-e <central_host:port>` directly.
 
 If you use an API token for authentication:
 
@@ -132,7 +134,7 @@ roxctl central debug dump --token-file <token_file>
 
 ### Authentication Methods
 
-You can authenticate using an API token, administrator password (for testing only), or via the `roxctl central login` command.
+You can authenticate by using an API token, an administrator password for temporary testing, or the `roxctl central login` workflow.
 
 #### API Token
 
@@ -140,9 +142,9 @@ API tokens are recommended for production and automation scenarios. They provide
 
 **To generate an API token:**
 
-1. In the Alauda Container Security portal, go to **Platform Configuration > Integrations**.
+1. In the Alauda Security Service portal, go to **Platform Configuration > Integrations**.
 2. Under **Authentication Tokens**, click **API Token**.
-3. Click **Generate Token**.
+3. Click **Generate token**.
 4. Enter a name and select a role with the required access.
 5. Click **Generate** and securely store the token.
 

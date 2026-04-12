@@ -1,14 +1,16 @@
 ---
+title: Using Process Baseline
+description: Learn how process baselines work in Alauda Security Service and how to manage them from the Risk workflow.
 weight: 18
 ---
 
 # Using Process Baseline
 
-Process baselining in Alauda Container Security helps secure your infrastructure by learning which processes normally run in your containers and enforcing that only these are allowed.
+Process baselining in Alauda Security Service helps secure your environment by learning which processes normally run in your containers and highlighting or enforcing deviations from that baseline.
 
 ## What is a Process Baseline?
 
-When you deploy Alauda Container Security, there is no default process baseline. As deployments are discovered, a process baseline is automatically created for each container type, including all observed processes.
+When you deploy Alauda Security Service, there is no default process baseline. As deployments are discovered, a process baseline is automatically created for each container type and populated from observed process activity.
 
 ## Baseline States
 
@@ -26,18 +28,21 @@ If a deployment has multiple container types, each has its own baseline. If some
 
 ## Managing Process Baselines
 
-You can view and manage process baselines in the **Risk** view of the Alauda Container Security portal.
+You can view and manage process baselines from the **Risk** workflow in the Alauda Security Service portal. Baseline management is most useful when you are validating expected runtime behavior for a deployment and deciding whether newly observed processes are acceptable.
 
 ### Viewing Baselines
+
 1. Go to **Risk** in the portal.
 2. Select a deployment.
 3. In the details panel, open the **Process Discovery** tab.
 4. Baselines are listed under **Spec Container Baselines**.
 
 ### Adding a Process
+
 1. In **Process Discovery**, under **Running Processes**, click the **Add** icon next to a process not already in the baseline.
 
 ### Removing a Process
+
 1. In **Process Discovery**, under **Spec Container Baselines**, click the **Remove** icon next to the process you want to remove.
 
 ### Locking/Unlocking the Baseline
@@ -46,8 +51,4 @@ You can view and manage process baselines in the **Risk** view of the Alauda Con
 
 ---
 
-By managing process baselines, you ensure only approved processes run in your environment, reducing security risks.
-
-
-
-
+By managing process baselines, you can separate expected runtime behavior from unexpected process execution and reduce the noise in runtime investigations.

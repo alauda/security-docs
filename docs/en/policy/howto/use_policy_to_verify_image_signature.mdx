@@ -1,23 +1,26 @@
 ---
-title: Use Policy to Verify Image Signature in Alauda Container Security
-description: Learn how to use policies to verify image signatures in Alauda Container Security.
+title: Use Policy to Verify Image Signature in Alauda Security Service
+description: Learn how to use policies to verify image signatures in Alauda Security Service.
 weight: 10
 ---
 
 # Use Policy to Verify Image Signature
 
-Alauda Container Security allows you to ensure the integrity of container images in your clusters by verifying image signatures against pre-configured keys. You can create policies to block unsigned images or images without a verified signature, and enforce these policies using the admission controller to prevent unauthorized deployments.
+Alauda Security Service lets you verify the integrity of container images by checking their signatures against trusted signers that you configure in the platform. You can then use a policy to alert on or block unsigned images and images that fail signature verification.
 
 ## Supported Signature Verification Methods
 
-Alauda Container Security supports the following signature verification methods:
+Supported signature verification methods include:
 
 - Cosign public keys
 - Cosign certificates
+- Transparency log validation by using Rekor
+- Keyless verification
 
 > **Note:**
-> - Only Cosign signatures and Cosign Public Keys/Certificates verification are supported. For more information, see [Cosign overview](https://docs.sigstore.dev/cosign/overview).
-> - Communication with the transparency log [Rekor](https://docs.sigstore.dev/logging/overview/) is not supported.
+> - Alauda Security Service supports Cosign signature verification by using Cosign public keys, Cosign certificates, or both.
+> - Alauda Security Service supports communication with the transparency log [Rekor](https://docs.sigstore.dev/logging/overview/).
+> - Alauda Security Service supports keyless verification.
 > - At least one Cosign verification method must be configured for signature verification.
 > - For all deployed and watched images:
 >   - Signatures are fetched and verified every 4 hours.
@@ -27,46 +30,97 @@ Alauda Container Security supports the following signature verification methods:
 
 - You must have a PEM-encoded Cosign public key or the required certificate identity and issuer. For more details, see [Cosign overview](https://docs.sigstore.dev/cosign/overview) and [Cosign certificate verification](https://docs.sigstore.dev/verifying/verify/#verify-image-with-user-provided-trusted-chain).
 
-## Configure Signature Integration
+## Configure a Signature Integration
 
 ### Using Cosign Public Keys
 
-1. In the Alauda Container Security portal, go to **Platform Configuration** > **Integrations**.
+1. In the Alauda Security Service portal, go to **Platform Configuration** > **Integrations**.
 2. Scroll to **Signature Integrations** and click **Signature**.
 3. Click **New integration**.
 4. Enter a name for the integration.
-5. Click **Cosign public Keys** and then **Add a new public key**.
-6. Enter the public key name and the PEM-encoded public key value.
+5. Expand **Cosign public keys** and click **Add new public key**.
+6. Enter:
+   - **Public key name**
+   - **Public key value** in PEM format
 7. (Optional) Add more public keys as needed.
 8. Click **Save**.
 
 ### Using Cosign Certificates
 
-1. In the Alauda Container Security portal, go to **Platform Configuration** > **Integrations**.
+1. In the Alauda Security Service portal, go to **Platform Configuration** > **Integrations**.
 2. Scroll to **Signature Integrations** and click **Signature**.
 3. Click **New integration**.
 4. Enter a name for the integration.
-5. Click **Cosign certificates** and then **Add a new certificate verification**.
-6. Enter the **Certificate OIDC Issuer** (regular expressions in [RE2 Syntax](https://github.com/google/re2/wiki/Syntax) are supported).
-7. Enter the **Certificate identity** (regular expressions in [RE2 Syntax](https://github.com/google/re2/wiki/Syntax) are supported).
-8. (Optional) Enter the **Certificate Chain PEM encoded** to verify certificates. If not provided, certificates are verified against the [Fulcio](https://docs.sigstore.dev/certificate_authority/overview/) root.
-9. (Optional) Enter the **Certificate PEM encoded** to verify the signature.
+5. Expand **Cosign certificates** and click **Add new certificate verification**.
+6. Enter the required identity-matching fields:
+   - **Certificate OIDC issuer**
+   - **Certificate identity**
+7. (Optional) Enter certificate materials as needed:
+   - **Certificate chain (PEM encoded)**
+   - **Intermediate certificate (PEM encoded)**
+8. (Optional) Enable **Enable certificate transparency log validation**.
+9. (Optional) If transparency log validation is enabled, provide **Certificate transparency log public key** when you need to validate against a specific transparency log key. If left empty, the UI indicates that the public Sigstore instance key is used.
 10. (Optional) Add more certificate verifications as needed.
 11. Click **Save**.
+
+### Configuring Transparency Log Validation
+
+The current UI exposes signature transparency log settings in a dedicated **Transparency log** section.
+
+1. In the signature integration, expand **Transparency log**.
+2. Select **Enable transparency log validation**.
+3. In **Rekor URL**, keep the default public Rekor instance or provide the URL for your own Rekor service.
+4. (Optional) Select **Validate in offline mode** if you want proof validation to avoid falling back to online confirmation from the transparency log service.
+5. (Optional) In **Rekor public key**, provide the PEM-encoded public key for the Rekor transparency log. If left empty, the UI indicates that the public Sigstore instance key is used.
+6. Click **Save**.
+
+> **Note:**
+> The UI indicates that transparency log validation is required when signatures contain short-lived certificates issued by Fulcio.
+
+### Using Keyless Verification
+
+Keyless verification is supported by using certificate-based verification.
+
+To use keyless verification:
+
+1. Create a signature integration with at least one certificate verification.
+2. Configure the **Certificate OIDC issuer** and **Certificate identity** values that match the signer.
+3. If required by your environment, enable certificate transparency log validation and configure the **Transparency log** section for Rekor validation.
+4. Save the integration and reference it from your policy.
 
 ## Create and Enforce Image Signature Verification Policies
 
 ### Prerequisites
 
-- At least one Cosign public key must be configured in a signature integration.
+- At least one signature integration must be configured.
+- To enforce the policy at deployment time, the admission controller must be enabled for the target cluster.
 
 ### Procedure
 
-1. When creating or editing a policy, drag the **Not verified by trusted image signers** criteria into the policy field under **Policy criteria**.
-2. Click **Select**.
-3. Choose the trusted image signers from the list and click **Save**.
+1. In the Alauda Security Service portal, go to **Platform Configuration** > **Policy Management**.
+2. Create a new policy or edit an existing custom policy.
+3. In the policy flow, open the **Rules** step.
+4. Add the **Not verified by trusted image signers** criterion to the policy.
+5. Click **Select**.
+6. Choose one or more trusted image signers from the configured signature integrations.
+7. Click **Save**.
+8. In **Policy behavior**, choose the response for matching images:
+   - use alerting only if you want visibility without blocking
+   - use deploy-time enforcement if you want to block unsigned or unverified images
+9. Save the policy.
 
-To prevent the use of unsigned images, enable the **Contact Image Scanners** feature in your cluster configuration. Then, when creating a security policy to enforce signature verification, select the **Inform and enforce** option.
+To prevent the use of unsigned images, enable the **Contact Image Scanners** feature in the cluster configuration. Then configure the policy with deploy-time enforcement by selecting **Inform and enforce**.
+
+## Verify Image Signatures by Using `roxctl`
+
+To verify image integrity, scan an image that includes a digest:
+
+```bash
+roxctl image scan \
+  --image=<registry>/<repository>/<image>@<digest>
+```
+
+Review the output for signature verification data. If transparency log validation is enabled for the signature integration, verify that the output also contains the Rekor bundle with proof of inclusion in the transparency log.
 
 ---
 

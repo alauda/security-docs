@@ -2,51 +2,55 @@
 weight: 10
 ---
 
-# Generating Network Policies with Alauda Container Security
+# Generating Network Policies with Alauda Security Service
 
-Alauda Container Security enables you to automatically generate Kubernetes network policies based on observed network flows, helping you secure pod communication and reduce your attack surface.
+Alauda Security Service enables you to automatically generate Kubernetes network policies based on observed network flows, helping you secure pod communication and reduce your attack surface.
 
 ## Overview
 
-Kubernetes network policies define which pods can receive or send network traffic. Manually creating these YAML files can be complex. Alauda Container Security simplifies this by generating policies according to the following principles:
+Kubernetes network policies define which pods can receive or send network traffic. Manually creating these YAML files can be complex. Alauda Security Service simplifies this by generating policies according to the following principles:
 
-- **One Policy per Deployment:** Alauda Container Security generates a network policy for each deployment in the selected namespace, using the deployment's pod selector.
-  - If a deployment already has a network policy, Alauda Container Security will not overwrite or delete it.
+- **One Policy per Deployment:** Alauda Security Service generates a network policy for each deployment in the selected namespace, using the deployment's pod selector.
+  - If a deployment already has a network policy, Alauda Security Service will not overwrite or delete it.
   - New deployments are unrestricted until you generate or create new policies for them.
   - If a new deployment needs to access a protected deployment, you may need to update the policy.
 
 - **Naming Convention:** Each policy is named `stackrox-generated-<deployment-name>` and includes an identifying label.
 
-- **Allowing External Traffic:** Alauda Container Security generates a rule allowing traffic from any IP if:
+- **Allowing External Traffic:** Alauda Security Service generates a rule allowing traffic from any IP if:
   - The deployment receives connections from outside the cluster during the selected period, or
   - The deployment is exposed via a node port or load balancer service.
 
 - **Ingress Rules:** For each observed incoming connection:
-  - If from the same namespace, Alauda Container Security uses the source deployment's pod selector.
-  - If from a different namespace, Alauda Container Security uses a namespace selector and automatically labels namespaces as needed.
+  - If from the same namespace, Alauda Security Service uses the source deployment's pod selector.
+  - If from a different namespace, Alauda Security Service uses a namespace selector and automatically labels namespaces as needed.
 
 > **Note:** If a standalone pod lacks labels, the generated policy may allow traffic from/to the entire namespace.
 
 ## How to Generate Network Policies
 
-You can generate policies for clusters, namespaces, or specific deployments using the Alauda Container Security Network Graph.
+You can generate policies for clusters, namespaces, or specific deployments by using the **Network Graph** page.
 
 To generate network policies, follow these steps:
 
-1. In the Alauda Container Security portal, go to **Network Graph**.
+1. In the Alauda Security Service portal, go to **Network Graph**.
 2. Select a cluster and one or more namespaces.
 3. (Optional) Select specific deployments or use **Filter deployments** to narrow the scope.
-4. Click **Network Policy Generator** in the header.
-5. (Optional) In the info panel, select **Exclude ports & protocols** to remove port/protocol restrictions.
-6. Click **Generate and simulate network policies**. The selected scope is shown at the top of the panel.
-7. (Optional) Copy or download the generated YAML file.
-8. (Optional) Click **Compare** to view existing and generated policies side by side.
-9. (Optional) Use the **Actions** menu to:
-   - Share the YAML file with notifiers (e.g., Slack, ServiceNow, webhooks).
-   - Rebuild rules from active traffic.
-   - Revert to previously applied YAML.
+4. Click **Network policy generator** in the header.
+5. Review the current scope shown in the generator panel. In the current UI, the scope summary can show the selected deployment count, namespace, and cluster.
+6. In the generator, use these available sections as needed:
+   - **Simulate network policies**
+   - **View active YAMLS**
+7. (Optional) Select **Exclude ports & protocols** to remove port and protocol restrictions from generated rules.
+8. Click **Generate and simulate network policies**.
+9. (Optional) Use **Upload YAML** if you want to preview the effect of an existing network policy file instead of generating a new one. The current UI provides a drag-and-drop upload area.
+10. (Optional) Review the currently active policy YAMLs in **View active YAMLS** before comparing or generating new output.
+11. (Optional) Copy or download the generated YAML file when the output is ready.
 
 > **Note:** Some namespaces (e.g., with existing ingress policies or protected namespaces) may not have generated policies.
+
+> **Tip:**
+> The generator works against the current graph scope. Selecting the target cluster and namespace first produces a more focused result than leaving the scope broad.
 
 ## Downloading and Applying Policies
 
@@ -68,7 +72,7 @@ $ kubectl delete -f "<generated_file>.yml"
 
 ## Reverting and Deleting Policies
 
-- To revert to a previous policy, use the **Revert rules to previously applied YAML** option in the Alauda Container Security portal.
+- To revert to a previous policy, use the available revert or comparison actions in the Alauda Security Service portal when those actions are present for the selected scope.
 - To delete all automatically generated policies:
 
     ```bash
@@ -81,9 +85,5 @@ $ kubectl delete -f "<generated_file>.yml"
 
 - The Network Graph does not visualize generated policies.
 - Only ingress traffic is restricted by generated policies; egress policies are not generated.
-
-
-
-
 
 

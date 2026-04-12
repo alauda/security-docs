@@ -18,9 +18,9 @@ This guide provides step-by-step instructions for installing the Alauda Security
 
 ## Download and Import
 
-1. Download the Alauda Security Service for StackRox from the Custom portal.
+1. Download the Alauda Security Service for StackRox from the portal.
 
-2. Use the Violet tool to upload the plugin to the platform.
+2. Use the Violet tool to upload the plugin package to the platform.
 
     ```bash
     violet push stackrox-operator.vx.x.x.tgz --platform-address https://192.168.0.1 --platform-username <user> --platform-password <password>
@@ -49,12 +49,12 @@ Configuration Parameters:
 ## Central Service Installation
 
 :::info
-Some components of the StackRox Central service are resource-intensive. We recommend running them on infra nodes and setting nodeSelector and tolerations to ensure they run only on those nodes. If you are evaluating the product and have not provisioned infra nodes, you can remove these settings so the components run on all nodes.
+Some components of the Central service are resource-intensive. We recommend running them on infra nodes and setting nodeSelector and tolerations to ensure they run only on those nodes. If you are evaluating the product and have not provisioned infra nodes, you can remove these settings so the components run on all nodes.
 
 For guidance on planning infra nodes, see <ExternalSiteLink name="acp" href="/configure/clusters/acp-node-planning.html" children="Cluster Node Planning" />.
 :::
 
-### Pre-installation procedure
+### Pre-installation Procedure
 
 1. Create the central-db-password secret:  
    Store the password in the `password` data item.
@@ -128,13 +128,13 @@ spec:
         name: central-db-password
       connectionString: host=central-db.stackrox port=5432 user=postgres sslmode=require  # Specify the database connection string
 
-    # Tolerations Optional
+    # Tolerations are optional.
     # If you want this component to only run on specific nodes, you can configure tolerations of tainted nodes.
     tolerations:
-    - effect: NoSchedule
-      key: node-role.kubernetes.io/infra
-      value: reserved
-      operator: Equal
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/infra
+        value: reserved
+        operator: Equal
     nodeSelector:
       node-role.kubernetes.io/infra: ""
   
@@ -143,10 +143,10 @@ spec:
   scannerV4:
     db:
       tolerations:
-      - effect: NoSchedule
-        key: node-role.kubernetes.io/infra
-        value: reserved
-        operator: Equal
+        - effect: NoSchedule
+          key: node-role.kubernetes.io/infra
+          value: reserved
+          operator: Equal
 
       nodeSelector:
         node-role.kubernetes.io/infra: ""
@@ -159,9 +159,9 @@ spec:
         replicas: 3
       tolerations:
         - effect: NoSchedule
-        key: node-role.kubernetes.io/infra
-        value: reserved
-        operator: Equal
+          key: node-role.kubernetes.io/infra
+          value: reserved
+          operator: Equal
       nodeSelector:
         node-role.kubernetes.io/infra: ""
 
@@ -172,10 +172,10 @@ spec:
         minReplicas: 1
         replicas: 3
       tolerations:
-      - effect: NoSchedule
-        key: node-role.kubernetes.io/infra
-        value: reserved
-        operator: Equal
+        - effect: NoSchedule
+          key: node-role.kubernetes.io/infra
+          value: reserved
+          operator: Equal
       nodeSelector:
         node-role.kubernetes.io/infra: ""
 
@@ -218,9 +218,9 @@ spec:
 | central.exposure.loadBalancer.enabled                  | Use true to expose Central by using a load balancer. |
 | central.exposure.loadBalancer.port                     | The port number on which to expose Central. The default port number is 443. |
 | central.exposure.nodePort.enabled                      | Use true to expose Central by using the node port service. |
-| central.exposure.nodePort.port                         | The port number on which to expose Central. When you skip this parameter, Alauda Container Platform automatically assigns a port number. Red Hat recommends that you do not specify a port number if you are exposing StackRox by using a node port. |
-| central.exposure.ingress.enabled                       | Use true to expose Central by using an ingress. Disables all ingress settings if set to false. This parameter is only available for Alauda Container Platform clusters. |
-| central.exposure.ingress.host                          | Use this parameter to specify a custom hostname to use for Central's passthrough route. Leave this unset to accept the default value that Alauda Container Platform provides. This parameter is only available for Alauda Container Platform clusters. |
+| central.exposure.nodePort.port                         | The port number on which to expose Central. If you leave this parameter unset, the platform automatically assigns a port number. |
+| central.exposure.ingress.enabled                       | Use true to expose Central by using an ingress. Disables all ingress settings if set to false. |
+| central.exposure.ingress.host                          | Use this parameter to specify a custom hostname for the Central ingress. Leave this unset to accept the platform-provided default value. |
 | central.exposure.ingress.ingressClassName              | Specify a custom ingress class name for the Central ingress. |
 | central.exposure.ingress.tls.secretName                | Set up a Central ingress with TLS secret. |
 | central.db.passwordSecret.name                         | Specify a secret that contains the password in the "password" data item. |
@@ -255,7 +255,7 @@ spec:
 
 ## Cluster Service Installation
 
-### Cluster Pre-installation procedure
+### Cluster Pre-installation Procedure
 
 1. Download the CLI tool following the guide [Download CLI](../install/install_cli.mdx) from the platform.
 
@@ -310,7 +310,7 @@ spec:
   clusterName: business-1
   centralEndpoint: wss://example.com:443  # Specify the address of StackRox Central Services. If it is in the same cluster as Central, configuration may not be necessary.
 
-  # AdmissionControl Optional
+  # AdmissionControl is optional.
   admissionControl:
     replicas: 3
     tolerations:
@@ -321,7 +321,7 @@ spec:
     nodeSelector:
       node-role.kubernetes.io/infra: ""
 
-  # Sensor Optional
+  # Sensor is optional.
   sensor:
     tolerations:
       - effect: NoSchedule
@@ -332,22 +332,22 @@ spec:
       node-role.kubernetes.io/infra: ""
 
   # Ingress domain certificate CA or cert. If ingress is not enabled, no configuration is needed.
-  tls: 
+  tls:
     additionalCAs:
-      content: |-
-        -----BEGIN CERTIFICATE-----
-        MIIB0TCCAXigAwIBAgIUXvN2ovk16V6+7jUAJpYdEXo1K4UwCgYIKoZIzj0EAwIw
-        RzEnMCUGA1UEAxMeU3RhY2tSb3ggQ2VydGlmaWNhdGUgQXV0aG9yaXR5MRwwGgYD
-        VQQFExM2MDYyNzAwMjg3MTkxNjM0NDY4MB4XDTI1MDkyNTA2MjQwMFoXDTMwMDky
-        NDA2MjQwMFowRzEnMCUGA1UEAxMeU3RhY2tSb3ggQ2VydGlmaWNhdGUgQXV0aG9y
-        aXR5MRwwGgYDVQQFExM2MDYyNzAwMjg3MTkxNjM0NDY4MFkwEwYHKoZIzj0CAQYI
-        KoZIzj0DAQcDQgAE57RYqus1/v3VcJ/fP+vG4flQ8uunyx2lguQ9cT0VYOZJnKDh
-        FQ/58jgEPeHGgu+wU2Mvjumc7qFe1gP/jSuW66NCMEAwDgYDVR0PAQH/BAQDAgEG
-        MA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFKxLpgvy2HnDYZTQw2nIiLdR3fxh
-        MAoGCCqGSM49BAMCA0cAMEQCID2uapFJnsdM4BGmnRCx7HqUrwrpBEjXZ98atcKO
-        IDCXAiAwuYzXAIMLNfLRakIz+hXxvvGY3+A5ZeRARZQVPatTaQ==
-        -----END CERTIFICATE-----
-      name: additional-ca
+      - content: |-
+          -----BEGIN CERTIFICATE-----
+          MIIB0TCCAXigAwIBAgIUXvN2ovk16V6+7jUAJpYdEXo1K4UwCgYIKoZIzj0EAwIw
+          RzEnMCUGA1UEAxMeU3RhY2tSb3ggQ2VydGlmaWNhdGUgQXV0aG9yaXR5MRwwGgYD
+          VQQFExM2MDYyNzAwMjg3MTkxNjM0NDY4MB4XDTI1MDkyNTA2MjQwMFoXDTMwMDky
+          NDA2MjQwMFowRzEnMCUGA1UEAxMeU3RhY2tSb3ggQ2VydGlmaWNhdGUgQXV0aG9y
+          aXR5MRwwGgYDVQQFExM2MDYyNzAwMjg3MTkxNjM0NDY4MFkwEwYHKoZIzj0CAQYI
+          KoZIzj0DAQcDQgAE57RYqus1/v3VcJ/fP+vG4flQ8uunyx2lguQ9cT0VYOZJnKDh
+          FQ/58jgEPeHGgu+wU2Mvjumc7qFe1gP/jSuW66NCMEAwDgYDVR0PAQH/BAQDAgEG
+          MA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFKxLpgvy2HnDYZTQw2nIiLdR3fxh
+          MAoGCCqGSM49BAMCA0cAMEQCID2uapFJnsdM4BGmnRCx7HqUrwrpBEjXZ98atcKO
+          IDCXAiAwuYzXAIMLNfLRakIz+hXxvvGY3+A5ZeRARZQVPatTaQ==
+          -----END CERTIFICATE-----
+        name: additional-ca
  
 ```
 
@@ -357,8 +357,8 @@ spec:
 
 | Parameter                                             | Description |
 | ----------------------------------------------------- | ----------- |
-| clusterName | The unique name of this cluster, as it will be shown in the StackRox UI. Note: Once a name is set here, you will not be able to change it again. You will need to delete and re-create this object in order to register a cluster with a new name. |
-| centralEndpoint | The endpoint of the StackRox Central instance to connect to, including the port number. If no port is specified and the endpoint contains an https:// protocol specification, then the port 443 is implicitly assumed. If using a non-gRPC capable load balancer, use the WebSocket protocol by prefixing the endpoint address with wss://. Note: when leaving this blank, Sensor will attempt to connect to a Central instance running in the same namespace. |
+| clusterName | The unique name of this cluster, as it will be shown in the Central UI. Once a name is set here, you cannot change it later. To register the cluster with a different name, delete and recreate this object. |
+| centralEndpoint | The endpoint of the Central instance to connect to, including the port number. If no port is specified and the endpoint contains an `https://` protocol specification, then port `443` is assumed. If you are using a non-gRPC-capable load balancer, use the WebSocket protocol by prefixing the endpoint address with `wss://`. When left blank, Sensor attempts to connect to a Central instance running in the same namespace. |
 | admissionControl.replicas                              | The number of replicas of the admission control pod. |
 | admissionControl.tolerations                           | If you want this component to only run on specific nodes, you can configure tolerations of tainted nodes. |
 | admissionControl.nodeSelector                          | If you want this component to only run on specific nodes, you can configure a node selector here. |

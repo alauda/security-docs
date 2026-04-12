@@ -1,20 +1,20 @@
 ---
 title: Managing Deployment Collections
-description: Learn how to manage deployment collections in Alauda Container Security.
+description: Learn how to manage deployment collections in Alauda Security Service.
 weight: 5
 ---
 
 # Managing Deployment Collections
 
-Alauda Container Security allows you to define and manage deployment collections, which are logical groupings of resources based on matching patterns. Collections help you organize your infrastructure and streamline configuration management.
+Alauda Security Service allows you to define and manage deployment collections, which are logical groupings of resources based on matching patterns. Collections help you organize environments and scope workflows such as vulnerability reporting.
 
 ## Overview
 
-Collections in Alauda Container Security are user-defined, named references that group deployments, namespaces, or clusters using selection rules. These rules can be based on exact matches or regular expressions (RE2 syntax is supported). Collections can also be nested, allowing you to build complex hierarchies.
+Collections in Alauda Security Service are user-defined, named references that group deployments, namespaces, or clusters using selection rules. These rules can be based on exact matches or regular expressions (RE2 syntax is supported). Collections can also be nested, allowing you to build complex hierarchies.
 
 **Key Points:**
 - Collections are currently available only for deployments.
-- Collections are used with vulnerability reporting.
+- Collections are used with vulnerability reporting and other collection-aware workflows.
 - Deployment collections require the PostgreSQL database backend.
 
 ## Prerequisites
@@ -35,26 +35,32 @@ Collections provide a flexible way to:
 
 ## Accessing and Managing Collections
 
-You can manage collections through the Alauda Container Security portal:
+You can manage collections through the Alauda Security Service portal:
 
 1. Navigate to **Platform Configuration > Collections**.
 2. The page displays a list of existing collections. You can:
    - Search collections by name.
-   - View collection details in read-only mode.
-   - Edit, clone, or delete collections (collections in use cannot be deleted).
    - Create new deployment collections.
+
+In the current list view, the main columns are:
+
+- **Collection**
+- **Description**
+- **Row actions**
 
 ## Creating a Deployment Collection
 
 ### Steps
 
 1. Click **Create collection**.
-2. Enter a name and description.
+2. In **Collection details**, enter a name and description.
 3. In **Collection rules**, do at least one of the following:
    - Define selection rules (see below).
    - Attach existing collections.
-4. Use the live preview panel to see matching results.
-5. Click **Save**.
+4. Review **Attached collections** if you want to extend the collection with existing sets.
+5. Use **Collection results** to preview which deployments match the current rule set.
+6. If you have not added any selector rules or attached collections yet, the preview stays empty and prompts you to add rules or attach existing collections first.
+7. Click **Save**.
 
 > **Note:** At least one rule or attached collection is required.
 
@@ -70,17 +76,19 @@ You can configure rules to select resources for the collection:
   - **Deployments with labels matching exactly**: Enter a valid Kubernetes label in the format `key=value`.
 
 - **Namespaces**
+  - **No namespaces specified**: Ignore namespace criteria.
   - **Namespaces with names matching**: Use exact or regex values.
   - **Namespaces with labels matching exactly**: Enter a label in `key=value` format.
 
 - **Clusters**
+  - **No clusters specified**: Ignore cluster criteria.
   - **Clusters with names matching**: Use exact or regex values.
 
 To add more criteria, use the **OR** option to combine multiple rules.
 
 ## Regular Expression Examples
 
-Alauda Container Security supports RE2 syntax for regular expressions. Here are some common examples:
+Alauda Security Service supports RE2 syntax for regular expressions. Here are some common examples:
 
 ### Match Production Clusters
 
@@ -119,7 +127,7 @@ To include the `reporting` deployment, any deployment ending with `-db`, and nam
 You can build hierarchical collections by attaching existing collections:
 
 1. Filter collections by name or select from the list.
-2. Click **+Attach** to add the selected collection.
+2. Click **Attach** to add the selected collection.
 3. Attached collections extend the parent collection using an OR relationship.
 
 ## Migration from Access Scopes

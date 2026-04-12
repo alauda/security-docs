@@ -1,12 +1,11 @@
----
-title: Checking Policy Compliance with rotl
-description: Learn how to check policy compliance using roxctl in Alauda Container Security.
+title: Checking Policies with roxctl
+description: Learn how to evaluate deployments and images against policies by using roxctl in Alauda Security Service.
 weight: 10
 ---
 
-# Checking Policy Compliance with roxctl
+# Checking Policies with roxctl
 
-Alauda Container Security provides the `roxctl` CLI to help you check deployment YAML files and container images for policy compliance. This guide explains how to use `roxctl` for these checks and interpret the results.
+Alauda Security Service provides the `roxctl` CLI to help you evaluate deployment YAML files and container images against the current policy set in Central. Use these commands in CI, pre-deployment checks, and troubleshooting workflows when you want results without navigating the web console.
 
 ## Prerequisites
 
@@ -16,7 +15,7 @@ Alauda Container Security provides the `roxctl` CLI to help you check deployment
   export ROX_ENDPOINT=<host:port>
   ```
 
-  Replace `<host:port>` with the address of your Alauda Container Security Central instance.
+  Replace `<host:port>` with the address of your Alauda Security Service Central instance.
 
 ## Output Formats
 
@@ -50,7 +49,7 @@ The following table summarizes the available output options:
     --row-jsonpath-expressions="{results..violatedPolicies..name,results..violatedPolicies..severity}"
   ```
 
-## Checking Policy Compliance for Deployments
+## Checking Policies for Deployments
 
 To check build-time and deploy-time policy violations in your deployment YAML files, run:
 
@@ -68,16 +67,16 @@ roxctl deployment check --file=<yaml_filename> \
 
 > **Note:** Additional deployment information is included in JSON output, regardless of the `--verbose` flag.
 
-To force Alauda Container Security to re-pull image metadata and scan results, add the `--force` option.
+To force Alauda Security Service to re-pull image metadata and scan results, add the `--force` option.
 
 > **Permission Requirement:**  
 > To check specific image scan results, your token must have both `read` and `write` permissions for the `Image` resource. The default **Continuous Integration** system role includes these permissions.
 
-**The deployment check validates:**
+**The deployment check evaluates:**
 - Configuration options in the YAML file (e.g., resource limits, privilege settings)
 - Image aspects (e.g., components, vulnerabilities)
 
-## Checking Policy Compliance for Images
+## Checking Policies for Images
 
 To check build-time policy violations in images, run:
 
@@ -85,7 +84,7 @@ To check build-time policy violations in images, run:
 roxctl image check --image=<image_name>
 ```
 
-To force Alauda Container Security to re-pull image metadata and scan results, add the `--force` option.
+To force Alauda Security Service to re-pull image metadata and scan results, add the `--force` option.
 
 > **Permission Requirement:**  
 > To check specific image scan results, your token must have both `read` and `write` permissions for the `Image` resource. The default **Continuous Integration** system role includes these permissions.
@@ -98,7 +97,7 @@ To view the components and vulnerabilities found in an image in JSON format, run
 roxctl image scan --image=<image_name>
 ```
 
-To force Alauda Container Security to re-pull image metadata and scan results, add the `--force` option.
+To force Alauda Security Service to re-pull image metadata and scan results, add the `--force` option.
 
 > **Permission Requirement:**  
 > To check specific image scan results, your token must have both `read` and `write` permissions for the `Image` resource. The default **Continuous Integration** system role includes these permissions.

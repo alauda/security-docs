@@ -8,3 +8,4 @@
 !.yarn/versions
 **/public/_remotes
 .DS_Store
+.codex-temp/
