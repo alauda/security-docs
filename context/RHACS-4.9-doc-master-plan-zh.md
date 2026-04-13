@@ -90,7 +90,7 @@
 
 下面事项已由用户安排开发处理，不再由文档规划继续跟踪：
 
-- 隐藏 `Cluster registration secrets` 相关入口/按钮
+- 保留 `Cluster registration secrets` 入口，但去除与 `Red Hat` / `RHACS` 相关的告警或帮助文案
 - 将 System Configuration 中 `OpenShift` / `Red Hat layered products` 类描述改成 `Platform`
 - 去除预置 Red Hat 签名文件
 - 删除 `New integration` 中链接到上游 RHACS 文档的说明
