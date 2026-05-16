@@ -1,0 +1,42 @@
+# Configuration for llms.txt generation
+# See https://llmstxt.org for the file format.
+
+project_name: "Alauda Security Service"
+summary: "Documentation for Alauda Security Service — a Kubernetes and container security platform covering vulnerability management, security policy enforcement, runtime violations, risk analysis, and network policy generation (RHACS / StackRox-derived)."
+body: |
+  This site documents the Alauda Security Service product. Topics include
+  installation, configuration, dashboards, vulnerability scanning,
+  security policy management, runtime violation investigation, deployment
+  risk, and network graph / network policy generation. The product
+  architecture follows the Central / Sensor / Collector / Admission
+  Controller / Scanner V4 model, with `roxctl` as the primary CLI.
+
+# File inclusion/exclusion
+include_patterns:
+  - "**/*.md"
+  - "**/*.mdx"
+
+exclude_patterns:
+  - "node_modules/**"
+  - "**/node_modules/**"
+  - ".git/**"
+  - "**/.git/**"
+  - ".yarn/**"
+  - "**/.yarn/**"
+  - ".llmstxt-cache/**"
+  - "**/.llmstxt-cache/**"
+  - "llms.txt"
+  - "**/llms.txt"
+  - "llmstxt-state.json"
+  - "**/llmstxt-state.json"
+  - "**/CHANGELOG.md"
+  - "**/CONTRIBUTING.md"
+
+# Start H2 grouping from this relative path. Does not limit scan depth.
+grouping_base_path: "."
+
+# Files per batch for AI processing
+batch_size: 15
+
+# Maximum words per generated file description
+description_max_words: 150

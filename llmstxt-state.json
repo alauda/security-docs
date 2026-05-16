@@ -1,0 +1,416 @@
+{
+  "version": 1,
+  "generator_version": 3,
+  "project_name": "Alauda Security Service",
+  "summary": "Documentation for Alauda Security Service — a Kubernetes and container security platform covering vulnerability management, security policy enforcement, runtime violations, risk analysis, and network policy generation (RHACS / StackRox-derived).",
+  "generated_at": "2026-05-16T09:43:42Z",
+  "include_patterns": [
+    "**/*.md",
+    "**/*.mdx"
+  ],
+  "exclude_patterns": [
+    "node_modules/**",
+    "**/node_modules/**",
+    ".git/**",
+    "**/.git/**",
+    ".yarn/**",
+    "**/.yarn/**",
+    ".llmstxt-cache/**",
+    "**/.llmstxt-cache/**",
+    "llms.txt",
+    "**/llms.txt",
+    "llmstxt-state.json",
+    "**/llmstxt-state.json",
+    "**/CHANGELOG.md",
+    "**/CONTRIBUTING.md"
+  ],
+  "grouping_base_path": ".",
+  "description_max_words": 150,
+  "files": {
+    "AGENTS.md": {
+      "sha256": "2f7c715c197a6cf1535255575f2a720c967fb7098235b8216c4c938164496241",
+      "size": 7740,
+      "description": "Repository context guide for AI agents working on the Alauda Security Service documentation site, clarifying that the docs are derived from Red Hat Advanced Cluster Security (RHACS) / StackRox 4.8 and have been aligned to a RHACS 4.9 baseline. Documents the RHACS component model (Central, Sensor, Collector, Admission Controller, Scanner V4), confirms intentional residual upstream traces such as `install.stackrox.io`, `platform.stackrox.io/v1alpha1`, and `stackrox-operator`, and lists features deliberately not added (machine-to-machine access, external JWT issuer, declarative configuration, CA rotation, delegated scanning). Also records that `docs/en/compliance/**` was removed, that `yarn build`/`yarn lint` expect a `docs/zh` directory not present locally, and points future sessions to the `context/` files and `skills/security-doc-ui-calibration/`.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "README.md": {
+      "sha256": "cea884915d788b361bde33eff2be7667fe028ca1ee69e5f05ee67cbe7e115fd7",
+      "size": 1240,
+      "description": "Chinese-language contributor README for the `security-docs` static site, listing setup prerequisites (Node.js, npm, Yarn) and the main yarn scripts (`yarn install`, `yarn dev`, `yarn build`, `yarn serve`) used to author and preview the documentation, with a note that left-nav changes require a dev server restart. Points contributors at the long-term context anchors `AGENTS.md`, `context/RHACS-4.9-doc-master-plan-zh.md`, and `context/UI-upstream-term-audit-2026-04-11.md`, plus the reusable `skills/security-doc-ui-calibration/` skill and its Playwright scripts for verifying docs against the live product UI.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "context/RHACS-4.9-doc-master-plan-zh.md": {
+      "sha256": "fe2bed11415ef87be505c9764d0270365452b3a7958a58f8e528efb16ed6caac",
+      "size": 4600,
+      "description": "Chinese-language final master plan recording the closure of the RHACS 4.9 documentation refresh as of 2026-04-12, declaring the docs upgraded from a RHACS/StackRox 4.8 derivative to a RHACS 4.9 baseline scoped to Alauda Security Service. Enumerates confirmed constraints (product renamed to Alauda Security Service, `docs/en/compliance/**` removed, StackRox-style install narrative kept, no new pages for machine-to-machine access / external JWT issuer / declarative configuration / CA rotation / delegated scanning), the completed UI-calibration scope (Dashboard, Vulnerability Results and Reporting, Risk, Violations, Collections, Network Graph, Network policy generator, Signature/Email/Registry Integrations, API Token), and the explicit Cosign and Rekor transparency-log field names locked in for signature integrations.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "context/UI-upstream-term-audit-2026-04-11.md": {
+      "sha256": "eaf690a2b89de5b1062530edb36bd0eacc6b999d63548f350f24e080582512fb",
+      "size": 9470,
+      "description": "Chinese-language UI audit report from 2026-04-11 cataloging residual upstream terms (`OpenShift`, `OCP`, `RHACS`, `Red Hat`) found in the visible body text of 27 audited routes such as `/main/clusters/cluster-registration-secrets`, `/main/policy-management/policies`, `/main/integrations/signatureIntegrations/signature/create`, and `/main/systemconfig`. Classifies each hit as fixable, leave-alone, or needing product-side confirmation, with recommended actions including replacing OpenShift/Red Hat layered-products wording with `Platform`, removing `RHACS documentation` help links, deleting the default `Red Hat images must be signed by a Red Hat release key` policy, and removing Red Hat telemetry charts.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/configuration/configure_api_token.mdx": {
+      "sha256": "c1e424331a9d38834647ff7b7faca2856012a0ef9612d6f4849d22e6b5f96c0c",
+      "size": 2801,
+      "description": "Procedure for generating Alauda Security Service API tokens from **Platform Configuration > Integrations > Authentication Tokens > API Token > Generate token**, used by CI/CD, scripts, and roxctl automation. Documents the token-creation fields (Token name, Role such as `Continuous Integration` or `Sensor Creator`, Expiration date defaulting to one year), the requirement to copy the value because it cannot be re-displayed, and the in-UI plus Central log warning that fires under one week before expiry (`Warn: API Token [name] (ID [id]) will expire in less than X days.`). Lists the three tuning environment variables `ROX_TOKEN_EXPIRATION_NOTIFIER_INTERVAL` (1h), `ROX_TOKEN_EXPIRATION_NOTIFIER_BACKOFF_INTERVAL` (24h), and `ROX_TOKEN_EXPIRATION_DETECTION_WINDOW` (168h).",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/configuration/index.mdx": {
+      "sha256": "349e6e4358a46590593d78688aa4492a497c34a7d1e2239dec20636c8b823769",
+      "size": 244,
+      "description": "Short landing page for the Configuration section of the Alauda Security Service docs, framing the chapter as covering the main platform integrations and configuration objects (API tokens, registry integrations, email notifications, deployment collections) and rendering the auto-generated `<Overview />` child-page index below.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/configuration/integration_with_email.mdx": {
+      "sha256": "7a8d4d828caa854f95fef19c3b076bfd5c174a54e8433ef25a17b77b7e5e88bb",
+      "size": 5045,
+      "description": "End-to-end procedure for wiring Alauda Security Service alerts to an SMTP server via **Platform Configuration > Integrations > Notifier Integrations > Email > New integration**, covering the `Email server` FQDN:port field (with a note that port 25 is blocked so 587 or 465 must be used), authenticated vs. **Enable unauthenticated SMTP** mode, `From`/`Sender`/`Default recipient` headers, optional `Annotation key for recipient` that overrides recipient from a deployment or namespace annotation such as `email: <recipient_email@example.com>`, and TLS controls (`Disable TLS (insecure)`, `Use STARTTLS` Login/Plain, `Skip TLS verification`, `Hostname for SMTP HELO/EHLO`). Ends with the bulk Policy Management workflow to attach the Email notifier to one or more policies and the rule that alerts fire once per deployment violation and again only after resolution and a new runtime violation.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/configuration/integration_with_registry.mdx": {
+      "sha256": "84afb88f9ee8ae732c0ab8ee36d92a08dc2548b506cf57032bc4e6489f032126",
+      "size": 1513,
+      "description": "Walkthrough for adding a Generic Docker Registry (including Harbor) image-integration in **Platform Configuration > Integrations > Image Integrations > Generic Docker Registry > New integration**, listing the required Integration name / Endpoint / Username / Password fields, the optional `Disable TLS certificate validation (insecure)` and `Create integration without testing` options, and the **Test** button to verify connectivity before Save. Notes that the integration list shows Name, Endpoint, Username, and Autogenerated columns, and advises creating separate integrations per credential or TLS profile and configuring trust chains before turning TLS verification off.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/configuration/manage_deployment_collections.mdx": {
+      "sha256": "30b1d84f42926494b82df3dea3c3d49ec2b547320891a8e8f2f364a11963b95f",
+      "size": 5860,
+      "description": "Guide to defining named deployment Collections in **Platform Configuration > Collections** to scope workflows like vulnerability reporting, requiring the PostgreSQL backend and `WorkflowAdministration` plus `Deployment` permissions (both bundled in the `Admin` role). Covers the create-collection form (Collection details, Collection rules, Attached collections, Collection results preview) with RE2-syntax exact and regex matchers for deployment / namespace / cluster names and `key=value` label rules combined via `OR`, plus practical regex recipes (`^prod.*`, the explicit non-`prod` negation pattern, `.*` match-all). Also documents collection nesting via attached collections, the rocksdb-to-PostgreSQL migration that converts vulnerability-reporting access scopes into embedded + root collections (only the `IN` label-selector operator survives), and the `CollectionService_DryRunCollection` API that mirrors the live preview.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/dashboard/index.mdx": {
+      "sha256": "4478a21941335cc76f95045aeed30d4770c3148aefeea84f20a1a1c9159783a0",
+      "size": 219,
+      "description": "Brief Dashboard-section landing page describing the dashboard as a high-level security-posture summary with widgets for policy violations, risky images, risky deployments, and aging images, and rendering the `<Overview />` child-page index of dashboard topics.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/dashboard/viewing_dashboard.mdx": {
+      "sha256": "a2a48e23245d498e99dce917a030b60b1451cb8495c16a909fb8b31c9331017e",
+      "size": 4115,
+      "description": "Reference for the Alauda Security Service Dashboard, documenting the Status Bar counters (Clusters, Nodes, Violations, Deployments, Images, Secrets) that jump to detailed workflow views and reflect the user's access scope, plus the top-level **Resources** filter that scopes widgets (but not Status Bar counters) to selected clusters and namespaces and defaults to All clusters / All namespaces. Describes the customizable widgets that are temporary-only per visit: **Policy Violations by Severity** (Low/Medium/High/Critical with recent-critical highlighting), **Images at Most Risk** (top images with risk priority and critical/important CVE counts), **Deployments at Most Risk**, **Aging Images**, and **Policy Violations by Category** (categories such as Security Best Practices, Privileges, Docker CIS, DevOps Best Practices, Anomalous Activity), along with the dynamic axis legend and Options menu.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/index.mdx": {
+      "sha256": "ef194eb4b0bfdc30ea72c9577791d3ddb086b4b218cfed0dd06cc8e72d529a9f",
+      "size": 259,
+      "description": "Top-level navigation landing page for the Alauda Security Service documentation set, naming the major workflows covered (installation, policy management, vulnerability management, risk investigation, network visibility, and platform integrations) and rendering an empty-header `<Overview overviewHeaders={[]} />` placeholder for the auto-generated section index.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/install/index.mdx": {
+      "sha256": "10483049110f334fe425d01f8b0d00a6d1caf802b35367ebafec1929d0ac41e6",
+      "size": 223,
+      "description": "Brief Installation-section landing page stating that the chapter covers the operator-based installation flow, CLI download, and offline-mode operation for Alauda Security Service, and renders the `<Overview />` child-page index of install topics.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/install/install_cli.mdx": {
+      "sha256": "568116f070ed965f2f89486d98c26a5c50682e204375f5de0c6c19abb124a12b",
+      "size": 3874,
+      "description": "Installation and configuration guide for the `roxctl` CLI on Linux (amd64, arm64, ppc64le, s390x), macOS (amd64, arm64), and Windows (amd64), covering portal download, the `arch=` shell snippet, `chmod +x roxctl`, the macOS `xattr -c roxctl` quarantine removal, and `roxctl version` verification. Documents authenticating via the `ROX_ENDPOINT` and `ROX_API_TOKEN` environment variables, the `--token-file` alternative and its precedence over `ROX_API_TOKEN`, the rule that `--password` and `--token-file` cannot be combined, the portal flow to generate an API token under **Platform Configuration > Integrations > Authentication Tokens > API Token > Generate token**, and using `roxctl central whoami` plus `roxctl central debug dump` to inspect roles, access scopes, and current identity.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/install/install_plugin.mdx": {
+      "sha256": "94a5337ff009b5135e32ecf8d93b17057b460511d13f2d88d576b94b90d759b1",
+      "size": 18006,
+      "description": "Step-by-step StackRox-style operator install guide for `Alauda Security Service for StackRox`, covering prerequisites (amd64, kernel >=5.8, >=4 CPU, >=8 GB RAM, PostgreSQL >=13, TLS cert), pushing the plugin tarball with `violet push stackrox-operator.vx.x.x.tgz`, installing the operator from Marketplace > OperatorHub, and creating `central-db-password` and `central-ingress-tls` secrets in the `stackrox-operator` namespace. Walks through deploying Central via UI or the `apiVersion: platform.stackrox.io/v1alpha1, kind: Central` YAML (with `egress.connectivityPolicy: Online/Offline`, ingress/nodePort/loadBalancer exposure, infra-node tolerations/nodeSelectors, and Scanner V4 indexer/matcher autoscaling), retrieving the admin password from the `central-htpasswd` secret, generating a cluster-registration secret with `roxctl central crs generate <cluster name>`, applying a `kind: SecuredCluster` CR (with `clusterName`, `centralEndpoint: wss://...`, AdmissionControl and Sensor placement), and the full Central / SecuredCluster parameter reference table.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/install/offline_mode.mdx": {
+      "sha256": "f6ce5314e237f2cca5bb27fba7cf2fae6acc7f09cce8b34c7ed10ebadf1bde06",
+      "size": 2639,
+      "description": "Configures Alauda Security Service for air-gapped clusters by setting `spec.egress.connectivityPolicy: Offline` on the Central operator custom resource and manually feeding Scanner vulnerability data. Covers downloading definitions with `roxctl scanner download-db` (or the install.stackrox.io URL) and uploading to Central via `roxctl scanner upload-db` using either an API token (`ROX_API_TOKEN`/`ROX_CENTRAL_ADDRESS`) or an admin password, plus refresh cadence notes (Scanner polls Central every 5 minutes; offline source updates roughly every 3 hours).",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/network/guides/index.mdx": {
+      "sha256": "c038d984b4180616acc7b0a040cb70667b205daf851f9cf59e25d5943f1953c9",
+      "size": 180,
+      "description": "Landing page for the Network Guides section, framing the documents underneath it as conceptual walkthroughs of the Network Graph and the network-baselining behavior used by Alauda Security Service. Renders an `<Overview />` listing of the child guides rather than holding standalone content.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/network/guides/network_baseline.mdx": {
+      "sha256": "d78602b39f8f8488597803eb8604bc24e309e33b3f78eaed51e490113c0f1be3",
+      "size": 3315,
+      "description": "Explains how Alauda Security Service learns a per-deployment network baseline during an initial observation phase and then flags out-of-baseline flows as anomalous (without alerting by default), and walks through working with baselines in the Network Graph. Covers viewing/filtering baselines on the deployment information panel's Baseline tab, marking single or bulk flows as anomalous, the **Exclude ports and protocols** option, exporting via **Download baseline as network policy**, tuning the observation window with the `ROX_NETWORK_BASELINE_OBSERVATION_PERIOD` and `ROX_BASELINE_GENERATION_DURATION` env vars on the `central` Deployment, and enabling violations through the **Alert on baseline violations** toggle.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/network/guides/network_graph.mdx": {
+      "sha256": "1a82cdebaf59ced35e1521e27d205780358561b0e579e835352415792b99da51",
+      "size": 8599,
+      "description": "Reference for navigating the Network Graph, which visualizes deployments, observed and potential traffic, and network policy coverage for each secured cluster. Documents the cluster/namespace/deployment (CL/NS/D) scope controls, internal vs. external (RFC 1918) entities, active-traffic vs. inactive-flow views, the legend's deployment badges (anomalous traffic, isolated by network policy, all traffic allowed, ingress-only, egress-only, connected to external entities), workflows for viewing deployment details and existing `NetworkPolicy` resources, managing custom and auto-discovered CIDR blocks, and the known incompatibility with `AdminNetworkPolicy`/`BaselineAdminNetworkPolicy` and CNI-specific resources.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/network/howto/generate_network_policy.mdx": {
+      "sha256": "075fc1a8456a5e8ee1550df3c742e9ef7eea255b986ea6dfa00e5731349949da",
+      "size": 4502,
+      "description": "Step-by-step guide to producing Kubernetes `NetworkPolicy` YAML from observed traffic using the Network Graph's **Network policy generator**. Details the generator's rules (one policy per deployment named `stackrox-generated-<deployment-name>`, no overwrite of existing policies, ingress-only output, automatic namespace labeling, optional **Exclude ports & protocols**), the Simulate / View active YAMLS / Upload YAML actions, and how to apply or roll back generated manifests with `kubectl create -f` / `kubectl delete -f` plus a bulk-delete `xargs` recipe keyed on the `network-policy-generator.stackrox.io/generated=true` label.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/network/howto/index.mdx": {
+      "sha256": "d2f8995a831cd32ca434f2b77f01f6ec1418921c2b406051c32a5c4de94272e9",
+      "size": 202,
+      "description": "Landing page for the Network HowTo section, scoping it to task-oriented procedures for turning observed cluster traffic into deployable Kubernetes network policies. Uses `<Overview />` to enumerate the child how-to articles.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/network/index.mdx": {
+      "sha256": "a7f32879e6208748b067aeadac9100af2918105ec196df3b9de9b37c9a289c15",
+      "size": 213,
+      "description": "Top-level entry for the Network documentation area, scoping the section to the Network Graph, baseline-driven anomaly analysis, and network policy generation workflows used for Kubernetes traffic visibility and segmentation. Renders the child pages via `<Overview />`.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/network/introduction.mdx": {
+      "sha256": "b2883fd24fa1b90302a01b42d87615ea92aed0fd7acc2020e9ba748e301c564c",
+      "size": 710,
+      "description": "Positioning page explaining why Kubernetes `NetworkPolicy` YAML is hard to reason about and how Alauda Security Service aggregates policy information from each secured cluster to provide visualization and generation workflows on top of it. Names the three feature pillars covered downstream — Network Graph, Network Policy Generator, and Network Baselines.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/overview/architecture.mdx": {
+      "sha256": "75ddd507796a32459db459d374d0396c957583323eceb9fa3a53d9d4cc4ec192",
+      "size": 4653,
+      "description": "Reference for the distributed architecture of Alauda Security Service: Central Services (Central, Central DB on PostgreSQL 13, Scanner V4) live on one management cluster, while Secured Cluster Services (Sensor, Admission Controller, Collector, optional scanner) deploy on each protected cluster. Documents Scanner V4 (Indexer, Matcher, DB) as the only supported scanner since 4.7, its vulnerability sources (vendor feeds, OSV, NVD, OS feeds), Helm/operator deployment nuances (`scannerV4.disable=false`, namespace-sharing rules), external integrations (`roxctl`, registries, `definitions.stackrox.io`, `collector-modules.stackrox.io`, CI/CD/SIEM/email), and the component-to-component interaction matrix plus default ports (Sensor↔Central 443, Scanner V4↔DB 5432, Scanner V4 Indexer 8443, etc.).",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/overview/index.mdx": {
+      "sha256": "f1f8ba05656a65987b85eed8ce9fa5e2a50f6b7585a72163d8c5885a503ee2c3",
+      "size": 193,
+      "description": "Top-level landing page for the Overview section, framing it as the entry point for introducing Alauda Security Service, its architecture, and the core product concepts referenced elsewhere in the docs. Uses `<Overview />` to surface its child pages.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/overview/intro.mdx": {
+      "sha256": "2e2cd1965fc204b90e1d8fcf6fc794728dee73deb9803ea63db816abac5f553c",
+      "size": 2344,
+      "description": "Product introduction page that defines Alauda Security Service as a security platform for Kubernetes and containerized environments providing centralized visibility, vulnerability scanning, and policy enforcement across clusters. Summarizes the Central Services / Secured Cluster Services split, the problems it addresses (vulnerability management, policy enforcement, centralized visibility, CI/CD-registry-SIEM integration), and known limitations including Scanner V4 being the sole supported scanner, single-cluster Central deployment, Kubernetes/Alauda Container Platform focus, and reliance on external feeds such as `definitions.stackrox.io`.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/policy/guides/create_custom_policy.mdx": {
+      "sha256": "d47c6e52342abfaa94b1c8c8712a39c92b78eab667d7cd3ca17ac90bc5f54114",
+      "size": 2725,
+      "description": "Walks an operator through the **Platform Configuration > Policy Management > Create policy** wizard for defining a custom security policy, also reachable from the **Risk** view. Covers each step of the policy-definition flow — Details (name, severity, categories, MITRE ATT&CK), Lifecycle (Build / Deploy / Runtime with appropriate runtime event sources), Rules, Policy behavior (active vs. inform/enforce), Scope (cluster/namespace/deployment/label restrictions), Actions (notifier attachments), and Review — plus how to edit policies later and the requirement to clone default policies before customizing them.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/policy/guides/default_policy.mdx": {
+      "sha256": "267950c3d102e3368aadfc26bf930ecdf3c94f69bc375e3861cee4b9ebc60b57",
+      "size": 11480,
+      "description": "Catalog of built-in security policies bundled with Alauda Security Service, grouped by severity (Critical, High, Medium, Low) and tagged by lifecycle stage (Build / Deploy / Runtime). Lists each policy's name, what it detects, and default Enabled/Disabled status — covering high-profile CVE alerts (Log4Shell CVE-2021-44228/45046, Spring4Shell CVE-2022-22965, Apache Struts CVE-2017-5638, HTTP/2 Rapid Reset), Docker CIS benchmarks, privilege-escalation and capability checks, runtime process detections (cryptominers, `iptables`, `nmap`, netcat, `kubectl exec`, shell-spawned-by-Java), and image-hygiene checks (package managers, `latest` tag, scan/image age). Explains how to view defaults from **Policy Management** and notes that defaults cannot be deleted or edited in place — they must be cloned first.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/policy/guides/index.mdx": {
+      "sha256": "75b3d8a4f2c5072c598d0e877721681a74811f90fe948ffe4d10ccffdfbabb2d",
+      "size": 191,
+      "description": "Landing page for the Policy Guides section, framing the underlying pages as walkthroughs for the Policy Management workflow, the built-in policy inventory, and managing custom policies in the current UI. Renders child pages via `<Overview />`.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/policy/guides/view_security_policy.mdx": {
+      "sha256": "4d332b888e87b08f419bdf2f8f4a6ecef43f2b2341ac743ac8f2dfd6fbd968e8",
+      "size": 3687,
+      "description": "Operator-facing reference for the **Platform Configuration > Policy Management** page — its **Create policy**, **Import policy**, **Bulk actions**, and **Reassess all** controls, plus the table's Policy/Status/Origin/Notifiers/Severity/Lifecycle columns. Summarizes available policy categories (Anomalous Activity, Docker CIS, Kubernetes Events, Supply Chain Security, Zero Trust, etc.), lifecycle stages, the JSON import/export workflow for sharing policies across Central instances, and the enforcement model — build-time CI failure, deploy-time hard (admission block) vs. soft (scale to zero by Sensor), runtime response — including default bypasses for `stackrox`, `kube-system`, `cpaas-system`, and `istio-system` namespaces and system service accounts.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/policy/howto/check_policy_by_roxctl.mdx": {
+      "sha256": "fed8dc04aaaafc84114267c827f0ed965e464f2792de5a79bc1ce4eddf79e938",
+      "size": 4863,
+      "description": "Walkthrough for evaluating deployment YAML files and container images against Central's policy set from the command line using `roxctl deployment check`, `roxctl image check`, and `roxctl image scan`. Covers setting `ROX_ENDPOINT`, selecting output formats (`json`, `table`, `csv`, `junit`) and shaping rows with `--headers` and `--row-jsonpath-expressions`, plus the `--force`, `--namespace`, `--cluster`, and `--verbose` flags. Notes the Continuous Integration system role permissions (read/write on `Image`) required for image scan checks, intended for CI and pre-deployment gating.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/policy/howto/index.mdx": {
+      "sha256": "e61cbf7f426771e58e7091c57efe07ca2fd90207ef1773e3ba65f1090b6ba004",
+      "size": 215,
+      "description": "Index page that groups the task-oriented policy how-tos, pointing users to workflows for evaluating manifests and images with `roxctl` and for configuring image signature verification policies. Renders the section's child pages via the `<Overview />` component.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/policy/howto/use_policy_to_verify_image_signature.mdx": {
+      "sha256": "61e9aa7e60d8ebc41716e13642635d4b0ccbf8a108f80de56c0be8c11e4a9170",
+      "size": 6217,
+      "description": "End-to-end procedure for verifying container image signatures in Alauda Security Service using Cosign public keys, Cosign certificates, keyless verification, and Rekor transparency log validation. Steps include creating a Signature Integration under Platform Configuration > Integrations (public key PEM, OIDC issuer/identity, certificate chain, Rekor URL, offline validation), adding the `Not verified by trusted image signers` policy criterion, choosing alert-only or deploy-time `Inform and enforce` behavior backed by the admission controller, and confirming signatures with `roxctl image scan --image=<registry>/<repository>/<image>@<digest>`. Notes that signatures are re-checked every 4 hours.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/policy/index.mdx": {
+      "sha256": "4e7060a80ed94ce17432dc201940a10b2020cdbd64ea55df8cec20e873318072",
+      "size": 282,
+      "description": "Top-level landing page for the Security Policy section, introducing how Alauda Security Service uses policies to evaluate build, deploy, and runtime risk. Frames the subpages covering the policy model, the default policy set, custom policy management, and CLI-driven policy checks; rendered via the `<Overview />` component.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/policy/intro.mdx": {
+      "sha256": "e58c733c63b3dea1ce9cc1e05adac0af3a9cf52c9b5354b7ed5b3c2f4829d6fd",
+      "size": 308,
+      "description": "Conceptual introduction to Alauda Security Service policies, explaining that they detect insecure images, risky deployment configurations, and suspicious runtime behavior. Positions the rest of the section: policy organization, working with the default policy set, and creating or enforcing custom policies.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/risk/guides/index.mdx": {
+      "sha256": "71aecb35a3d39f6244d5a454e0da87e21ce6e2bfc844a286b1b0dd5979631e30",
+      "size": 178,
+      "description": "Listing page for Risk guides that points readers to the main Risk view documentation and the related process baseline workflow that shapes how runtime risk is surfaced. Renders the child pages via the `<Overview />` component.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/risk/guides/use_process_baseline.mdx": {
+      "sha256": "e53d15dc00abbe2258e25c60ea648cb7bd3d759c6fbfe06303f9f38500d7e596",
+      "size": 2456,
+      "description": "Explains how process baselines work and how to manage them from the Risk workflow in the portal. Describes automatic baseline creation per container type during the initial one-hour discovery (unlocked, no violations), how locking a baseline turns unlisted processes into violations, and the Mixed status when container types are partially locked. Includes step-by-step procedures under Risk > deployment > Process Discovery for adding processes from Running Processes, removing entries from Spec Container Baselines, and toggling the Lock/Unlock icons.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/risk/guides/view_risk.mdx": {
+      "sha256": "0451437d26a49b61bc6bf4511e06a4266bafe2df1af6ba05828ad6ffdebbb02f",
+      "size": 1874,
+      "description": "Reference for the Risk view, which ranks deployments by priority using columns for Name, Created, Cluster, Namespace, and Priority and exposes controls such as Show Orchestrator Components, Default view, Filter deployments, and Create policy. Documents how selecting a deployment opens a details area listing policy violations, suspicious process executions, image vulnerabilities, service configuration findings, service reachability, RBAC-related risk, deployment metadata, process discovery, and an event timeline; also shows how to spawn a policy from the current filtered context with Create policy.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/risk/index.mdx": {
+      "sha256": "bbb2455b4c3902084e5d253bcaad655668e1db28be5ebe51871c097eb00e77ae",
+      "size": 242,
+      "description": "Section landing page that frames the Risk views in Alauda Security Service as the place to prioritize workloads and infrastructure for investigation. Lists the main risk workflow guide and supporting runtime baseline material; rendered via the `<Overview />` component.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/risk/intro.mdx": {
+      "sha256": "f62e0b1c6ba989994adbf639f7d9f7664e923e7d0607543cd4333686b2a015a1",
+      "size": 324,
+      "description": "Short introduction explaining that the Risk area combines vulnerability, configuration, and runtime context to help users identify, assess, and prioritize security risk across containerized environments and focus attention on the workloads and infrastructure that need it most.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/violation/guides/index.mdx": {
+      "sha256": "4895625761c23b29ade782080459b4352d3bbf10c993b425e56b772c2597e72f",
+      "size": 166,
+      "description": "Index page collecting the Violation guides, directing users to the current Violations view documentation and how policy findings are surfaced for investigation. Renders the section's child pages via the `<Overview />` component.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/violation/guides/violations.mdx": {
+      "sha256": "18ee3a98e855c945823786ecdeae5b95114c0257247e32552e4e153cf275d4b0",
+      "size": 2998,
+      "description": "Operator-facing reference for the Violations workflow covering the User Workloads, Platform, and All Violations top-level views and the Active/Resolved/Attempted state tabs. Documents how Platform violations depend on the platform component definition in Platform Configuration > System Configuration, the results table fields (Policy, Entity, Type, Enforced, Severity, Categories, Lifecycle, Time), the details panel for investigating a violation, follow-up actions like excluding deployments or adjusting policy scope, and the Build/Deploy/Runtime enforcement model including triggering Reassess all from Policy Management.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/violation/index.mdx": {
+      "sha256": "c9f0bce67d6bcbf364ec728873849ada7beda19bbd3bab23696c98ab4390671a",
+      "size": 254,
+      "description": "Section landing page for the Violation workflows, framing them as the way to investigate policy findings raised during build, deploy, and runtime evaluation and to work through remediation. Renders the child pages via the `<Overview />` component.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/violation/intoduction.mdx": {
+      "sha256": "0febb785ec18c245e21253466543f9e0ccf8f2ecc69e4517040ab7a08ff81f58",
+      "size": 757,
+      "description": "Conceptual introduction (note: filename is `intoduction.mdx`, misspelled) that defines a policy violation as the practical output of policy evaluation when a build, deployment, or runtime action matches an enabled rule. Lists the categories that policies detect, including CVEs, DevOps best-practice deviations, high-risk build and deployment activities, and suspicious runtime behaviors, and notes that both default and custom policies can raise violations.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/vulnerability/guides/index.mdx": {
+      "sha256": "08ed96f264770108092021ca4c5cbf862fc5d87deebe5c2bb8e4e143f9cf2d90",
+      "size": 195,
+      "description": "Index page that gathers the Vulnerability guides explaining how the web console's vulnerability views are organized and how recurring reporting workflows are handled. Renders the section's child pages via the `<Overview />` component.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/vulnerability/guides/viewing_and_addressing_vunerabilities.mdx": {
+      "sha256": "84726124373cd47dfe7b4868942d1e17fd7a017491af2572b849fe8ea494978c",
+      "size": 4354,
+      "description": "Walks operators through the Vulnerability Management > Results page in Alauda Security Service, covering the User Workloads, Platform, Nodes, and More Views tabs alongside Observed/Deferred/False positives status filters. Describes triage controls (filter chips, severity, Bulk actions, Create report, Manage watched images), result columns such as CVE, Top CVSS, Top NVD CVSS, EPSS probability, and how to hand off to Exception Management or Vulnerability Reporting for lifecycle and stakeholder workflows.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/vulnerability/guides/vulnerability_management_process.mdx": {
+      "sha256": "13a73711afb17d2be0c2d213e2fe776c04369bccb30d9b16604b431602c488c8",
+      "size": 6233,
+      "description": "Frames the end-to-end vulnerability management lifecycle in Alauda Security Service: asset assessment, prioritization, exposure assessment, taking action, and continuous reassessment across Components, Images, Nodes, Deployments, Namespaces, and Clusters. Explains how to use CVE severity, Top CVSS, Top NVD CVSS (Scanner V4), and EPSS probability signals to prioritize, and routes operators to Results, Exception Management, and Vulnerability Reporting for triage, deferrals/false positives, and recurring outputs.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/vulnerability/guides/vulnerability_reporting.mdx": {
+      "sha256": "72fb7da3e88d23daabe1c982024997aba110018f657dfa95fbab81ed622c759d",
+      "size": 5595,
+      "description": "Step-by-step guide to the Vulnerability Reporting area, with Report configurations and View-based reports tabs. Covers the Create report wizard (parameters, delivery destinations, schedule, review), filter options like CVE severity/status, image type, optional NVD CVSS, EPSS, Advisory columns, deployment collections, editing/cloning/deleting configurations, generating downloadable .csv reports, Send report now, and retention controls under Platform Configuration > System Configuration.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/vulnerability/howto/Image_scanning_by_roxctl.mdx": {
+      "sha256": "a5c695cc5957776b7e68ba27b9f58cf45be228179f0066ba1c25b87936c55901",
+      "size": 3464,
+      "description": "Reference for the `roxctl image scan` CLI workflow against remote and cluster-local registries (including the Alauda Container Platform integrated registry), with delegated scanning via `--cluster=<cluster_name>`. Shows the sample JSON result (Id, name.registry/remote/tag/fullName) and documents flags such as `--force`, `--compact-output`, `--headers`, `--include-snoozed`, `--no-header`, `-o table|CSV|JSON|SARIF`, retries, and retry delay, with pointers to image-examination and SBOM generation flows.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/vulnerability/howto/examining_images_for_vulnerabilities.mdx": {
+      "sha256": "591881e39443fad2172b0c1a32f78a1cfb57de653abe52660f41367c5d3dd931",
+      "size": 5297,
+      "description": "Explains how Scanner V4 inspects image layers, identifies OS/language/application packages via files like `/etc/os-release`, `package.json`, `MANIFEST.MF`, and matches them against NVD, OSV, and OS feeds, with the Central -> Indexer -> Matcher workflow. Lists supported distributions (Alpine, Amazon Linux, CentOS, Debian, Oracle Linux, Photon, RHEL, SUSE, Ubuntu), package formats (apk/dpkg/rpm), languages (Go/Java/JavaScript/Python/Ruby), and layer compressions; explains the 4-hour active-image scan cadence, watched images via More Views > Inactive images, on-demand `roxctl image scan`, and 5-minute vulnerability-definition pulls from `https://definitions.stackrox.io`.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/vulnerability/howto/generating_sboms_from_scanned_images.mdx": {
+      "sha256": "fcdb744ac46a77e6a13a7802bb88bd97685bb0a0bf5b33ea533031dc710f894d",
+      "size": 2986,
+      "description": "How-to for producing SPDX 2.3 JSON SBOMs from images already scanned by Alauda Security Service, framed against CISA's \"Analyzed\" SBOM definition and Executive Order 14028 compliance. Covers three paths: the portal (Vulnerability Management > Results -> Generate SBOM overflow action), the `roxctl image sbom --image=<image>` CLI with `--force`, `--retries`, `--retry-delay` options, and API-token-based generation for automation pipelines.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/vulnerability/howto/index.mdx": {
+      "sha256": "9a2fd90006978b12fe7bfd0efbacd6f9d32453e8636d76b37937b2be03234fb6",
+      "size": 191,
+      "description": "Landing page for the vulnerability how-to section, orienting readers toward task-focused pages for inspecting image vulnerabilities, running roxctl-based scans, and generating SPDX SBOM files; renders an `<Overview />` index of the child pages.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/vulnerability/index.mdx": {
+      "sha256": "7313fe9fc44699dc2e264bb0ba0370830b1243cad7353b7c908de0a7e9a33dcc",
+      "size": 282,
+      "description": "Top-level vulnerability section index for Alauda Security Service, naming Results, Exception Management, and Vulnerability Reporting as the main UI entry points and bracketing the scope as triage, exceptions, reporting, image scanning, and SBOM generation; renders an `<Overview />` of child pages.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "docs/en/vulnerability/intoduction.mdx": {
+      "sha256": "61986f91901fc9b717461e7c5e4de0b8d67b0a8733cde9c028f15991d02733a8",
+      "size": 543,
+      "description": "Short positioning page (filename misspelled `intoduction.mdx`) that motivates vulnerability management for Kubernetes by citing exploit impacts like DoS, RCE, privilege escalation, and data exposure, and points readers at the three core Alauda Security Service workflows: Results for triage, Exception Management for deferrals/false positives, and Vulnerability Reporting for scheduled outputs.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    },
+    "skills/security-doc-ui-calibration/SKILL.md": {
+      "sha256": "1979863f482884dbe628973d0dfce629da73065e5be4dc5482b9a2550051566f",
+      "size": 2550,
+      "description": "Internal Claude Code skill (not product documentation) for calibrating security-docs wording against a live Alauda Security Service UI via Playwright. Documents when to invoke it (verifying labels, vulnerability-reporting/network-graph flows, auditing upstream terms like RHACS/OpenShift/StackRox), the stdin-driven workflow (base URL, username, password), and the bundled scripts `inspect_vulnerability_deep.js`, `inspect_network_graph_cert_manager.js`, and `audit_ui_upstream_terms.js`, plus rules against committing credentials.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T09:43:42Z"
+    }
+  }
+}
