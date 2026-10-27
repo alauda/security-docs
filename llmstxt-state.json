@@ -126,11 +126,11 @@
       "updated_at": "2026-05-16T09:43:42Z"
     },
     "docs/en/install/install_plugin.mdx": {
-      "sha256": "f73bf16003ade265260f7a499f9d0b5be8f33453c463b75dc71d01268450f811",
-      "size": 18829,
+      "sha256": "6298d3060d628ba1dcc6280773fc0891e8bbf31f827ed02b8b1f6eb30208515b",
+      "size": 18822,
       "description": "Step-by-step StackRox-style operator install guide for `Alauda Container Platform Cluster Security` (previously `Alauda Security Service for StackRox`), covering prerequisites (amd64, kernel >=5.8, >=4 CPU, >=8 GB RAM, PostgreSQL >=13, TLS cert), pushing the plugin tarball with `violet push stackrox-operator.vx.x.x.tgz`, installing the operator from Marketplace > OperatorHub, and creating `central-db-password` and `central-ingress-tls` secrets in the `stackrox-operator` namespace. Walks through deploying Central via UI or the `apiVersion: platform.stackrox.io/v1alpha1, kind: Central` YAML (with `egress.connectivityPolicy: Online/Offline`, ingress/nodePort/loadBalancer exposure, infra-node tolerations/nodeSelectors, and Scanner V4 indexer/matcher autoscaling), retrieving the admin password from the `central-htpasswd` secret, generating a cluster-registration secret with `roxctl central crs generate <cluster name>`, applying a `kind: SecuredCluster` CR (with `clusterName`, `centralEndpoint: wss://...`, AdmissionControl and Sensor placement), and the full Central / SecuredCluster parameter reference table.",
       "generation_method": "ai_agent_reading",
-      "updated_at": "2026-10-26T07:15:55Z"
+      "updated_at": "2026-10-26T14:36:53Z"
     },
     "docs/en/install/offline_mode.mdx": {
       "sha256": "f6ce5314e237f2cca5bb27fba7cf2fae6acc7f09cce8b34c7ed10ebadf1bde06",
